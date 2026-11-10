@@ -35,8 +35,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/haodf/hd-2.jpg", caption: "问诊流程全链路，3 步主流程标注", note: "核心转化路径，用户从进入首页到发出首条问诊消息的完整动线" },
-      { src: "assets/projects/haodf/hd-5.jpg", caption: "医生主页信任信息分层", note: "3 层卡片结构，首屏露出 3 条关键信任信号" }
+      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "问诊流程全链路，3 步主流程标注", note: "核心转化路径，用户从进入首页到发出首条问诊消息的完整动线" },
+      { src: "assets/projects/haodf/hd-9.jpg", caption: "医生主页信任信息分层", note: "3 层卡片结构，首屏露出 3 条关键信任信号" }
     ],
 
     metrics: [
@@ -48,10 +48,10 @@ const PROJECTS = [
     capabilityTags: ["C 端产品设计", "信任设计", "流程简化", "医疗 UX", "状态可视化"],
 
     images: [
-      { src: "assets/projects/haodf/hd-2.jpg", caption: "问诊流程 · 全链路" },
-      { src: "assets/projects/haodf/hd-5.jpg", caption: "医生主页 · 信任信息" },
-      { src: "assets/projects/haodf/hd-8.jpg", caption: "对话与预约 · 交互" },
-      { src: "assets/projects/haodf/hd-11.jpg", caption: "封面 · 改版总览" }
+      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "问诊流程 · 全链路" },
+      { src: "assets/projects/haodf/hd-9.jpg", caption: "医生主页 · 信任信息" },
+      { src: "assets/projects/haodf/hd-9.jpg", caption: "对话与预约 · 交互" },
+      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "封面 · 改版总览" }
     ]
   },
 
@@ -87,8 +87,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/cizhen/cz-4.jpg", caption: "待机界面 · 主状态入口", note: "6 类主状态的统一入口，视觉权重最低，操作路径最短" },
-      { src: "assets/projects/cizhen/cz-13.jpg", caption: "治疗界面 · 已选患者", note: "状态矩阵应用示例，治疗参数在视觉顶层，患者信息在中层" }
+      { src: "assets/projects/cizhen/cz-4_hd.jpg", caption: "待机界面 · 主状态入口", note: "6 类主状态的统一入口，视觉权重最低，操作路径最短" },
+      { src: "assets/projects/cizhen/cz-13_hd.jpg", caption: "治疗界面 · 已选患者", note: "状态矩阵应用示例，治疗参数在视觉顶层，患者信息在中层" }
     ],
 
     metrics: [
@@ -100,11 +100,11 @@ const PROJECTS = [
     capabilityTags: ["医疗器械 HMI", "嵌入式 UI", "状态设计", "安全交互", "视觉权重分配"],
 
     images: [
-      { src: "assets/projects/cizhen/cz-1.jpg", caption: "产品介绍" },
-      { src: "assets/projects/cizhen/cz-4.jpg", caption: "待机界面" },
-      { src: "assets/projects/cizhen/cz-13.jpg", caption: "治疗界面 · 已选患者" },
-      { src: "assets/projects/cizhen/cz-15.jpg", caption: "治疗界面 · 禁忌拦截" },
-      { src: "assets/projects/cizhen/cz-17.jpg", caption: "治疗记录 · 汇总" }
+      { src: "assets/projects/cizhen/cz-1_hd.jpg", caption: "产品介绍" },
+      { src: "assets/projects/cizhen/cz-4_hd.jpg", caption: "待机界面" },
+      { src: "assets/projects/cizhen/cz-13_hd.jpg", caption: "治疗界面 · 已选患者" },
+      { src: "assets/projects/cizhen/cz-15_hd.jpg", caption: "治疗界面 · 禁忌拦截" },
+      { src: "assets/projects/cizhen/cz-17_hd.jpg", caption: "治疗记录 · 汇总" }
     ]
   },
 
@@ -140,8 +140,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/yilifang/yif-1.jpg", caption: "首页数据总览 · 关键指标看板", note: "3 条业务线的决策入口，关键指标一屏扫读" },
-      { src: "assets/projects/yilifang/yif-4.jpg", caption: "医生管理 · 智能排班日历", note: "业务流驱动的核心页面，排班日历与医生详情联动" }
+      { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板", note: "3 条业务线的决策入口，关键指标一屏扫读" },
+      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "医生管理 · 智能排班日历", note: "业务流驱动的核心页面，排班日历与医生详情联动" }
     ],
 
     metrics: [
@@ -153,10 +153,10 @@ const PROJECTS = [
     capabilityTags: ["B 端复杂系统", "设计系统", "信息架构", "深色模式", "医疗信息化"],
 
     images: [
-      { src: "assets/projects/yilifang/yif-1.jpg", caption: "首页数据总览 · 关键指标看板" },
-      { src: "assets/projects/yilifang/yif-4.jpg", caption: "医生管理流程 · 排班与详情" },
-      { src: "assets/projects/yilifang/yif-5.jpg", caption: "患者管理流程 · 档案与表单" },
-      { src: "assets/projects/yilifang/yif-7.jpg", caption: "深色模式 · 全局视觉适配" }
+      { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板" },
+      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "医生管理流程 · 排班与详情" },
+      { src: "assets/projects/yilifang/yif-3_hd.jpg", caption: "患者管理流程 · 档案与表单" },
+      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "深色模式 · 全局视觉适配" }
     ],
 
     analysis: {
@@ -216,8 +216,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/xiaomeng/xm-1.jpg", caption: "项目总览 · 三大场景首页", note: "一站式入口的首页结构，学习 / 生活 / 社交三大场景并排" },
-      { src: "assets/projects/xiaomeng/xm-2.jpg", caption: "界面细节 · 卡片结构", note: "可扫读卡片的 3 行固定结构 + 右下角固定动作位" }
+      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "项目总览 · 三大场景首页", note: "一站式入口的首页结构，学习 / 生活 / 社交三大场景并排" },
+      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "界面细节 · 卡片结构", note: "可扫读卡片的 3 行固定结构 + 右下角固定动作位" }
     ],
 
     metrics: [
@@ -229,9 +229,9 @@ const PROJECTS = [
     capabilityTags: ["小程序 UI/UX", "C 端信息架构", "卡片化设计", "复盘方法"],
 
     images: [
-      { src: "assets/projects/xiaomeng/xm-1.jpg", caption: "复盘 · 项目总览" },
-      { src: "assets/projects/xiaomeng/xm-2.jpg", caption: "复盘 · 界面细节" },
-      { src: "assets/projects/xiaomeng/xm-3.jpg", caption: "复盘 · 模块拆解" }
+      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 项目总览" },
+      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 界面细节" },
+      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 模块拆解" }
     ]
   },
 
@@ -267,8 +267,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/yibin/yb-1.jpg", caption: "综合展示 · 6 核心指标一屏扫读", note: "总览层，决策者入口，下钻路径标注" },
-      { src: "assets/projects/yibin/yb-2.jpg", caption: "城管运行 · 地图 + 实时事件流", note: "下钻层，场景化图表组合示例" }
+      { src: "assets/projects/yibin/yb-1_hd.jpg", caption: "综合展示 · 6 核心指标一屏扫读", note: "总览层，决策者入口，下钻路径标注" },
+      { src: "assets/projects/yibin/yb-2_hd.jpg", caption: "城管运行 · 地图 + 实时事件流", note: "下钻层，场景化图表组合示例" }
     ],
 
     metrics: [
@@ -280,11 +280,11 @@ const PROJECTS = [
     capabilityTags: ["数据可视化", "智慧城市", "大屏设计", "信息层级", "场景化图表"],
 
     images: [
-      { src: "assets/projects/yibin/yb-1.jpg", caption: "综合展示" },
-      { src: "assets/projects/yibin/yb-2.jpg", caption: "城管运行" },
-      { src: "assets/projects/yibin/yb-4.jpg", caption: "环卫专题" },
-      { src: "assets/projects/yibin/yb-5.jpg", caption: "污水专题" },
-      { src: "assets/projects/yibin/yb-6.jpg", caption: "执法专题" }
+      { src: "assets/projects/yibin/yb-1_hd.jpg", caption: "综合展示" },
+      { src: "assets/projects/yibin/yb-2_hd.jpg", caption: "城管运行" },
+      { src: "assets/projects/yibin/yb-4_hd.jpg", caption: "环卫专题" },
+      { src: "assets/projects/yibin/yb-5_hd.jpg", caption: "污水专题" },
+      { src: "assets/projects/yibin/yb-6_hd.jpg", caption: "执法专题" }
     ]
   },
 
@@ -320,8 +320,8 @@ const PROJECTS = [
     ],
 
     keyPages: [
-      { src: "assets/projects/aigc/ai-1.jpg", caption: "Midjourney · 概念方向 A", note: "情绪板级别，5–8 个方向中的一个" },
-      { src: "assets/projects/aigc/ai-2.jpg", caption: "Stable Diffusion · 概念方向 B", note: "细节微调后，配色与构图已收敛" }
+      { src: "assets/projects/aigc/ai-1_hd.jpg", caption: "Midjourney · 概念方向 A", note: "情绪板级别，5–8 个方向中的一个" },
+      { src: "assets/projects/aigc/ai-2_hd.jpg", caption: "Stable Diffusion · 概念方向 B", note: "细节微调后，配色与构图已收敛" }
     ],
 
     metrics: [
@@ -333,10 +333,10 @@ const PROJECTS = [
     capabilityTags: ["AIGC 设计", "设计方法论", "工作流 SOP", "AI 工具链"],
 
     images: [
-      { src: "assets/projects/aigc/ai-1.jpg", caption: "Midjourney · 概念 A" },
-      { src: "assets/projects/aigc/ai-2.jpg", caption: "Stable Diffusion · 概念 B" },
-      { src: "assets/projects/aigc/ai-3.jpg", caption: "Midjourney · 概念 C" },
-      { src: "assets/projects/aigc/ai-4.jpg", caption: "工作流 · 组合输出" }
+      { src: "assets/projects/aigc/ai-1_hd.jpg", caption: "Midjourney · 概念 A" },
+      { src: "assets/projects/aigc/ai-2_hd.jpg", caption: "Stable Diffusion · 概念 B" },
+      { src: "assets/projects/aigc/ai-3_hd.jpg", caption: "Midjourney · 概念 C" },
+      { src: "assets/projects/aigc/ai-4_hd.jpg", caption: "工作流 · 组合输出" }
     ]
   }
 ];
