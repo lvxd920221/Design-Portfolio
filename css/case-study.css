@@ -1,0 +1,333 @@
+/* ============================================================
+   case-study.html — 1:1 还原 Figma node 15:4763
+   3 列并排多面板长页（CES / AUX / AIUX / COZE 等）
+   设计 token 提取自玄漓模板（浅色 + 深色两套）
+   ============================================================ */
+:root {
+  /* 浅色面板 token */
+  --cs-bg: #ebebeb;
+  --cs-card: #f6f6f6;
+  --cs-ink: #292b36;
+  --cs-ink-strong: #1c1c1c;
+  --cs-gray: #626262;
+  --cs-gray-deep: #4d4d4d;
+  --cs-navy: #2b3151;
+  --cs-main: #353b5b;
+  --cs-line: rgba(41,43,54,.14);
+  --cs-serif: "Alibaba PuHuiTi","Noto Serif SC",serif;
+  --cs-sans: "Alibaba PuHuiTi","Noto Sans SC",-apple-system,sans-serif;
+
+  /* 深色面板 token（AI 赋能 / 团队共创） */
+  --cs-dark-bg: #0e1116;
+  --cs-dark-card: #1a2029;
+  --cs-dark-ink: #eef2f6;
+  --cs-dark-dim: #8b95a3;
+  --cs-dark-accent: #35d0ba;
+  --cs-dark-line: rgba(53,208,186,.25);
+
+  /* 节奏 */
+  --cs-pad-x: 88px;      /* 面板内左右 padding（对应设计稿 99px 画布边距，1400px 面板宽下的视觉等效） */
+  --cs-gap: 32px;        /* 面板间距 */
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cs-bg);
+  color: var(--cs-ink);
+  font-family: var(--cs-sans);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+body { scrollbar-width: none; }
+body::-webkit-scrollbar { width: 0; }
+img { max-width: 100%; display: block; }
+
+/* ===== 顶部 sticky 导航 ===== */
+.cs-nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(235,235,235,.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--cs-line);
+}
+.cs-nav .brand { font-weight: 700; font-size: 18px; letter-spacing: .5px; }
+.cs-nav .brand span { color: var(--cs-main); }
+.cs-nav .links { display: flex; gap: 24px; font-size: 14px; }
+.cs-nav .links a { color: var(--cs-gray-deep); text-decoration: none; transition: color .2s; }
+.cs-nav .links a:hover { color: var(--cs-ink); }
+.cs-nav .links a.back { border: 1px solid var(--cs-line); padding: 6px 14px; border-radius: 999px; }
+
+/* ===== 3 列网格 ===== */
+.cs-grid {
+  display: grid;
+  /* 设计稿为整页宽度单列面板，1920 基准下每个面板占满一行 */
+  grid-template-columns: 1fr;
+  gap: var(--cs-gap);
+  padding: 40px 48px 80px;
+  align-items: start;
+}
+@media (max-width: 900px)  { .cs-grid { padding: 24px 16px; } }
+
+/* ===== 面板通用 ===== */
+.panel {
+  position: relative;
+  background: var(--cs-card);
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(41,43,54,.06);
+}
+.panel.dark {
+  background: var(--cs-dark-bg);
+  color: var(--cs-dark-ink);
+}
+
+/* 面板顶部导航（CES 标签 + 副标题 + 大标题） */
+.panel-head {
+  padding: 40px var(--cs-pad-x) 32px;
+  border-bottom: 1px solid var(--cs-line);
+}
+.panel.dark .panel-head { border-bottom-color: var(--cs-dark-line); }
+.panel-topline {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; letter-spacing: 1.5px; color: var(--cs-gray);
+  margin-bottom: 18px;
+}
+.panel.dark .panel-topline { color: var(--cs-dark-dim); }
+.panel-topline .ces {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--cs-line); border-radius: 4px; padding: 3px 10px;
+  font-weight: 500;
+}
+.panel-topline .kx { font-weight: 500; }
+.panel-topline .badge-active {
+  border: 1px solid var(--cs-main); color: var(--cs-main);
+  border-radius: 4px; padding: 3px 10px; font-weight: 600;
+}
+.panel.dark .panel-topline .badge-active { border-color: var(--cs-dark-accent); color: var(--cs-dark-accent); }
+
+.panel-krow {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--cs-gray-deep); margin-bottom: 14px;
+}
+.panel.dark .panel-krow { color: var(--cs-dark-dim); }
+.panel-krow .k {
+  border: 2px solid var(--cs-ink); border-radius: 999px;
+  padding: 2px 14px; font-weight: 700; font-size: 13px;
+}
+.panel.dark .panel-krow .k { border-color: var(--cs-dark-ink); }
+
+.panel-title {
+  font-family: var(--cs-serif);
+  font-size: 64px; font-weight: 700; line-height: 1.25;
+  color: var(--cs-ink);
+}
+.panel.dark .panel-title { color: var(--cs-dark-ink); }
+.panel-title .em { color: var(--cs-main); }
+.panel.dark .panel-title .em { color: var(--cs-dark-accent); }
+.panel-en {
+  font-size: 13px; letter-spacing: .5px; color: var(--cs-gray);
+  padding: 6px var(--cs-pad-x) 0;
+}
+.panel.dark .panel-en { color: var(--cs-dark-dim); }
+.cs-note {
+  padding: 4px var(--cs-pad-x) 0;
+  font-size: 15px; font-weight: 600; color: var(--cs-ink); letter-spacing: .3px;
+}
+.panel.dark .cs-note { color: var(--cs-dark-accent); }
+.cs-prose {
+  font-size: 15px; line-height: 2.1;
+}
+.panel.dark .cs-prose { color: var(--cs-dark-dim); }
+.panel-sub {
+  font-size: 13px; color: var(--cs-gray); margin-top: 8px;
+}
+.panel.dark .panel-sub { color: var(--cs-dark-dim); }
+
+/* 设计稿精确 token（node 15:4763 逐面板测量） */
+.panel-krow .kx2 { display: inline-flex; align-items: center; gap: 10px; }
+.panel-krow .k2 {
+  border: 2px solid var(--cs-ink); border-radius: 999px;
+  padding: 2px 14px; font-weight: 700; font-size: 13px;
+}
+.panel-krow .k2 .lbl { font-size: 13px; font-weight: 600; color: var(--cs-gray-deep); margin-right: 4px; }
+.panel.dark .panel-krow .k2 .lbl { color: var(--cs-dark-dim); }
+.panel-krow .sub { font-size: 14px; color: var(--cs-gray); }
+.panel.dark .panel-krow .sub { color: var(--cs-dark-dim); }
+
+/* 英文副标题（设计稿 "Reconstruct..." 行） */
+.panel-en {
+  font-size: 12px; letter-spacing: .5px; color: var(--cs-gray);
+  padding: 0 var(--cs-pad-x); margin-top: 4px;
+}
+.panel.dark .panel-en { color: var(--cs-dark-dim); }
+
+/* 小标题胶囊行（设计稿 "用户体验" 36px 黑体 + 手绘括号） */
+.cs-capsule {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px var(--cs-pad-x) 0;
+}
+.cs-capsule img.paren { width: 10px; height: 32px; display: block; }
+.cs-capsule img.paren-r { transform: rotate(180deg); }
+.cs-capsule .cap {
+  font-size: 30px; font-weight: 700; color: var(--cs-ink-strong); letter-spacing: 1px;
+}
+.panel.dark .cs-capsule .cap { color: var(--cs-dark-ink); }
+.cs-capsule .arrow { width: 26px; height: 16px; }
+.cs-capsule .note { font-size: 12px; color: var(--cs-gray); }
+.panel.dark .cs-capsule .note { color: var(--cs-dark-dim); }
+
+/* 小标题行（括号 + 模块名 + 说明，单行不换行） */
+.cs-subline {
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 8px var(--cs-pad-x) 0;
+  flex-wrap: nowrap; overflow: hidden;
+}
+.cs-subline .paren { width: 12px; height: 36px; transform: translateY(4px); flex: none; }
+.cs-subline .cap { font-size: 30px; font-weight: 700; color: var(--cs-ink-strong); letter-spacing: 1px; flex: none; }
+.panel.dark .cs-subline .cap { color: var(--cs-dark-accent); }
+.cs-subline .note { font-size: 15px; color: var(--cs-gray-deep); white-space: nowrap; }
+.panel.dark .cs-subline .note { color: var(--cs-dark-dim); }
+.cs-note {
+  padding: 4px var(--cs-pad-x) 0;
+  font-size: 13px; font-weight: 600; color: var(--cs-ink); letter-spacing: .3px;
+}
+.panel.dark .cs-note { color: var(--cs-dark-accent); }
+
+/* 正文块（设计稿 28px 等比 → 面板宽 1352px 时约 14px） */
+.cs-prose {
+  padding: 12px var(--cs-pad-x) 0;
+  font-size: 13px; line-height: 2; color: var(--cs-gray-deep);
+}
+.panel.dark .cs-prose { color: var(--cs-dark-dim); }
+.cs-prose b { color: var(--cs-ink-strong); }
+.panel.dark .cs-prose b { color: var(--cs-dark-ink); }
+.cs-prose .lead { font-weight: 600; color: var(--cs-ink); }
+.panel.dark .cs-prose .lead { color: var(--cs-dark-ink); }
+
+/* KX 说明块 */
+.panel-kx {
+  padding: 20px var(--cs-pad-x);
+  font-size: 13px; line-height: 1.9; color: var(--cs-gray);
+  border-bottom: 1px dashed var(--cs-line);
+}
+.panel.dark .panel-kx { color: var(--cs-dark-dim); border-bottom-color: var(--cs-dark-line); }
+.panel-kx b { color: var(--cs-ink-strong); font-weight: 700; }
+.panel.dark .panel-kx b { color: var(--cs-dark-ink); }
+.panel-kx .kx-tag {
+  display: inline-block; font-size: 11px; letter-spacing: 1px;
+  color: var(--cs-main); font-weight: 600; margin-right: 6px;
+}
+.panel.dark .panel-kx .kx-tag { color: var(--cs-dark-accent); }
+
+/* 小标题胶囊（手绘括号 + 圆点 + 粗体 + 箭头） */
+.cs-sec {
+  padding: 16px var(--cs-pad-x) 0;
+}
+.cs-sec-title {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.cs-sec-title .paren { width: 8px; height: 26px; display: block; }
+.cs-sec-title .paren-r { transform: rotate(180deg); }
+.cs-sec-title .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cs-ink-strong); flex: none; }
+.panel.dark .cs-sec-title .dot { background: var(--cs-dark-accent); }
+.cs-sec-title h3 {
+  font-size: 18px; font-weight: 700; letter-spacing: .5px; color: var(--cs-ink-strong);
+}
+.panel.dark .cs-sec-title h3 { color: var(--cs-dark-ink); }
+.cs-sec-title .arrow { width: 24px; height: 14px; margin-left: 4px; }
+.cs-sec-body {
+  font-size: 13px; line-height: 1.9; color: var(--cs-gray);
+}
+.panel.dark .cs-sec-body { color: var(--cs-dark-dim); }
+.cs-sec-body b { color: var(--cs-ink-strong); font-weight: 700; }
+.panel.dark .cs-sec-body b { color: var(--cs-dark-ink); }
+
+/* 双图并排（549+607 比例，16:9 裁切） */
+.cs-dual {
+  display: grid; grid-template-columns: 549fr 607fr; gap: 20px;
+  padding: 24px var(--cs-pad-x);
+}
+.cs-dual figure {
+  background: var(--cs-bg); border-radius: 8px; overflow: hidden;
+}
+.cs-dual figure:last-child { box-shadow: -8px 3px 14px rgba(0,0,0,.08); }
+.cs-dual img { width: 100%; aspect-ratio: 549/607; object-fit: cover; display: block; }
+.cs-dual figure.phone { border-radius: 34px; }
+.cs-dual figure.phone img { aspect-ratio: 10/19; }
+.cs-dual figcaption { padding: 10px 14px; font-size: 12px; color: var(--cs-gray-deep); background: #fff; }
+
+/* 手机壳（右侧绝对定位） */
+.cs-phone {
+  position: absolute; right: var(--cs-pad-x); top: 50%;
+  transform: translateY(-50%);
+  width: 220px; height: 440px;
+  border-radius: 34px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(41,43,54,.25);
+  z-index: 2;
+}
+.cs-phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* 指标卡（3 列） */
+.cs-metrics {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  padding: 16px var(--cs-pad-x);
+}
+.cs-metrics .m {
+  background: var(--cs-bg); border-radius: 10px; padding: 16px 14px;
+  text-align: center; min-height: 88px;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+}
+.panel.dark .cs-metrics .m { background: var(--cs-dark-card); }
+.cs-metrics .v { font-size: 26px; font-weight: 700; color: var(--cs-ink); }
+.panel.dark .cs-metrics .v { color: var(--cs-dark-accent); }
+.cs-metrics .l { font-size: 12px; color: var(--cs-gray); }
+.panel.dark .cs-metrics .l { color: var(--cs-dark-dim); }
+.cs-metrics .m { align-items: center; }
+.cs-metrics .v { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.cs-metrics .m .l { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.cs-metrics .m.wide { align-items: center; }
+.cs-metrics .m.wide .v { white-space: normal; line-height: 1.3; font-size: 18px; }
+
+/* 面板底部 */
+.panel-foot {
+  padding: 18px var(--cs-pad-x);
+  border-top: 1px solid var(--cs-line);
+  font-size: 11px; color: var(--cs-gray);
+  display: flex; justify-content: space-between; letter-spacing: .5px;
+}
+.panel.dark .panel-foot { border-top-color: var(--cs-dark-line); color: var(--cs-dark-dim); }
+
+/* 横幅大字（面板间分隔） */
+.cs-banner {
+  grid-column: 1 / -1;
+  background: var(--cs-ink);
+  color: #fff;
+  border-radius: 20px;
+  padding: 48px var(--cs-pad-x);
+  display: flex; align-items: center; gap: 32px;
+  overflow: hidden;
+}
+.cs-banner .big {
+  font-family: var(--cs-serif);
+  font-size: 72px; font-weight: 700; letter-spacing: 2px;
+  line-height: 1;
+}
+.cs-banner .desc { font-size: 14px; color: rgba(255,255,255,.7); max-width: 400px; }
+.cs-banner .icon { width: 80px; height: 80px; flex: none; }
+
+/* 浅色面板：留白区 */
+.cs-spacer { height: 32px; }
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+  .panel-title { font-size: 24px; }
+  .cs-dual { grid-template-columns: 1fr; }
+  .cs-metrics { grid-template-columns: 1fr 1fr; }
+  .cs-phone { display: none; }
+  .cs-banner .big { font-size: 48px; }
+  .panel-en { font-size: 11px; }
+  .cs-note { font-size: 13px; }
+  .cs-prose { font-size: 13px; }
+}
+}
