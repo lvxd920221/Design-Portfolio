@@ -424,8 +424,6 @@ function openCase(i) {
     </div>` : "";
 
   sheet.innerHTML = `
-    <button class="modal-close" id="modalClose" aria-label="关闭案例">✕</button>
-
     <!-- 区块 1：封面（模板「标题-黑」结构：KR 胶囊 + 副标题 + 大标题 + 右上角 badge） -->
     <div class="case-cover">
       ${p.badge ? `<div class="case-badge">
@@ -503,7 +501,7 @@ function openCase(i) {
 
   modal.classList.add("open");
   document.body.style.overflow = "hidden";
-  sheet.querySelector("#modalClose").addEventListener("click", closeCase);
+  document.getElementById("modalClose").addEventListener("click", closeCase);
   // 关键页面可点击开灯箱
   sheet.querySelectorAll(".keypage img").forEach(img => {
     img.addEventListener("click", () => {
