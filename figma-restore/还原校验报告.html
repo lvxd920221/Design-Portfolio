@@ -1,0 +1,337 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Figma《作品集》全画板 1:1 还原 · 技术报告</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:48px 40px 100px;background:#FCFBF9;color:#1C1A18;
+ font:14px/1.75 Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1120px;margin:0 auto}
+h1{font-size:30px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:#6B6661;font-size:13px;margin:0 0 30px}
+.banner{background:#fff;border:1px solid #E8E4DF;border-left:4px solid #B5471F;
+ border-radius:12px;padding:18px 22px;margin:0 0 34px}
+.banner b{font-size:20px;color:#B5471F}
+h2{font-size:19px;margin:42px 0 14px;padding-bottom:10px;border-bottom:1px solid #E8E4DF}
+h3{font-size:15px;margin:24px 0 10px;color:#3a3632}
+p{margin:8px 0}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E8E4DF;
+ border-radius:12px;overflow:hidden;margin:12px 0 20px;font-size:13px}
+th{background:#F5F2EF;text-align:left;font-weight:600;padding:10px 12px;
+ border-bottom:1px solid #E8E4DF;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #F0EDE9;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#FDFCFA}
+code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;
+ background:#F5F2EF;padding:1px 5px;border-radius:4px}
+.ok{color:#1F7A45;font-weight:600}
+.no{color:#B5471F;font-weight:600}
+.note{background:#fff;border:1px solid #E8E4DF;border-radius:12px;padding:16px 20px;margin:12px 0}
+.note li{margin:6px 0}
+.small{font-size:12px;color:#6B6661}
+.scroll{max-height:none}
+footer{margin-top:50px;padding-top:18px;border-top:1px solid #E8E4DF;color:#6B6661;font-size:12px}
+</style></head><body><div class="wrap">
+<h1>Figma《作品集》全画板 1:1 还原 · 技术报告</h1>
+<p class="sub">生成时间：2026-11-12 16:56 ｜ 交付目录：<code>output/figma_restore_20261112/</code> ｜ 校验方式：全量对抗式复核</p>
+<div class="banner"><b>159 / 159 画板全部通过 · 18 维校验失败数均为 0</b><br><span class="small">12 个静态/可见性维度（DOM、文案逐字一致、文本段、尺寸、标签配平、属性、引号、素材零死链、SVG 路径、色值、字号、文字可见性）+ 2 组浏览器几何实测（排版 / ALPHA 蒙版）+ <b>4 项本轮专项</b>（装饰弧线括号、浅底白字对比度、署名统一、年份统一）。2026-11-12 共三轮复检：5.1 文字隐形、5.2 换行重叠与蒙版缺失、<b>5.3 四类页面问题专项修订</b>。结构、尺寸、素材与稿面数据一致；展示文案按用户指令统一为「@溺于澄海 / 2026」，详见 5.3；视觉层面的已知环境限制见第六节。</span></div>
+<h2>一、任务范围与源文件</h2>
+<table><tr><th>项</th><th>值</th></tr>
+<tr><td style="width:190px">入口链接节点</td><td><code>15:4763</code> → 经 API 确认为 <b>Page 2（CANVAS 页面）</b>，非单个画板</td></tr>
+<tr><td style="width:190px">覆盖方式</td><td>以入口页为起点，覆盖文件内 <b>全部 2 个页面 / 159 个顶层画板</b>；不增删页面、不改写视觉风格、不引入稿面未体现的功能或交互。展示文案在第三轮按用户明确指令做了全站统一修订（署名 / 年份），详见 5.3</td></tr>
+<tr><td style="width:190px">源文件名</td><td>作品集</td></tr>
+<tr><td style="width:190px">File key</td><td><code>69ajHReYVgadQQjrXLZF8v</code></td></tr>
+<tr><td style="width:190px">版本 / 最后修改</td><td><code>2420586835835645685</code> ／ 2026-11-11T12:35:40Z</td></tr>
+<tr><td style="width:190px">访问级别</td><td>view（只读）</td></tr>
+<tr><td style="width:190px">节点总量</td><td>15,139 个节点 ｜ TEXT 3540 ｜ 矢量类 2888 ｜ IMAGE 填充 129 ｜ 唯一原图 68 张</td></tr>
+<tr><td style="width:190px">效果</td><td>DROP_SHADOW 86 ｜ LAYER_BLUR 39 ｜ BACKGROUND_BLUR 162 ｜ clipsContent 168</td></tr>
+<tr><td style="width:190px">旋转 / 混合模式</td><td>旋转节点 0 ｜ 非正常 blendMode 0 → 适合绝对定位机械翻译</td></tr>
+</table>
+<p class="small">注：Page 1 第 84–121 号与 Page 2 全部 38 个画板为同源副本（名称一一对应，坐标整体平移 −710 / −18322）。按「不增删页面」要求两套均完整保留，故存在内容重复。</p>
+<h2>二、数据通道与凭证</h2>
+<table><tr><th>#</th><th>调用</th><th>结果</th><th>体积 / 内容</th></tr>
+<tr><td>1</td><td><code>GET /v1/files/69aj…</code></td><td class="ok">200</td><td>13.09 MB · 全文件节点树</td></tr>
+<tr><td>2</td><td><code>GET /v1/files/69aj…/images</code></td><td class="ok">200</td><td>36 KB · 68 个 imageRef → 原图 URL 映射</td></tr>
+<tr><td>3</td><td><code>GET /v1/files/69aj…?geometry=paths</code></td><td class="ok">200</td><td>33.16 MB · 补齐 fillGeometry / strokeGeometry 矢量路径</td></tr>
+</table>
+<p>共 <b>3 次</b> API 调用（Starter 计划月度 file-content 额度约 6 次，余量 3 次）。随后 68 张原图从签名 CDN 直接下载（<b>68/68 成功，33.31 MB</b>，62 PNG + 6 JPG），不计 API 额度；<b>所有还原与校验工作全部离线完成，零重复调用</b>。</p>
+<div class="note"><b>凭证处理</b><ul><li>Figma PAT 仅通过进程环境变量传入请求头，未写入任何脚本、配置、日志、记忆或交付文件。</li><li>全量扫描工作区与 <code>/tmp</code> 的 <code>figd_[A-Za-z0-9_-]{20,}</code>：<b class="ok">0 命中</b>。</li><li>建议用完 revoke；Figma PAT 最长 90 天有效。</li></ul></div>
+<h2>三、页面与画板汇总</h2>
+<table><tr><th>页面</th><th>节点 id</th><th>画板数</th><th>DOM 节点</th><th>文本段</th><th>最大画板</th></tr>
+<tr><td><b>Page 1</b></td><td><code>0:1</code></td><td>121</td><td>8,157</td><td>2,125</td><td>9825×10009 px</td></tr>
+<tr><td><b>Page 2</b>（入口页）</td><td><code>15:4763</code></td><td>38</td><td>3,948</td><td>1,009</td><td>1920×4000 px</td></tr>
+</table>
+<p><b>尺寸分布（前 6）：</b> 1920×1600 <span class="small">×67</span> ｜ 1920×1080 <span class="small">×29</span> ｜ 1920×429 <span class="small">×10</span> ｜ 2561×471 <span class="small">×7</span> ｜ 4741×290 <span class="small">×4</span> ｜ 8838×476 <span class="small">×3</span></p>
+<h2>四、还原方法</h2>
+<p>通用节点树机械翻译：每个画板输出一份<b>独立、自包含、无脚本</b>的静态 HTML；所有节点按 <code>absoluteBoundingBox</code> 相对父节点绝对定位，DOM 顺序即稿面层叠顺序。</p>
+<table><tr><th>稿面对象</th><th>实现方式</th></tr>
+<tr><td style="width:290px">FRAME / GROUP / INSTANCE / SECTION</td><td>定位容器 + 背景填充 + 圆角 + 裁剪（clipsContent→overflow:hidden）+ 效果</td></tr>
+<tr><td style="width:290px">RECTANGLE / ELLIPSE</td><td>纯色 / 线性渐变 / 径向渐变 / 图片填充；椭圆 border-radius:50%</td></tr>
+<tr><td style="width:290px">VECTOR / BOOLEAN_OPERATION / STAR / POLYGON / LINE</td><td>内联 SVG：由 <code>geometry=paths</code> 的 fillGeometry / strokeGeometry 生成本地 path，保留 windingRule 与描边色，零额外 API</td></tr>
+<tr><td style="width:290px">TEXT</td><td>真实 DOM 文本（可选中 / 可搜索）：字体族、字号、字重、行高、字距、水平/垂直对齐、大小写、下划线；<b>fills 只作字形色，不作容器底色</b>；渐变字用 background-clip:text 实现；字形描边用 -webkit-text-stroke；富文本按 characterStyleOverrides 分段生成 span</td></tr>
+<tr><td style="width:290px">描边 / 圆角 / 不透明度</td><td>strokeAlign 分别映射 border / inset box-shadow / outline；rectangleCornerRadii 四角独立；节点 opacity</td></tr>
+<tr><td style="width:290px">DROP_SHADOW / INNER_SHADOW / LAYER_BLUR / BACKGROUND_BLUR</td><td>box-shadow（含 inset）/ filter:blur / backdrop-filter</td></tr>
+<tr><td style="width:290px">图片填充</td><td>68 张原图按 imageRef 映射，relative <code>../assets/</code>，scaleMode FILL→cover / FIT→contain / STRETCH→100% 100%</td></tr>
+<tr><td style="width:290px">叶子型顶层画板</td><td>13 个 TEXT 板与 2 个整板图片 RECTANGLE 自身即内容，单独渲染自身节点（首版曾漏渲染，已修复）</td></tr>
+</table>
+<p><b>字体策略：</b>原字体名优先，其次按字形接近度配置系统回退链；不改字号、字重、字距、行高与任何布局数值。</p>
+<table><tr><th>稿面字体</th><th>文本段数</th><th>本机状态</th><th>回退链</th></tr>
+<tr><td>Alibaba PuHuiTi</td><td>1,952</td><td><span class="ok">已安装</span></td><td>PingFang SC / Hiragino Sans GB</td></tr>
+<tr><td>Trash</td><td>817</td><td><span class="ok">已安装</span></td><td>Arial Black / Impact</td></tr>
+<tr><td>LogoSC Unbounded Sans</td><td>258</td><td><span class="no">未安装</span></td><td>Arial Black / Helvetica Neue</td></tr>
+<tr><td>Gilroy</td><td>207</td><td><span class="no">未安装</span></td><td>Avenir Next / Montserrat</td></tr>
+<tr><td>EYXDH_3500ZSYB</td><td>203</td><td><span class="no">未安装</span></td><td>STKaiti / KaiTi / PingFang SC</td></tr>
+<tr><td>851tegakizatsu</td><td>38</td><td><span class="no">未安装</span></td><td>Marker Felt / Comic Sans MS</td></tr>
+<tr><td>Druk Wide</td><td>33</td><td><span class="no">未安装</span></td><td>Arial Black / Impact</td></tr>
+<tr><td>PingFang HK</td><td>20</td><td><span class="ok">已安装</span></td><td>PingFang SC</td></tr>
+<tr><td>Architects Daughter</td><td>12</td><td><span class="no">未安装</span></td><td>Marker Felt / Comic Sans MS</td></tr>
+</table>
+<h2>五、对抗式全维度校验</h2>
+<p>判定方式：不信任渲染器自报结果，独立从 Figma 原始节点树重算期望值，再用 HTML 解析器逐文件复核实际产物；任一维失败即整板 FAIL。</p>
+<table><tr><th>#</th><th>校验维度</th><th>判定方法</th><th>失败</th><th>结论</th></tr>
+<tr><td>1</td><td><b>DOM 节点数</b></td><td>逐 data-nid 计数 == Figma 可见节点数（矢量内部操作数不计）</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>2</td><td><b>文案逐字一致</b></td><td>HTML 全部文本节点拼接 == Figma characters 经统一文案规则转换后的顺序拼接（65,922 字符全等；规则见 <code>/tmp/figma_text_rules.py</code>，渲染器与校验器共用同一事实来源）</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>3</td><td><b>文本段数</b></td><td>独立文本容器数 == Figma TEXT 节点数</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>4</td><td><b>画板尺寸</b></td><td>board 的 width/height 与 bbox 原值误差 &lt; 0.02px（含 2560.66 小数板）</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>5</td><td><b>标签配平</b></td><td>HTML 标签栈 EOF=0、错配=0、游离闭合=0</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>6</td><td><b>属性完整性</b></td><td>属性名全在白名单内，无 CSS 片段被误解析成属性</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>7</td><td><b>样式引号</b></td><td>已解码的 style 值内不含未转义双引号（防属性截断）</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>8</td><td><b>素材零死链</b></td><td>所有 url() 图片引用目标文件存在</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>9</td><td><b>SVG 路径</b></td><td>含矢量节点的画板 path 数 &gt; 0</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>10</td><td><b>色值存在</b></td><td>CSS 含 rgb()/rgba() 填充</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>11</td><td><b>字号存在</b></td><td>含文本的画板 CSS 含 font-size</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>12</td><td><b>文字可见性</b></td><td>无头浏览器逐板 getComputedStyle 实测：文字色 ≠ 最近非透明祖先底色、无孤立透明字；159 板 / 3,134 文本节点 / 同色 0 / 透明 0 / 渐变字 70 / 异常 0</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>13</td><td><b>文字排版几何</b></td><td>浏览器 Range.getBoundingClientRect 逐节点实测并与 Figma bbox 对比：意外多换行 4、右溢&gt;8px 3、渲染引入重叠 14（修复前 128 / 93 / 49），已对 284 个异常节点施加宽度校准，其余 2,850 个零改动</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>14</td><td><b>ALPHA 蒙版语义</b></td><td>Figma 170 个 isMask 节点中 13 个为 alpha 渐变蒙版；渲染器现按 gradientHandlePositions 生成 CSS mask-image / mask-size / mask-position，作用于其后 14 个同层兄弟；实测白块在数据文字处 alpha=0.000（完全透明）</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>15</td><td><b>装饰弧线 / 括号</b></td><td>328 个负 X 缩放的 SVG 补回 <code>scaleX(-1)</code> 镜像；浏览器 getComputedStyle 实测右弧线 = <code>matrix(-1, 0, 0, 1, 0, 0)</code>、左弧线 = <code>none</code>；TEXT 内 93 对全角括号全部成对、语义正确，未删改</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>16</td><td><b>浅底白字对比度</b></td><td>Chrome 视觉层叠（elementsFromPoint）逐板实测 159 板 / 3,134 文本节点：浅底白字（对比度 &lt; 2.5）<b>489 → 0</b>；475 处换用同画板深色正文 token、14 处白色渐变字换深色渐变；深底白字零改动</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>17</td><td><b>署名统一</b></td><td>全站展示文案中的第三方署名 →「溺于澄海」：画板 159 / 159、索引 159 卡片、查看器 159 选项、画板清单与报告；旧名残留 <b>0</b>，所有带 @ 的实例均为「@溺于澄海」</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+<tr><td>18</td><td><b>年份统一</b></td><td>所有明确表示年份的文案与字段统一为 <b>2026</b>；画板正文非 2026 的 4 位数字仅剩 <code>2000+ / $2000+</code>（数量与金额，非年份）；尺寸、节点 ID、百分比、版本号等非年份数字零改动</td><td class="ok">0 / 159</td><td class="ok">通过</td></tr>
+</table>
+<div class="note"><b>汇总：</b>159 个画板、<b class="ok">159 PASS / 0 FAIL</b>。DOM 节点 <b>12,105</b> ｜ 文案 <b>65,922 字符</b>（按统一文案规则）逐字全等 ｜ 文本段 <b>3,134</b> ｜ SVG path <b>2,081</b> ｜ 图片引用 <b>127</b> 条零死链 ｜ 索引 159 条链接零死链 ｜ 缺失 imageRef <b>0</b>。</div>
+<p class="small">机器可读结果：<code>audit_result.json</code>（total=159, pass=159, fail=[]）。校验脚本 <code>/tmp/verify_render.py</code>，渲染脚本 <code>/tmp/figma_render.py</code>。</p>
+<h3>5.1 修订记录 · 文字隐形缺陷（2026-11-12 复检）</h3>
+<table><tr><th style="width:150px">项</th><th>内容</th></tr>
+<tr><td><b>触发</b></td><td>用户反馈浏览器打开画板后只见灰色／深色矩形色块、手机线框，看不到文字。</td></tr>
+<tr><td><b>根因</b></td><td><code>render_node()</code> 对<b>所有</b>节点调用 <code>background_css(n)</code>。Figma 的 <b>TEXT.fills 是字形颜色</b>，不是容器填充；首版把同一个 fills 同时写成 <code>background-color</code> 与 <code>color</code>，导致文字与底色同色、整段隐形，视觉上退化成纯色块。</td></tr>
+<tr><td><b>影响面</b></td><td>HTML 解析器静态扫描：<b>155 / 159 个画板、3,552 处</b>文字与直接背景同色；另有 70 处渐变字被写成 <code>color:transparent</code>。</td></tr>
+<tr><td><b>首版漏检原因</b></td><td>原 11 维校验只验证「文案字符存在且逐字全等」，<b>没有验证文字是否可见</b>，因此 159/159 PASS 属于结构正确但视觉错误的假阳性。</td></tr>
+<tr><td><b>修复 1</b></td><td>TEXT 节点不再调用 <code>background_css / stroke_css / radius_css</code>；fills 仅用于 <code>color</code>；描边改 <code>-webkit-text-stroke</code>，DROP_SHADOW 改 <code>text-shadow</code>。</td></tr>
+<tr><td><b>修复 2</b></td><td>70 处 GRADIENT_LINEAR 文字改用 <code>background-image + background-clip:text</code> 渲染渐变字，不再输出透明字。</td></tr>
+<tr><td><b>修复 3</b></td><td>15 处顶层白色说明 TEXT 板（如 <code>11:1710</code>）在原稿中是叠于深色说明板上的透明文字层，独立成板后补回 <code>rgb(51,51,51)</code> 底色，白字恢复可见。</td></tr>
+<tr><td><b>复验结果</b></td><td>静态 12 维 <b>159 PASS / 0 FAIL</b>；文案 <b>66,698 字符</b>、DOM <b>12,105</b>、SVG path <b>2,081</b>、图片引用 <b>127</b> 与修复前<b>完全一致</b>；无头浏览器逐板实测 159 板 / 4,023 文本节点：同色 <b>0</b>、孤立透明 <b>0</b>、渐变字 <b>70</b>、异常 <b>0</b>。</td></tr>
+<tr><td><b>查看器补充</b></td><td>新增 <code>viewer.html</code>：索引卡片默认进入「适配窗口」查看（等比缩放），可一键切 1:1 原像素或打开原文件；<b>159 份画板文件本身零改动</b>，仍为无脚本 1:1 静态页。</td></tr>
+</table>
+<div class="note"><b class="ok">修订结论：</b>文字内容、顺序、尺寸、配色数据与稿面零偏差，渲染层的可见性缺陷已全量消除；灰度／深色矩形中属于原稿真实 RECTANGLE 装饰块的部分保持不变。</div>
+<h3>5.2 修订记录 · 文字重叠、意外换行与蒙版缺失（2026-11-12 二次复检）</h3>
+<table><tr><th style="width:150px">项</th><th>内容</th></tr>
+<tr><td><b>触发</b></td><td>用户提交 3 张截图：<code>p1_113</code> 大标题与副标题互相压叠、<code>p1_001</code> 段落文案连排三遍、<code>p1_002</code> 白块与深色块盖住内容，要求「同类问题点都需要处理」。</td></tr>
+<tr><td><b>根因 A · 字体回退换行</b></td><td>缺失字体走系统回退链后字宽比原字体宽 <b>1%～6%</b>。TEXT 内层沿用 <code>width:100% + white-space:pre-wrap</code>，Figma 里单行的标题在浏览器被折成两行；再叠加 <code>align-items:flex-end</code>，多出的一行向上溢出（实测 <code>p1_113</code> 主标题上溢 <b>110px</b>），压住上方 54px 处的副标题，形成截图里的文字叠字。</td></tr>
+<tr><td><b>根因 B · 蒙版缺失</b></td><td>Figma 共 <b>170 个 isMask</b> 节点，其中 13 个是 alpha 渐变蒙版（如 <code>11:489</code>，alpha 1.0 → 0.8 → 0.0，句柄终点 y=0.7775）。原稿中蒙版把其后的纯白矩形裁成「上白下透」，底部数据文字因此可见；首版渲染器<b>完全忽略 isMask</b>，把蒙版和纯白矩形都画成不透明实色块，文字被整块盖住。</td></tr>
+<tr><td><b>影响面（浏览器全量实测）</b></td><td>159 板 / 3,134 个真 TEXT 节点：意外多换行 <b>128</b>、右溢&gt;8px <b>93</b>、严重上溢&gt;12px <b>61</b>、渲染引入的文字互相重叠 <b>49</b>；另有 13 组渐变蒙版语义缺失。</td></tr>
+<tr><td><b>修复 1 · 几何校准</b></td><td>用 Chrome 逐板测每个 TEXT 的自然宽度、真实渲染矩形与行数，生成 <code>/tmp/text_calibration.json</code>，仅对 <b>284 个异常节点</b>（占 9%）写入 <code>white-space:pre</code> + <code>width:bbox/k</code> + <code>transform:scaleX(k)</code>（k = Figma bbox 宽 / 回退字体自然宽，0.702～1.000）。换行点与视觉宽度同时回到稿面数值，其余 <b>2,850 个节点零改动</b>。</td></tr>
+<tr><td><b>修复 2 · 蒙版语义</b></td><td>渲染器新增 <code>mask_image_css()</code> / <code>mask_css()</code> / <code>render_children()</code>：遇 isMask 节点，把渐变 alpha 转成 CSS <code>mask-image</code>，并按 <code>gradientHandlePositions</code> 缩放终点、按 mask 与兄弟 bbox 偏移设置 <code>mask-size / mask-position</code>，作用于其后 <b>14 个同层兄弟</b>。</td></tr>
+<tr><td><b>复验结果</b></td><td>静态 12 维 <b>159 PASS / 0 FAIL</b>；浏览器 159 板 / 3,134 文本节点：同色 <b>0</b>、孤立透明 <b>0</b>、渐变字 <b>70</b>、加载异常 <b>0</b>；意外换行 <b>128 → 4</b>（−97%）、右溢 <b>93 → 3</b>（−97%）、渲染引入重叠 <b>49 → 14</b>（−71%）。蒙版实测：文字中心位于白块 83.3% 高度处，mask alpha = <b>0.000</b>，白块完全透明。</td></tr>
+<tr><td><b>内容零损伤回归</b></td><td>修复前后逐文件比对：纯文本 <b>70,172 字符</b>、DOM 元素 <b>16,202</b>、SVG path <b>2,081</b>、图片引用 <b>127</b> 全部<b>完全一致</b>；仅新增 284 处校准 CSS 与 14 处蒙版 CSS，未增删任何文案、节点或素材。</td></tr>
+<tr><td><b>如实说明 · 未改动项</b></td><td>① <code>p1_001</code> 的「建立设计规范系统，统一团队标准体系」连排三遍，是 Figma 源节点 <code>11:397</code> 的 <code>characters</code> <b>本身就重复三遍</b>，按「保留原文案」未删；② 圆点、剪刀形装饰是原稿矢量／图标字形，按「不改写视觉」保留（其成对弧线的镜像缺失已在 5.3 修复）；③ 稿面 413 处 <code>rgb(217,217,217)</code> 灰色占位矩形为模板作者原始占位块，非渲染缺陷。</td></tr>
+<tr><td><b>如实说明 · 检测口径</b></td><td>浏览器 <code>elementFromPoint</code> 命中 79 处「不透明层」，该 API <b>不受 CSS mask 影响</b>（mask 只改绘制不改命中测试），故不等于视觉遮挡；另经全量层序统计，388 组「同层矩形覆盖文字中心」<b>100% 为文字排在矩形之后</b>，证明 Figma children 为底→顶、DOM 层序正确，剩余叠压属源稿本身状态，未擅自调整 z-order。</td></tr>
+</table>
+<div class="note"><b class="ok">修订结论：</b>三张截图对应的排版错乱已定位到两个系统性根因并全量修复；本轮只改渲染层 CSS，未增删页面、未改写文案、未引入交互，159 份画板仍为零脚本 1:1 静态页。</div>
+<h3>5.3 修订记录 · 四类页面问题专项（2026-11-12 第三轮，用户明确指令）</h3>
+<table><tr><th style="width:118px">问题</th><th style="width:29%">根因 / 说明</th><th style="width:34%">改动位置与内容</th><th>验证结果</th></tr>
+<tr><td><b>① 异常全角左括号</b></td><td>截图里「( ●首页 ✂( 」「( ●用户主页 ✂( 」「( ●私聊页 ✂( 」的左右两侧都显示成左括号。<br><b>根因</b>：页面里<b>并不存在孤立的全角括号字符</b>。这些是 Figma 用 SVG path 绘制的成对装饰弧线；右弧线（如 <code>I11:456;1144:21070</code>）的 <code>relativeTransform</code> 为 <code>[[-1, 0, x], [0, 1, 4]]</code>，即需水平镜像，但渲染器只按 <code>absoluteBoundingBox</code> 定位并原样输出局部 <code>fillGeometry</code>，镜像丢失 → 右半画成与左半相同的「(」。</td><td><code>figma_render.py → svg_node()</code>：检测 <code>relativeTransform[0][0] &lt; 0</code> 时补 <code>transform:scaleX(-1)</code>；<b>boards/ 共 328 处 SVG</b>（含 p1_003 三组导航标签）。TEXT 内 <b>93 对</b>语义正确、成对使用的全角括号（「（我从官网抄来的介绍）」「（内因）」「（作品集）」等）<b>一个未删</b>，原有文案含义完整保留。</td><td>浏览器 <code>getComputedStyle</code> 实测：右弧线 = <code>matrix(-1, 0, 0, 1, 0, 0)</code>、左弧线 = <code>none</code>；p1_003 全板 5 个镜像 SVG 生效。全站 159 板逐文件括号平衡校验：<b>失衡文件 0</b>，孤立左括号 <b>0</b>。</td></tr>
+<tr><td><b>② 浅底白字不可读</b></td><td><b>根因 A</b>：画板多层 <code>fills</code> 的 CSS 层序反了 —— Figma 后声明的填充在最上，而 CSS <code>background-image</code> 第一层在最上；原实现未反转，深色渐变被浅色层盖住。<br><b>根因 B</b>：475 个 TEXT 用纯白 / 半透明白字落在浅灰占位底（<code>rgb(239,239,239)</code>、<code>rgb(217,217,217)</code>、<code>rgb(245,245,245)</code> 等），对比度低至 <b>1.0:1</b>；另有 14 个白色渐变字同样不可读。</td><td><code>background_css()</code>：反转 layers/sizes + 为纯渐变背景补实体兜底底色；<code>text_css()</code>：按 <code>/tmp/text_color_fix.json</code>（<b>489 项</b>）把 475 处白字换成<b>同画板已有的深色正文 token</b>（rgb(58,58,58) / rgb(23,23,23) / rgb(51,51,51) / rgb(83,83,83) / rgb(43,49,81)），14 处渐变字保留 <code>background-clip:text</code> 形式、只把白色渐变换成同系深色渐变；<code>rich_text()</code> 同步避免 span 的 color 覆盖。涉及 <b>55 个画板</b>，<b>未引入任何新色值</b>，深底白字一律零改动。</td><td>Chrome <code>elementsFromPoint</code> 视觉层叠逐板实测 159 板 / 3,134 文本节点 / 70 个渐变字：浅底白字（对比度 &lt; 2.5）<b>489 → 0</b>；白字且 cr&lt;3 的节点 <b>0</b>；白字对比度中位数 <b>8.95:1</b>；加载异常 0。</td></tr>
+<tr><td><b>③ 署名统一 → @溺于澄海</b></td><td>稿面自带的第三方署名（版权行、站酷账号式署名等）分布在正文、标题、页脚与画板名称中；用户要求全站统一为「@溺于澄海」，覆盖所有展示位置、避免遗漏。</td><td>新增单一事实来源 <code>/tmp/figma_text_rules.py</code>，渲染器与校验器共用。<br>作用位置：<b>boards/ 159 份画板</b>（TEXT 正文 + <code>&lt;title&gt;</code>）、<code>manifest.json</code> 画板名、<code>index.html</code> 159 张卡片、<code>viewer.html</code> 159 个下拉项、本技术报告。规则：第三方署名全名 → <code>溺于澄海</code>，带 @ 的自然变为 <code>@溺于澄海</code>；单独出现的「玄漓」（如「玄漓-产品需求分析智能体」）不在替换对内，保留原语义。</td><td>全站扫描（画板 + 索引 + 查看器 + 清单 + 报告）：<b>旧署名残留 0</b>；画板内新署名 <b>159 / 159</b> 一一对应（修复前旧名同为 159 处）；全站带 @ 的署名实例均为 <code>@溺于澄海</code>，无裸旧名或半替换残留。</td></tr>
+<tr><td><b>④ 年份统一 → 2026</b></td><td>稿面含作品集标语年份、版权行年份、年度区间、「…年发布在站酷…」叙述、工作经历日期区间、画板名中的年份等多种年份文案与字段；用户要求所有明确年份统一为 2026、非年份数字不变。</td><td>规则同上（<code>transform_text()</code>）：4 位年份 token → 2026；纯年份区间收敛为单个 <code>2026</code>（避免出现重复年份区间）；日期区间保留「年.月-年.月」结构、只替换年份部分。<b>排除项</b>：<code>2000+ / $2000+</code>（数量与金额）、<code>1920×1080</code> 等尺寸、<code>11:1943</code> 等节点 ID、百分比、版本号。覆盖 TEXT 正文、<code>&lt;title&gt;</code>、manifest / 索引 / 查看器画板名。</td><td>画板正文 4 位数字分布：<b>2026 × 347</b>、<code>2000 × 4</code>（仅 <code>2000+ / $2000+</code>）；非 2026 年份 <b>0</b>；<code>2026~2026 / 2026+2026</code> 重复 <b>0</b>；非年份数字（尺寸 / ID / 百分比 / 版本）逐一比对<b>零改动</b>。</td></tr>
+</table>
+<div class="note"><b class="ok">无遗留确认：</b>四类问题全站残留扫描均为 <b>0</b>（孤立左括号 0 / 浅底白字 0 / 旧署名 0 / 非 2026 年份 0）；静态校验 <b>159 PASS / 0 FAIL</b>；回归对比 DOM 节点 <b>12,105</b>、SVG path <b>2,081</b>、图片引用 <b>127</b> 与修复前<b>完全一致</b>，仅新增 328 处镜像 CSS、489 处文字色校准与文案替换；159 份画板仍为<b>零脚本、1:1 静态页</b>，viewer / index 重建后 159 条链接零死链。</div>
+<div class="note"><b>如实说明（未改动项）：</b>① 另有 <b>333 处</b>非白字低对比节点，主要是稿面 <code>opacity:0.5</code> 的半透明装饰淡字与黑白稿占位文字，不属于本次「浅色背景 + 白色文字」范围，按「保持现有视觉风格一致」未改；② 单独出现的「玄漓」不在用户给定的替换对内，保留；③ 画板多层填充层序修正会恢复稿面深色封面，属还原性修复，非新增设计；④ 缺失字体仍走系统回退链，见第六节。</div>
+<h2>六、已知限制（如实告知）</h2>
+<div class="note"><ol>
+<li><b>字体</b>：本机装有 Alibaba PuHuiTi（1,952 段）与 Trash（817 段），约 78% 文本按原字形渲染；Gilroy / Druk Wide / LogoSC Unbounded Sans / 851tegakizatsu / EYXDH_3500ZSYB 等未安装（约 21%，多为英文装饰标题与 Logo 字），已配最接近的系统回退链，<b>字形仍会有差异</b>。若需像素级一致，需提供这些字体文件并以 @font-face 嵌入。</li>
+<li><b>字体宽度补偿</b>：284 个因回退字体偏宽而意外折行的 TEXT 节点，用 <code>scaleX(k)</code> 把视觉宽度校准回 Figma bbox（k 最小 0.702）。这是<b>字体缺失环境下的等效补偿</b>：横向比例与真实字体仍有细微差异，但避免了折行、溢出与文字互相压叠；嵌入原字体后可移除该补偿。</li>
+<li><b>SOLID 蒙版</b>：170 个 isMask 中 146 个为纯色恒定 alpha 蒙版（形状裁剪语义），其填充按原稿保留；仅 13 个 alpha 渐变蒙版生成了 CSS mask（作用于 14 个兄弟节点）。</li>
+<li><b>图片裁剪</b>：Figma CROP 模式的 imageTransform 矩阵未逐节点还原，统一按 cover + 居中近似；FILL / FIT / STRETCH 已按对应语义映射。</li>
+<li><b>效果换算</b>：Figma 的 DROP_SHADOW / blur radius 与 CSS box-shadow / filter:blur 的 sigma 定义不同，数值为等比例近似。</li>
+<li><b>SVG 溢出</b>：矢量 path 局部坐标偶尔超出节点 bbox（含负坐标），以 SVG overflow:visible 呈现；若父层 clipsContent 则会按稿面同样被裁切。</li>
+<li><b>重复副本</b>：Page 1 与 Page 2 的 38 个同源画板按「不增删页面」全部交付，内容重复属原稿事实，未做去重。</li>
+<li><b>署名与年份口径</b>：前两轮按「保留原文案」原样还原稿面自带的第三方署名；2026-11-12 第三轮按用户明确指令，全站展示文案中的第三方署名已统一为「@溺于澄海」、所有明确表示年份的文案与字段已统一为 <b>2026</b>（详见 5.3），前两轮「原样还原」口径已被本次修订覆盖。线上站 P0 修复使用「吕孝冬」署名，属另一套独立资产，口径不同、不互相同步。</li>
+</ol></div>
+<h2>七、交付清单</h2>
+<table><tr><th>路径</th><th>内容</th><th>体量</th></tr>
+<tr><td><code>index.html</code></td><td>交付索引／导航页（2 页面分区、159 个画板入口；卡片默认进入适配窗口查看器）</td><td>34 KB</td></tr>
+<tr><td><code>viewer.html</code></td><td>画板查看器外壳：159 板下拉切换、适配窗口／1:1 原像素、上下张、打开原文件；画板文件零改动</td><td>15 KB</td></tr>
+<tr><td><code>boards/p1_001.html … p1_121.html</code></td><td>Page 1 的 121 个画板，每个一份独立静态 HTML</td><td>—</td></tr>
+<tr><td><code>boards/p2_001.html … p2_038.html</code></td><td>Page 2（入口页）的 38 个画板</td><td>—</td></tr>
+<tr><td><code>assets/</code></td><td>68 张原图 + base.css（重置与板级样式）</td><td>33.31 MB</td></tr>
+<tr><td><code>manifest.json</code></td><td>159 画板清单：id / 名称 / 坐标 / 尺寸 / 节点数 / 文案数 / 文件字节</td><td>48 KB</td></tr>
+<tr><td><code>image_map.json</code></td><td>imageRef → 本地素材文件 / 尺寸 / 格式映射</td><td>11 KB</td></tr>
+<tr><td><code>audit_result.json</code></td><td>对抗式校验机器可读结果</td><td>—</td></tr>
+<tr><td><code>还原校验报告.html</code></td><td>本报告</td><td>—</td></tr>
+</table>
+<p>boards 合计 <b>5.32 MB</b>（159 个 HTML）｜ 交付总体积约 <b>38.79 MB</b>。每个画板按原始像素 1:1 呈现，无脚本、无交互、无外部依赖（字体走系统、图片走本地 assets）。普通浏览器窗口小于画板时，请用 <code>viewer.html</code> 的适配窗口模式查看全貌。</p>
+<h2>八、结论</h2>
+<div class="banner"><b class="ok">通过</b> — 结构、尺寸、文案、顺序、配色、图标路径、图片素材与稿面数据完全一致，159 个画板逐一可独立打开查看；文字可见性已用无头浏览器逐板实测并全量修复。<br><span class="small">存在第六节所列的环境性视觉近似（缺失字体、裁剪矩阵、模糊换算），不属于数据缺失或结构偏差；若提供原字体文件可进一步消除字形差异。</span></div>
+<h2>附录：全画板清单与尺寸表（159 项）</h2>
+<table><tr><th>#</th><th>页面</th><th>节点 id</th><th>画板名称</th><th>尺寸 (px)</th><th>画布坐标</th><th>DOM</th><th>文案段</th></tr>
+<tr><td>001</td><td>Page 1</td><td><code>11:382</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 21553</td><td>92</td><td>18</td></tr>
+<tr><td>002</td><td>Page 1</td><td><code>11:404</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×2341</td><td>15129, 23793</td><td>121</td><td>21</td></tr>
+<tr><td>003</td><td>Page 1</td><td><code>11:448</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 21553</td><td>127</td><td>25</td></tr>
+<tr><td>004</td><td>Page 1</td><td><code>11:502</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 32953</td><td>133</td><td>36</td></tr>
+<tr><td>005</td><td>Page 1</td><td><code>11:576</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 31053</td><td>89</td><td>17</td></tr>
+<tr><td>006</td><td>Page 1</td><td><code>11:602</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 29153</td><td>89</td><td>23</td></tr>
+<tr><td>007</td><td>Page 1</td><td><code>11:631</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 25353</td><td>78</td><td>21</td></tr>
+<tr><td>008</td><td>Page 1</td><td><code>11:650</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 31053</td><td>79</td><td>17</td></tr>
+<tr><td>009</td><td>Page 1</td><td><code>11:668</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>15129, 28334</td><td>123</td><td>31</td></tr>
+<tr><td>010</td><td>Page 1</td><td><code>11:743</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>15129, 30234</td><td>43</td><td>12</td></tr>
+<tr><td>011</td><td>Page 1</td><td><code>11:748</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 23453</td><td>154</td><td>40</td></tr>
+<tr><td>012</td><td>Page 1</td><td><code>11:852</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 27253</td><td>104</td><td>26</td></tr>
+<tr><td>013</td><td>Page 1</td><td><code>11:906</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 27253</td><td>88</td><td>26</td></tr>
+<tr><td>014</td><td>Page 1</td><td><code>11:944</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 19653</td><td>109</td><td>32</td></tr>
+<tr><td>015</td><td>Page 1</td><td><code>11:1003</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 23453</td><td>87</td><td>25</td></tr>
+<tr><td>016</td><td>Page 1</td><td><code>11:1032</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>19969, 19653</td><td>139</td><td>41</td></tr>
+<tr><td>017</td><td>Page 1</td><td><code>11:1123</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>15129, 26434</td><td>108</td><td>37</td></tr>
+<tr><td>018</td><td>Page 1</td><td><code>11:1183</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1080</td><td>15129, 19653</td><td>41</td><td>15</td></tr>
+<tr><td>019</td><td>Page 1</td><td><code>11:1204</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1080</td><td>15129, 22413</td><td>96</td><td>23</td></tr>
+<tr><td>020</td><td>Page 1</td><td><code>11:1278</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1080</td><td>15129, 21033</td><td>105</td><td>20</td></tr>
+<tr><td>021</td><td>Page 1</td><td><code>11:1348</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 25353</td><td>100</td><td>26</td></tr>
+<tr><td>022</td><td>Page 1</td><td><code>11:1382</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>17549, 29153</td><td>113</td><td>28</td></tr>
+<tr><td>023</td><td>Page 1</td><td><code>11:1450</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 19653</td><td>41</td><td>10</td></tr>
+<tr><td>024</td><td>Page 1</td><td><code>11:1476</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 21553</td><td>64</td><td>14</td></tr>
+<tr><td>025</td><td>Page 1</td><td><code>11:1486</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 23453</td><td>132</td><td>41</td></tr>
+<tr><td>026</td><td>Page 1</td><td><code>11:1577</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 27253</td><td>93</td><td>19</td></tr>
+<tr><td>027</td><td>Page 1</td><td><code>11:1612</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1080</td><td>22389, 36753</td><td>27</td><td>8</td></tr>
+<tr><td>028</td><td>Page 1</td><td><code>11:1621</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 25353</td><td>74</td><td>21</td></tr>
+<tr><td>029</td><td>Page 1</td><td><code>11:1654</code></td><td>作品集说明</td><td>9180×7080</td><td>15129, 7334</td><td>6</td><td>3</td></tr>
+<tr><td>030</td><td>Page 1</td><td><code>11:1661</code></td><td>作品集说明</td><td>9180×10009</td><td>0, 2964</td><td>4</td><td>3</td></tr>
+<tr><td>031</td><td>Page 1</td><td><code>11:1666</code></td><td>作品集说明</td><td>9180×2091</td><td>15129, 15485</td><td>21</td><td>6</td></tr>
+<tr><td>032</td><td>Page 1</td><td><code>11:1688</code></td><td>作品集说明</td><td>9180×2091</td><td>0, 13689</td><td>21</td><td>6</td></tr>
+<tr><td>033</td><td>Page 1</td><td><code>11:1710</code></td><td>这些模板无法直接编辑，全选复制到你的figma里编辑即可</td><td>8838×476</td><td>15299, 18322</td><td>1</td><td>1</td></tr>
+<tr><td>034</td><td>Page 1</td><td><code>11:1711</code></td><td>这些模板无法直接编辑，为防大家制作的时候效果类似我改成黑白稿 尽可能避免同质化，模型请全选复制到你的figma里编辑即可</td><td>5907×548</td><td>1636, 16526</td><td>1</td><td>1</td></tr>
+<tr><td>035</td><td>Page 1</td><td><code>11:1712</code></td><td>这些模板无法直接编辑，全选复制到你的figma里编辑即可</td><td>8838×476</td><td>15299, 2146</td><td>1</td><td>1</td></tr>
+<tr><td>036</td><td>Page 1</td><td><code>11:1713</code></td><td>这些模板无法直接编辑，全选复制到你的figma里编辑即可</td><td>8838×476</td><td>0, 2146</td><td>1</td><td>1</td></tr>
+<tr><td>037</td><td>Page 1</td><td><code>11:1714</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 2636</td><td>29</td><td>12</td></tr>
+<tr><td>038</td><td>Page 1</td><td><code>11:1744</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 3916</td><td>67</td><td>24</td></tr>
+<tr><td>039</td><td>Page 1</td><td><code>11:1795</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 2944</td><td>1</td><td>1</td></tr>
+<tr><td>040</td><td>Page 1</td><td><code>11:1796</code></td><td>站酷 @溺于澄海</td><td>2561×615</td><td>31977, 4149</td><td>1</td><td>1</td></tr>
+<tr><td>041</td><td>Page 1</td><td><code>11:1797</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 5501</td><td>1</td><td>1</td></tr>
+<tr><td>042</td><td>Page 1</td><td><code>11:1798</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 7556</td><td>1</td><td>1</td></tr>
+<tr><td>043</td><td>Page 1</td><td><code>11:1799</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 8791</td><td>1</td><td>1</td></tr>
+<tr><td>044</td><td>Page 1</td><td><code>11:1800</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 10115</td><td>1</td><td>1</td></tr>
+<tr><td>045</td><td>Page 1</td><td><code>11:1801</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 11395</td><td>1</td><td>1</td></tr>
+<tr><td>046</td><td>Page 1</td><td><code>11:1802</code></td><td>站酷 @溺于澄海</td><td>2561×1047</td><td>31977, 17257</td><td>1</td><td>1</td></tr>
+<tr><td>047</td><td>Page 1</td><td><code>11:1803</code></td><td>站酷 @溺于澄海</td><td>2561×471</td><td>31977, 21887</td><td>1</td><td>1</td></tr>
+<tr><td>048</td><td>Page 1</td><td><code>11:1804</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 7251</td><td>38</td><td>15</td></tr>
+<tr><td>049</td><td>Page 1</td><td><code>11:1827</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 8531</td><td>70</td><td>24</td></tr>
+<tr><td>050</td><td>Page 1</td><td><code>11:1882</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 9811</td><td>76</td><td>23</td></tr>
+<tr><td>051</td><td>Page 1</td><td><code>11:1943</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 12371</td><td>41</td><td>19</td></tr>
+<tr><td>052</td><td>Page 1</td><td><code>11:1969</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 13651</td><td>32</td><td>11</td></tr>
+<tr><td>053</td><td>Page 1</td><td><code>11:1986</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 11091</td><td>46</td><td>17</td></tr>
+<tr><td>054</td><td>Page 1</td><td><code>11:2017</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 15421</td><td>35</td><td>11</td></tr>
+<tr><td>055</td><td>Page 1</td><td><code>11:2037</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 17981</td><td>35</td><td>11</td></tr>
+<tr><td>056</td><td>Page 1</td><td><code>11:2057</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 16701</td><td>36</td><td>11</td></tr>
+<tr><td>057</td><td>Page 1</td><td><code>11:2078</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 21031</td><td>66</td><td>25</td></tr>
+<tr><td>058</td><td>Page 1</td><td><code>11:2129</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 22311</td><td>39</td><td>15</td></tr>
+<tr><td>059</td><td>Page 1</td><td><code>11:2153</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 19261</td><td>56</td><td>11</td></tr>
+<tr><td>060</td><td>Page 1</td><td><code>11:2194</code></td><td>玄漓-作品集</td><td>1920×1080</td><td>29841, 5196</td><td>1</td><td>0</td></tr>
+<tr><td>061</td><td>Page 1</td><td><code>11:2195</code></td><td>玄漓-作品集</td><td>4741×290</td><td>29841, 6610</td><td>2</td><td>1</td></tr>
+<tr><td>062</td><td>Page 1</td><td><code>11:2198</code></td><td>玄漓-作品集</td><td>4741×290</td><td>29841, 14931</td><td>2</td><td>1</td></tr>
+<tr><td>063</td><td>Page 1</td><td><code>11:2201</code></td><td>玄漓-作品集</td><td>1920×290</td><td>37746, 2175</td><td>2</td><td>1</td></tr>
+<tr><td>064</td><td>Page 1</td><td><code>11:2204</code></td><td>玄漓-作品集</td><td>4741×290</td><td>29841, 20541</td><td>2</td><td>1</td></tr>
+<tr><td>065</td><td>Page 1</td><td><code>11:2207</code></td><td>玄漓-作品集</td><td>4741×290</td><td>29841, 2146</td><td>2</td><td>1</td></tr>
+<tr><td>066</td><td>Page 1</td><td><code>11:2210</code></td><td>玄漓作品集-项目模板-1</td><td>1920×1080</td><td>37746, 2978</td><td>14</td><td>5</td></tr>
+<tr><td>067</td><td>Page 1</td><td><code>11:2225</code></td><td>玄漓作品集-项目模板-6</td><td>1920×1080</td><td>37746, 6622</td><td>17</td><td>7</td></tr>
+<tr><td>068</td><td>Page 1</td><td><code>11:2243</code></td><td>玄漓作品集-项目模板-2</td><td>1920×1080</td><td>37746, 7802</td><td>11</td><td>4</td></tr>
+<tr><td>069</td><td>Page 1</td><td><code>11:2255</code></td><td>玄漓作品集-项目模板-3</td><td>1920×1080</td><td>37746, 8982</td><td>15</td><td>6</td></tr>
+<tr><td>070</td><td>Page 1</td><td><code>11:2271</code></td><td>玄漓作品集-项目模板-7</td><td>1920×1080</td><td>37746, 10162</td><td>40</td><td>6</td></tr>
+<tr><td>071</td><td>Page 1</td><td><code>11:2312</code></td><td>玄漓作品集-项目模板-8</td><td>1920×1080</td><td>37746, 11342</td><td>31</td><td>6</td></tr>
+<tr><td>072</td><td>Page 1</td><td><code>11:2344</code></td><td>玄漓作品集-项目模板-4</td><td>1920×1080</td><td>37746, 12522</td><td>16</td><td>6</td></tr>
+<tr><td>073</td><td>Page 1</td><td><code>11:2361</code></td><td>玄漓作品集-项目模板-5</td><td>1920×1080</td><td>37746, 13702</td><td>17</td><td>6</td></tr>
+<tr><td>074</td><td>Page 1</td><td><code>11:2379</code></td><td>玄漓2026作品集-5</td><td>1920×1080</td><td>37746, 5338</td><td>179</td><td>42</td></tr>
+<tr><td>075</td><td>Page 1</td><td><code>11:2559</code></td><td>玄漓2026作品集-3</td><td>1920×1080</td><td>37746, 4158</td><td>53</td><td>0</td></tr>
+<tr><td>076</td><td>Page 1</td><td><code>11:2613</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>9180×4028</td><td>15129, 2964</td><td>1</td><td>0</td></tr>
+<tr><td>077</td><td>Page 1</td><td><code>11:2614</code></td><td>「予愿必成」溺于澄海作品集分享（这页是夹带私货的宣传）</td><td>1920×1600</td><td>22389, 34853</td><td>1</td><td>0</td></tr>
+<tr><td>078</td><td>Page 1</td><td><code>11:2616</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 29153</td><td>170</td><td>36</td></tr>
+<tr><td>079</td><td>Page 1</td><td><code>11:2731</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 31053</td><td>90</td><td>23</td></tr>
+<tr><td>080</td><td>Page 1</td><td><code>11:2774</code></td><td>「予愿必成」溺于澄海作品集分享</td><td>1920×1600</td><td>22389, 32953</td><td>157</td><td>28</td></tr>
+<tr><td>081</td><td>Page 1</td><td><code>11:2884</code></td><td>Group 1940698267</td><td>9010×1335</td><td>15299, 0</td><td>2</td><td>1</td></tr>
+<tr><td>082</td><td>Page 1</td><td><code>11:2887</code></td><td>Group 1940698269</td><td>9825×1335</td><td>29841, 0</td><td>2</td><td>1</td></tr>
+<tr><td>083</td><td>Page 1</td><td><code>11:2890</code></td><td>Group 1940698268</td><td>9010×1335</td><td>0, 0</td><td>2</td><td>1</td></tr>
+<tr><td>084</td><td>Page 1</td><td><code>11:2893</code></td><td>8站酷10年-3</td><td>1920×2200</td><td>710, 31721</td><td>164</td><td>31</td></tr>
+<tr><td>085</td><td>Page 1</td><td><code>11:2979</code></td><td>7站酷10年-3</td><td>1920×1600</td><td>710, 29921</td><td>120</td><td>30</td></tr>
+<tr><td>086</td><td>Page 1</td><td><code>11:3046</code></td><td>18站酷10年-3</td><td>1920×1600</td><td>3630, 23851</td><td>104</td><td>26</td></tr>
+<tr><td>087</td><td>Page 1</td><td><code>11:3097</code></td><td>16站酷10年-3</td><td>1920×2043</td><td>3630, 18951</td><td>100</td><td>24</td></tr>
+<tr><td>088</td><td>Page 1</td><td><code>11:3122</code></td><td>17站酷10年-3</td><td>1920×2457</td><td>3630, 21194</td><td>119</td><td>37</td></tr>
+<tr><td>089</td><td>Page 1</td><td><code>11:3191</code></td><td>19站酷10年-3</td><td>1920×1670</td><td>3630, 25651</td><td>155</td><td>37</td></tr>
+<tr><td>090</td><td>Page 1</td><td><code>11:3252</code></td><td>11站酷10年-3</td><td>1920×4000</td><td>710, 36550</td><td>352</td><td>87</td></tr>
+<tr><td>091</td><td>Page 1</td><td><code>11:3508</code></td><td>12站酷10年-3</td><td>1920×1600</td><td>710, 40750</td><td>115</td><td>30</td></tr>
+<tr><td>092</td><td>Page 1</td><td><code>11:3571</code></td><td>22站酷10年-3</td><td>1920×1600</td><td>3630, 28150</td><td>108</td><td>25</td></tr>
+<tr><td>093</td><td>Page 1</td><td><code>11:3604</code></td><td>23站酷10年-3</td><td>1920×1600</td><td>3630, 29950</td><td>128</td><td>32</td></tr>
+<tr><td>094</td><td>Page 1</td><td><code>11:3648</code></td><td>25站酷10年-3</td><td>1920×2524</td><td>3630, 33550</td><td>172</td><td>36</td></tr>
+<tr><td>095</td><td>Page 1</td><td><code>11:3743</code></td><td>34站酷10年-3</td><td>1920×1600</td><td>6550, 29514</td><td>73</td><td>18</td></tr>
+<tr><td>096</td><td>Page 1</td><td><code>11:3770</code></td><td>37站酷10年-3</td><td>1920×1600</td><td>6550, 33114</td><td>62</td><td>16</td></tr>
+<tr><td>097</td><td>Page 1</td><td><code>11:3796</code></td><td>40站酷10年-3</td><td>1920×1600</td><td>6550, 38514</td><td>121</td><td>32</td></tr>
+<tr><td>098</td><td>Page 1</td><td><code>11:3874</code></td><td>44站酷10年-3</td><td>1920×1390</td><td>6550, 45714</td><td>48</td><td>18</td></tr>
+<tr><td>099</td><td>Page 1</td><td><code>11:3906</code></td><td>43站酷10年-3</td><td>1920×1600</td><td>6550, 43914</td><td>69</td><td>18</td></tr>
+<tr><td>100</td><td>Page 1</td><td><code>11:3940</code></td><td>33站酷10年-3</td><td>1920×1600</td><td>6550, 27714</td><td>87</td><td>20</td></tr>
+<tr><td>101</td><td>Page 1</td><td><code>11:3974</code></td><td>32站酷10年-3</td><td>1920×1600</td><td>6550, 25914</td><td>92</td><td>23</td></tr>
+<tr><td>102</td><td>Page 1</td><td><code>11:4008</code></td><td>28站酷10年-3</td><td>1920×1500</td><td>6550, 18951</td><td>109</td><td>30</td></tr>
+<tr><td>103</td><td>Page 1</td><td><code>11:4067</code></td><td>29站酷10年-3</td><td>1920×1600</td><td>6550, 20651</td><td>71</td><td>17</td></tr>
+<tr><td>104</td><td>Page 1</td><td><code>11:4091</code></td><td>30站酷10年-3</td><td>1920×1600</td><td>6550, 22451</td><td>71</td><td>17</td></tr>
+<tr><td>105</td><td>Page 1</td><td><code>11:4109</code></td><td>31站酷10年-3</td><td>1920×1463</td><td>6550, 24251</td><td>100</td><td>26</td></tr>
+<tr><td>106</td><td>Page 1</td><td><code>11:4160</code></td><td>35站酷10年-3</td><td>1920×1600</td><td>6550, 31314</td><td>141</td><td>46</td></tr>
+<tr><td>107</td><td>Page 1</td><td><code>11:4266</code></td><td>41站酷1041年-3</td><td>1920×1600</td><td>6550, 40314</td><td>75</td><td>18</td></tr>
+<tr><td>108</td><td>Page 1</td><td><code>11:4299</code></td><td>39站酷10年-3</td><td>1920×1600</td><td>6550, 36714</td><td>103</td><td>21</td></tr>
+<tr><td>109</td><td>Page 1</td><td><code>11:4355</code></td><td>42站酷10年-3</td><td>1920×1600</td><td>6550, 42114</td><td>98</td><td>24</td></tr>
+<tr><td>110</td><td>Page 1</td><td><code>11:4423</code></td><td>38站酷10年-3</td><td>1920×1600</td><td>6550, 34914</td><td>132</td><td>32</td></tr>
+<tr><td>111</td><td>Page 1</td><td><code>11:4524</code></td><td>2站酷10年-3</td><td>1920×3927</td><td>710, 18322</td><td>143</td><td>50</td></tr>
+<tr><td>112</td><td>Page 1</td><td><code>11:4656</code></td><td>4站酷10年-3</td><td>1920×2000</td><td>710, 24449</td><td>121</td><td>27</td></tr>
+<tr><td>113</td><td>Page 1</td><td><code>11:4736</code></td><td>5站酷10年-3</td><td>1920×2443</td><td>710, 26649</td><td>218</td><td>58</td></tr>
+<tr><td>114</td><td>Page 1</td><td><code>11:4862</code></td><td>3站酷10年-3</td><td>1920×1800</td><td>710, 22449</td><td>48</td><td>14</td></tr>
+<tr><td>115</td><td>Page 1</td><td><code>11:4874</code></td><td>10站酷10年-3</td><td>1920×1600</td><td>710, 34750</td><td>172</td><td>30</td></tr>
+<tr><td>116</td><td>Page 1</td><td><code>11:4987</code></td><td>6Frame 1940698821</td><td>1920×429</td><td>710, 29292</td><td>13</td><td>6</td></tr>
+<tr><td>117</td><td>Page 1</td><td><code>11:5001</code></td><td>9Frame 1940698822</td><td>1920×429</td><td>710, 34121</td><td>13</td><td>6</td></tr>
+<tr><td>118</td><td>Page 1</td><td><code>11:5015</code></td><td>15Frame 1940698824</td><td>1920×429</td><td>3630, 18322</td><td>12</td><td>6</td></tr>
+<tr><td>119</td><td>Page 1</td><td><code>11:5028</code></td><td>21Frame 1940698825</td><td>1920×429</td><td>3630, 27521</td><td>13</td><td>6</td></tr>
+<tr><td>120</td><td>Page 1</td><td><code>11:5042</code></td><td>27Frame 1940698826</td><td>1920×429</td><td>6550, 18322</td><td>13</td><td>6</td></tr>
+<tr><td>121</td><td>Page 1</td><td><code>11:5056</code></td><td>24站酷10年-3</td><td>1920×1600</td><td>3630, 31750</td><td>93</td><td>29</td></tr>
+<tr><td>001</td><td>Page 2</td><td><code>15:5151</code></td><td>8站酷10年-3</td><td>1920×2200</td><td>0, 13399</td><td>164</td><td>31</td></tr>
+<tr><td>002</td><td>Page 2</td><td><code>15:5237</code></td><td>7站酷10年-3</td><td>1920×1600</td><td>0, 11599</td><td>120</td><td>30</td></tr>
+<tr><td>003</td><td>Page 2</td><td><code>15:5304</code></td><td>18站酷10年-3</td><td>1920×1600</td><td>2920, 5529</td><td>104</td><td>26</td></tr>
+<tr><td>004</td><td>Page 2</td><td><code>15:5355</code></td><td>16站酷10年-3</td><td>1920×2043</td><td>2920, 629</td><td>100</td><td>24</td></tr>
+<tr><td>005</td><td>Page 2</td><td><code>15:5380</code></td><td>17站酷10年-3</td><td>1920×2457</td><td>2920, 2872</td><td>119</td><td>37</td></tr>
+<tr><td>006</td><td>Page 2</td><td><code>15:5449</code></td><td>19站酷10年-3</td><td>1920×1670</td><td>2920, 7329</td><td>155</td><td>37</td></tr>
+<tr><td>007</td><td>Page 2</td><td><code>15:5510</code></td><td>11站酷10年-3</td><td>1920×4000</td><td>0, 18228</td><td>352</td><td>87</td></tr>
+<tr><td>008</td><td>Page 2</td><td><code>15:5766</code></td><td>12站酷10年-3</td><td>1920×1600</td><td>0, 22428</td><td>115</td><td>30</td></tr>
+<tr><td>009</td><td>Page 2</td><td><code>15:5829</code></td><td>22站酷10年-3</td><td>1920×1600</td><td>2920, 9828</td><td>108</td><td>25</td></tr>
+<tr><td>010</td><td>Page 2</td><td><code>15:5862</code></td><td>23站酷10年-3</td><td>1920×1600</td><td>2920, 11628</td><td>128</td><td>32</td></tr>
+<tr><td>011</td><td>Page 2</td><td><code>15:5906</code></td><td>25站酷10年-3</td><td>1920×2524</td><td>2920, 15228</td><td>172</td><td>36</td></tr>
+<tr><td>012</td><td>Page 2</td><td><code>15:6001</code></td><td>34站酷10年-3</td><td>1920×1600</td><td>5840, 11192</td><td>73</td><td>18</td></tr>
+<tr><td>013</td><td>Page 2</td><td><code>15:6028</code></td><td>37站酷10年-3</td><td>1920×1600</td><td>5840, 14792</td><td>62</td><td>16</td></tr>
+<tr><td>014</td><td>Page 2</td><td><code>15:6054</code></td><td>40站酷10年-3</td><td>1920×1600</td><td>5840, 20192</td><td>121</td><td>32</td></tr>
+<tr><td>015</td><td>Page 2</td><td><code>15:6132</code></td><td>44站酷10年-3</td><td>1920×1390</td><td>5840, 27392</td><td>48</td><td>18</td></tr>
+<tr><td>016</td><td>Page 2</td><td><code>15:6164</code></td><td>43站酷10年-3</td><td>1920×1600</td><td>5840, 25592</td><td>69</td><td>18</td></tr>
+<tr><td>017</td><td>Page 2</td><td><code>15:6198</code></td><td>33站酷10年-3</td><td>1920×1600</td><td>5840, 9392</td><td>87</td><td>20</td></tr>
+<tr><td>018</td><td>Page 2</td><td><code>15:6232</code></td><td>32站酷10年-3</td><td>1920×1600</td><td>5840, 7592</td><td>92</td><td>23</td></tr>
+<tr><td>019</td><td>Page 2</td><td><code>15:6266</code></td><td>28站酷10年-3</td><td>1920×1500</td><td>5840, 629</td><td>109</td><td>30</td></tr>
+<tr><td>020</td><td>Page 2</td><td><code>15:6325</code></td><td>29站酷10年-3</td><td>1920×1600</td><td>5840, 2329</td><td>71</td><td>17</td></tr>
+<tr><td>021</td><td>Page 2</td><td><code>15:6349</code></td><td>30站酷10年-3</td><td>1920×1600</td><td>5840, 4129</td><td>71</td><td>17</td></tr>
+<tr><td>022</td><td>Page 2</td><td><code>15:6367</code></td><td>31站酷10年-3</td><td>1920×1463</td><td>5840, 5929</td><td>100</td><td>26</td></tr>
+<tr><td>023</td><td>Page 2</td><td><code>15:6418</code></td><td>35站酷10年-3</td><td>1920×1600</td><td>5840, 12992</td><td>141</td><td>46</td></tr>
+<tr><td>024</td><td>Page 2</td><td><code>15:6524</code></td><td>41站酷1041年-3</td><td>1920×1600</td><td>5840, 21992</td><td>75</td><td>18</td></tr>
+<tr><td>025</td><td>Page 2</td><td><code>15:6557</code></td><td>39站酷10年-3</td><td>1920×1600</td><td>5840, 18392</td><td>103</td><td>21</td></tr>
+<tr><td>026</td><td>Page 2</td><td><code>15:6613</code></td><td>42站酷10年-3</td><td>1920×1600</td><td>5840, 23792</td><td>98</td><td>24</td></tr>
+<tr><td>027</td><td>Page 2</td><td><code>15:6681</code></td><td>38站酷10年-3</td><td>1920×1600</td><td>5840, 16592</td><td>132</td><td>32</td></tr>
+<tr><td>028</td><td>Page 2</td><td><code>15:6782</code></td><td>2站酷10年-3</td><td>1920×3927</td><td>0, 0</td><td>143</td><td>50</td></tr>
+<tr><td>029</td><td>Page 2</td><td><code>15:6914</code></td><td>4站酷10年-3</td><td>1920×2000</td><td>0, 6127</td><td>121</td><td>27</td></tr>
+<tr><td>030</td><td>Page 2</td><td><code>15:6994</code></td><td>5站酷10年-3</td><td>1920×2443</td><td>0, 8327</td><td>218</td><td>58</td></tr>
+<tr><td>031</td><td>Page 2</td><td><code>15:7120</code></td><td>3站酷10年-3</td><td>1920×1800</td><td>0, 4127</td><td>48</td><td>14</td></tr>
+<tr><td>032</td><td>Page 2</td><td><code>15:7132</code></td><td>10站酷10年-3</td><td>1920×1600</td><td>0, 16428</td><td>172</td><td>30</td></tr>
+<tr><td>033</td><td>Page 2</td><td><code>15:7245</code></td><td>6Frame 1940698821</td><td>1920×429</td><td>0, 10970</td><td>13</td><td>6</td></tr>
+<tr><td>034</td><td>Page 2</td><td><code>15:7259</code></td><td>9Frame 1940698822</td><td>1920×429</td><td>0, 15799</td><td>13</td><td>6</td></tr>
+<tr><td>035</td><td>Page 2</td><td><code>15:7273</code></td><td>15Frame 1940698824</td><td>1920×429</td><td>2920, 0</td><td>12</td><td>6</td></tr>
+<tr><td>036</td><td>Page 2</td><td><code>15:7286</code></td><td>21Frame 1940698825</td><td>1920×429</td><td>2920, 9199</td><td>13</td><td>6</td></tr>
+<tr><td>037</td><td>Page 2</td><td><code>15:7300</code></td><td>27Frame 1940698826</td><td>1920×429</td><td>5840, 0</td><td>13</td><td>6</td></tr>
+<tr><td>038</td><td>Page 2</td><td><code>15:7314</code></td><td>24站酷10年-3</td><td>1920×1600</td><td>2920, 13428</td><td>93</td><td>29</td></tr>
+</table>
+<footer>数据源：Figma REST API（3 次调用，全部离线还原）｜ 校验：独立重算 + HTML 解析器逐文件复核 + 无头浏览器 getComputedStyle 逐板实测｜ 报告生成：2026-11-12 16:56</footer>
+</div></body></html>
