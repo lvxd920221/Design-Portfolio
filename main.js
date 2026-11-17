@@ -341,22 +341,220 @@ const PROJECTS = [
   }
 ];
 
-// ---------- 渲染项目卡片 ----------
-const list = document.getElementById("projectList");
-list.innerHTML = PROJECTS.map((p, i) => `
-  <article class="project-card reveal" data-index="${i}" tabindex="0" role="button" aria-label="打开案例：${p.title}">
-    <div class="card-thumb">
-      <img src="${p.thumb}" alt="${p.title}" loading="lazy">
-      <span class="card-badge">${p.badge}</span>
-    </div>
-    <div class="card-body">
-      <div class="card-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
-      <h3 class="card-title">${p.title}</h3>
-      <p class="card-sub">${p.sub}</p>
-      <div class="card-meta">${p.period} · ${p.role}</div>
-      <span class="card-more">查看项目详情 <span class="arrow">→</span></span>
-    </div>
-  </article>`).join("");
+
+// ============================================================
+// 新首页渲染 + 原生动效引擎（FadeIn / Magnet / Marquee / AnimatedText / Stack）
+// 人设与全部项目数据沿用原站，仅迁移提示词的视觉语言与交互
+// ============================================================
+
+/* ---------- SERVICES 清单（沿用真实能力内容） ---------- */
+const SERVICES = [
+  { n: "01", name: "Complex Systems", desc: "复杂系统架构：在强约束（小屏 / 多角色 / 高密度数据）下设计信息架构与交互流程，把复杂业务拆解为低认知负荷的清晰界面。" },
+  { n: "02", name: "Design Systems", desc: "设计系统与组件化：自建 5 套企业级组件库，覆盖表格、图表、表单、日历等核心模块，复用率 80%+，节省约 50% 重复设计工时。" },
+  { n: "03", name: "Data Visualization", desc: "数据可视化：一屏内让决策者抓住全局态势，用视觉层级与状态编码把高密度数据转成可scan、可判断的信息。" },
+  { n: "04", name: "Growth UX", desc: "用户增长与业务闭环：从用户旅程设计核心转化路径，电商项目页面转化率提升 15%，把设计直接连到业务指标。" },
+  { n: "05", name: "Web & Branding", desc: "Web 设计与品牌视觉：clean、modern、conversion-focused 的界面与一致的品牌语言，从布局、字体到交互细节完整交付。" }
+];
+const servicesList = document.getElementById("servicesList");
+if (servicesList) {
+  servicesList.innerHTML = SERVICES.map(s => `
+    <article class="service-item fade-el" data-fade>
+      <div class="service-num">${s.n}</div>
+      <div class="service-body">
+        <h3 class="service-name">${s.name}</h3>
+        <p class="service-desc">${s.desc}</p>
+      </div>
+    </article>`).join("");
+}
+
+/* ---------- MARQUEE（21 张：真实项目图循环，两行反向） ---------- */
+const MARQUEE_IMGS = [
+  "assets/projects/haodf/thumb.jpg", "assets/projects/cizhen/thumb.jpg",
+  "assets/projects/yilifang/thumb.jpg", "assets/projects/xiaomeng/thumb.jpg",
+  "assets/projects/yibin/thumb.jpg", "assets/projects/aigc/thumb.jpg",
+  "assets/projects/haodf/hd-9.jpg", "assets/projects/cizhen/cz-13.jpg",
+  "assets/projects/yilifang/yif-4.jpg", "assets/projects/yibin/yb-4.jpg",
+  "assets/projects/aigc/ai-3.jpg"
+];
+function buildRow(el, arr) {
+  if (!el) return;
+  // 每行 tripled，保证横向滚动无缝
+  el.innerHTML = [...arr, ...arr, ...arr].map(src =>
+    `<div class="marquee-tile"><img src="${src}" alt="" loading="lazy"></div>`).join("");
+}
+buildRow(document.getElementById("marqueeRow1"), MARQUEE_IMGS);
+buildRow(document.getElementById("marqueeRow2"), [...MARQUEE_IMGS].reverse());
+
+/* ---------- STICKY 项目卡片（前 4 个真实项目，滚动缩放堆叠） ---------- */
+const stack = document.getElementById("projectStack");
+const CARD_PROJECTS = PROJECTS.slice(0, 4);
+if (stack) {
+  stack.innerHTML = CARD_PROJECTS.map((p, i) => {
+    const imgs = (p.images || []).map(x => x.src);
+    const src = k => imgs[k] || p.thumb;
+    return `
+    <div class="stack-item" data-index="${i}" style="top:${96 + i * 28}px">
+      <article class="stack-card project-card" data-index="${i}" tabindex="0" role="button" aria-label="打开案例：${p.title}">
+        <div class="stack-top">
+          <span class="stack-num">${String(i + 1).padStart(2, "0")}</span>
+          <div class="stack-meta">
+            <span class="stack-cat">${(p.tags && p.tags[0]) || "UI/UX"}</span>
+            <span class="stack-name">${p.title}</span>
+          </div>
+          <div class="stack-cta"><span class="ghost-pill">Live Project</span></div>
+        </div>
+        <div class="stack-grid">
+          <div class="stack-col1">
+            <img src="${src(0)}" alt="${p.title} 预览 1" loading="lazy">
+            <img src="${src(1)}" alt="${p.title} 预览 2" loading="lazy">
+          </div>
+          <div class="stack-col2"><img src="${src(2) || src(0)}" alt="${p.title} 主图" loading="lazy"></div>
+        </div>
+      </article>
+    </div>`;
+  }).join("");
+}
+
+// 让原案例弹窗的事件绑定（list.addEventListener）继续工作：把 list 指向新容器
+const list = stack || document.createElement("div");
+
+/* ---------- AnimatedText：About 逐字滚动显现 ---------- */
+(function initAnimatedText() {
+  const el = document.getElementById("aboutText");
+  if (!el) return;
+  const text = el.textContent.trim();
+  el.innerHTML = [...text].map(ch => {
+    const safe = ch === " " ? "&nbsp;" : ch.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `<span class="animated-char"><span class="ch-ph">${safe}</span><span class="ch-fx">${safe}</span></span>`;
+  }).join("");
+  const chars = el.querySelectorAll(".ch-fx");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) { chars.forEach(c => c.style.opacity = 1); return; }
+  const onScroll = () => {
+    const r = el.getBoundingClientRect();
+    // progress：元素从视口 80% 进入，到视口 20% 离开
+    const p = 1 - (r.top - innerHeight * 0.2) / (innerHeight * 0.6);
+    const prog = Math.max(0, Math.min(1, p));
+    chars.forEach((c, i) => {
+      const t = prog * chars.length - i;
+      c.style.opacity = String(Math.max(0.2, Math.min(1, 0.2 + t * 0.8)));
+    });
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ---------- Magnet：Hero 人像磁吸 ---------- */
+(function initMagnet() {
+  const el = document.getElementById("heroMagnet");
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const padding = 150, strength = 3;
+  const activeTrans = "transform 0.3s ease-out", inactiveTrans = "transform 0.6s ease-in-out";
+  const inRange = r => mouse.x > r.left - padding && mouse.x < r.right + padding &&
+                       mouse.y > r.top - padding && mouse.y < r.bottom + padding;
+  const mouse = { x: -9999, y: -9999 };
+  addEventListener("mousemove", e => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    const r = el.getBoundingClientRect();
+    if (inRange(r)) {
+      el.style.transition = activeTrans;
+      const dx = (mouse.x - (r.left + r.width / 2)) / strength;
+      const dy = (mouse.y - (r.top + r.height / 2)) / strength;
+      el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    } else {
+      el.style.transition = inactiveTrans;
+      el.style.transform = "translate3d(0,0,0)";
+    }
+  }, { passive: true });
+})();
+
+/* ---------- FadeIn：进场动画（对齐提示词 delay/duration/easing） ---------- */
+(function initFadeIn() {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const targets = [
+    ["#nav", 0, 0.7, 0, -20], ["#heroTitle", 0.15, 0.7, 0, 40],
+    ["#heroSub", 0.35, 0.7, 0, 20], ["#heroContact", 0.5, 0.7, 0, 20],
+    ["#heroPortrait", 0.6, 0.7, 0, 30], ["#decoTL", 0.1, 0.9, -80, 0],
+    ["#decoTR", 0.15, 0.9, 80, 0], ["#decoBL", 0.25, 0.9, -80, 0],
+    ["#decoBR", 0.3, 0.9, 80, 0], ["#aboutTitle", 0, 0.7, 0, 40]
+  ];
+  targets.forEach(([sel, delay, dur, x, y]) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    if (reduce) { el.style.opacity = 1; return; }
+    el.classList.add("fade-el");
+    el.style.transform = `translate(${x}px, ${y}px)`;
+    el.style.transition = `opacity ${dur}s cubic-bezier(.25,.1,.25,1) ${delay}s, transform ${dur}s cubic-bezier(.25,.1,.25,1) ${delay}s`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      el.style.opacity = 1; el.style.transform = "translate(0,0)";
+    }));
+  });
+  // [data-fade]（Services 项）走 whileInView 语义
+  const io2 = new IntersectionObserver((entries) => {
+    entries.forEach((en, i) => {
+      if (en.isIntersecting) {
+        const el = en.target;
+        const delay = (+(el.dataset.fadeIndex || 0)) * 0.1;
+        el.style.transition = `opacity .7s cubic-bezier(.25,.1,.25,1) ${delay}s, transform .7s cubic-bezier(.25,.1,.25,1) ${delay}s`;
+        el.style.opacity = 1; el.style.transform = "none";
+        io2.unobserve(el);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: "50px" });
+  document.querySelectorAll("[data-fade]").forEach((el, i) => {
+    el.dataset.fadeIndex = i;
+    if (reduce) { el.style.opacity = 1; el.style.transform = "none"; return; }
+    el.style.transform = "translateY(30px)";
+    io2.observe(el);
+  });
+})();
+
+/* ---------- 滚动：Marquee 位移 + Sticky 卡片缩放 + 进度条 ---------- */
+const nav = document.getElementById("nav");
+const bar = document.getElementById("progress");
+const marqueeSec = document.getElementById("marquee");
+const row1 = document.getElementById("marqueeRow1");
+const row2 = document.getElementById("marqueeRow2");
+const stackItems = [...document.querySelectorAll(".stack-item")];
+let ticking = false;
+
+function onScrollFrame() {
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+  nav.classList.toggle("scrolled", scrollY > 40);
+
+  if (marqueeSec && row1 && row2) {
+    const top = marqueeSec.offsetTop;
+    const offset = (scrollY - top + innerHeight) * 0.3;
+    row1.style.transform = `translate3d(${offset - 200}px,0,0)`;
+    row2.style.transform = `translate3d(${-(offset - 200)}px,0,0)`;
+  }
+
+  const total = stackItems.length;
+  stackItems.forEach((item, i) => {
+    const targetScale = 1 - (total - 1 - i) * 0.03;
+    item.style.transform = `scale(${targetScale})`;
+    item.style.zIndex = String(10 + i);
+  });
+  ticking = false;
+}
+addEventListener("scroll", () => {
+  if (!ticking) { requestAnimationFrame(onScrollFrame); ticking = true; }
+}, { passive: true });
+onScrollFrame();
+
+/* ---------- reveal（contact 区沿用） ---------- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((en, i) => {
+    if (en.isIntersecting) {
+      en.target.style.transitionDelay = (i * 80) + "ms";
+      en.target.classList.add("visible");
+      io.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
 
 // ---------- 案例弹窗（6 区块） ----------
 const modal = document.getElementById("caseModal");
@@ -568,25 +766,6 @@ document.getElementById("lightboxPrev").addEventListener("click", () => openLigh
 document.getElementById("lightboxNext").addEventListener("click", () => openLightbox(lbSrcs, (lbI + 1) % lbSrcs.length));
 lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
 
-// ---------- 滚动：进度条 / 导航 / 入场动画 ----------
-const nav = document.getElementById("nav");
-const bar = document.getElementById("progress");
-addEventListener("scroll", () => {
-  nav.classList.toggle("scrolled", scrollY > 40);
-  const h = document.documentElement;
-  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
-}, { passive: true });
-
-const io = new IntersectionObserver((entries) => {
-  entries.forEach((en, i) => {
-    if (en.isIntersecting) {
-      en.target.style.transitionDelay = (i * 80) + "ms";
-      en.target.classList.add("visible");
-      io.unobserve(en.target);
-    }
-  });
-}, { threshold: 0.12 });
-document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 // ---------- 详情基准屏渲染（?tpl=1&case=N）----------
 (function renderCaseBench() {
