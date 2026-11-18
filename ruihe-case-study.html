@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瑞合祥互联网医院 APP · 作品分析 | 吕孝冬</title>
+<style>
+:root{
+  --bg:#F3F2EF;--surface:#FFFFFF;--surface-2:#F7F6F3;
+  --ink:#333333;--ink-2:#3A3A3A;--muted:#535353;--faint:#828282;
+  --line:#DAD6D0;--line-soft:#ECE9E4;
+  --accent:#2E6E5F;--accent-ink:#245A4D;--accent-soft:rgba(46,110,95,.10);
+  --err:#B5471F;--ok:#2E6E5F;--warn:#C99A3B;
+  --r-sm:12px;--r-md:24px;--r-lg:48px;--r-pill:999px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --display:"LogoSC Unbounded Sans","Arial Black","PingFang SC","Microsoft YaHei",sans-serif;
+  --body:"Alibaba PuHuiTi","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --num:"Gilroy","Avenir Next",Montserrat,"Helvetica Neue",Arial,sans-serif;
+  --stroke:"Trash","Arial Black",Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:var(--accent);color:#fff}
+body{margin:0;color:var(--ink);line-height:1.6;font-family:var(--body);-webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,rgba(230,227,222,.55) 0,rgba(243,242,239,0) 640px),
+    radial-gradient(900px 480px at 90% 2%,rgba(46,110,95,.07),transparent 64%),var(--bg)}
+h1,.display{font-family:var(--display);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2,h3,h4{font-family:var(--body);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2{font-family:var(--body);font-weight:900;line-height:1.2}
+p{margin:0}
+button{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+.shell{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(28px,5.2vw,76px)}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--num)}
+.mono{font-family:var(--num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.accent{color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:200;transition:width .12s linear}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-in{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.01em}
+.brand-mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--accent);font-size:13px;font-weight:900;font-family:var(--num)}
+.top-links{display:flex;gap:26px;font-size:12px;letter-spacing:.01em;color:var(--muted)}
+.top-links a{position:relative;padding:6px 0;transition:color .25s}
+.top-links a:hover{color:var(--accent)}
+.top-links a.on{color:var(--ink);font-weight:700}
+.top-links a.on:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:3px;background:var(--accent);border-radius:var(--r-pill)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* HERO — p1_084 复刻：暖灰双层底 + 巨型缎带弧线 + 动态高度同步 */
+#hero{position:relative;overflow:hidden;min-height:calc(100dvh - 64px);display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:88px 0 104px}
+html:before{content:"";position:absolute;top:0;left:0;width:100%;height:var(--hero-h,900px);pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1617 922'%3E%3Cpath fill='%23333333' fill-opacity='0.055' d='M1323.08 61.2413C1297.85 163.764 1271.84 280.013 1239.38 391.308C1224.9 453.803 1219.22 503.317 1220.13 541.33C1221.45 596.118 1235.5 613.06 1239.83 617.235C1243.92 621.179 1259.83 633.476 1310.03 632.197C1360.79 630.9 1432.64 615.657 1527.99 580.102L1617 819.799C1508.42 860.283 1406.77 885.543 1316.53 887.85C1225.75 890.164 1133.06 869.141 1062.95 801.655C1057.54 796.45 1052.51 790.997 1047.62 785.499C975.221 865.179 878.081 921.999 746.258 922C664.853 921.999 585.733 898.593 524.182 838.042C496.131 810.445 475.194 778.4 459.583 743.993C401.62 796.47 333.678 832.19 256.559 846.79C172.249 862.751 85.6173 851.971 0 822.831L82.0631 580.699C136.633 599.274 177.909 601.432 209.177 595.512C239.254 589.817 268.255 575.154 297.392 545.853C356.044 486.857 412.427 370.807 452.538 175.025C462.138 122.017 473.425 66.6238 486.177 9.04701L735.392 64.4724C726.747 103.51 719.095 140.549 712.272 175.621L712.47 175.671C709.648 191.263 706.666 206.654 703.589 221.851C673.427 388.94 665.605 507.588 677.591 585.272C684.988 633.21 697.771 650.411 702.994 655.56C705.597 658.122 714.176 666.297 746.258 666.298C814.978 666.296 873.708 625.056 932.909 493.36C955.269 443.617 974.418 387.992 992.05 328.078C999.932 294.664 1009.21 260.07 1020.18 224.485C1038.47 153.136 1056.15 77.6068 1075.25 0L1323.08 61.2413Z'/%3E%3C/svg%3E"),linear-gradient(171.4deg,rgba(51,51,51,.075) 0%,rgba(249,249,249,0) 62%);
+  background-repeat:no-repeat,no-repeat;background-position:calc(50% + 22vw) 2%,center top;
+  background-size:min(1180px,86vw) auto,100% 100%}
+.hero-col{position:relative;z-index:1}
+.eyebrow-row{display:flex;align-items:center;gap:16px}
+.eyebrow-row:after{content:"";flex:1;height:2px;background:var(--line);border-radius:var(--r-pill)}
+.hero-title{font-family:var(--display);font-size:clamp(40px,4.6vw,62px);font-weight:400;letter-spacing:-.012em;line-height:1.2;margin:26px 0 14px;max-width:18ch}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--muted);max-width:56ch;line-height:1.55}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.tag{font-size:12px;letter-spacing:.03em;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.8)}
+.p084-dots{display:inline-flex;gap:6px;flex:none;align-items:center}
+.p084-dots i{width:10px;height:10px;border-radius:50%;background:var(--ink-2);display:block}
+.p084-dots i+i{background:transparent;box-shadow:inset 0 0 0 1px rgba(58,58,58,.75);opacity:.5}
+.p084-kr{font-family:var(--stroke);font-size:15px;font-weight:700;line-height:1;color:var(--ink-2);border-radius:24px;box-shadow:inset 0 0 0 1px var(--ink-2);padding:8px 14px;white-space:nowrap;flex:none}
+#hero .eyebrow-row:after{height:1px;background:var(--ink-2);opacity:.22}
+.p084-slash{display:inline-flex;align-items:center;gap:10px;flex:none;font-size:clamp(15px,1.5vw,20px);font-weight:900;color:var(--ink-2);white-space:nowrap}
+.p084-slash .bar{position:relative;width:4px;height:26px;background:var(--ink-2);transform:rotate(11.7deg);flex:none;display:block}
+.p084-slash .bar b{position:absolute;top:0;left:0;width:6px;height:6px;background:var(--accent);display:block}
+.p084-arrow{width:34px;height:34px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;color:#F9FEFE;flex:none;transform:rotate(-32deg)}
+.p084-arrow svg{width:16px;height:16px}
+.hero-en-note{font-family:var(--stroke);font-size:14px;line-height:1.5;letter-spacing:.01em;color:var(--ink-2);opacity:.62;margin:0 0 12px;text-transform:uppercase}
+.p084-bracketed{position:relative;display:inline-block;padding:0 26px}
+.p084-bracketed:before,.p084-bracketed:after{content:"";position:absolute;width:15px;height:15px;border:2px solid var(--ink-2);opacity:.85;pointer-events:none}
+.p084-bracketed:before{left:0;top:.18em;border-right:0;border-bottom:0;border-radius:5px 0 0 0}
+.p084-bracketed:after{right:0;bottom:.18em;border-left:0;border-top:0;border-radius:0 0 5px 0}
+#hero .tag{border:0;box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.55)}
+.cta-row{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .25s var(--ease),background .25s,border-color .25s,color .25s}
+.btn svg{width:14px;height:14px;flex:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink);color:#fff}
+
+/* monitor — 复诊闭环状态看板 */
+.monitor{position:relative;z-index:1;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:0 32px 70px -44px rgba(51,51,51,.32)}
+.monitor-dots{display:flex;gap:6px;margin-bottom:18px}
+.monitor-dots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.12}
+.monitor-dots i:first-child{opacity:.55}.monitor-dots i:nth-child(2){opacity:.24}
+.monitor-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+.monitor-head strong{font-size:15px}.monitor-head span{font-size:12px;color:var(--faint);letter-spacing:.08em}
+.state-flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.sflow{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2);cursor:pointer;transition:border-color .22s,background .22s;text-align:left}
+.sflow:hover{border-color:var(--accent)}
+.sflow.on{border-color:var(--accent);background:var(--accent-soft)}
+.sflow h4{font-size:15px;font-weight:700}
+.sflow .en{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px;font-family:var(--num)}
+.sflow .st{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:14px}
+.sflow .st i{width:7px;height:7px;border-radius:50%;background:#B2B8B9;display:inline-block;flex:none}
+.sflow.on .st i{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.mini-note{border-top:1px dashed var(--line);margin-top:20px;padding-top:14px;font-size:12px;color:var(--muted);line-height:1.8}
+
+/* marquee */
+.marquee{border-top:1px solid var(--line);border-bottom:0;padding:20px 0;background:var(--surface)}
+.marquee-track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 40px;width:100%}
+.mq{font-size:12px;letter-spacing:.14em;color:var(--muted);white-space:nowrap;font-weight:700;font-family:var(--body)}
+.mq b{color:var(--ink);font-weight:900}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.45;flex:none}
+
+/* sections */
+section{padding:104px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
+section.tight{padding:88px 0}
+section.band{position:relative;background:var(--surface-2);box-shadow:0 0 0 100vmax var(--surface-2);clip-path:inset(0 -100vmax)}
+.sec-head{display:grid;grid-template-columns:190px minmax(0,1fr);gap:40px;margin-bottom:54px;align-items:start}
+.sec-head .idx{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:10px;display:flex;align-items:center;gap:10px}
+.sec-head .idx:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:var(--r-pill);flex:none}
+.sec-head h2{font-family:var(--body);font-size:clamp(24px,2.5vw,32px);font-weight:900;line-height:1.2;max-width:26ch}
+.sec-head p{color:var(--muted);font-size:15px;max-width:62ch;margin-top:16px;line-height:1.9}
+
+/* pitch */
+.quote{border-left:5px solid var(--accent);padding:14px 0 14px 34px;font-size:clamp(20px,2vw,26px);line-height:1.5;max-width:42ch;font-weight:700;letter-spacing:-.01em}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:60px;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.stat{padding:28px 24px 22px;border-right:1px solid var(--line)}
+.stat:nth-child(5n){border-right:0}
+.stat:first-child{background:var(--accent);border-color:var(--accent)}
+.stat:first-child b,.stat:first-child span{color:#fff}
+.stat:first-child span{opacity:.8}
+.stat b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;font-family:var(--num);line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+
+/* two column */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:80px}
+.prose p{font-size:15px;color:var(--ink-2);line-height:1.5;margin-bottom:22px}
+.constraint{display:grid;grid-template-columns:40px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
+.constraint:last-of-type{border-bottom:1px solid var(--line)}
+.constraint b{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:4px}
+.constraint strong{font-size:15px;font-weight:700}
+.constraint p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:5px}
+.callout{margin-top:36px;border-left:3px solid var(--accent);padding:16px 0 16px 22px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+
+/* role table */
+.role-table{border-top:1px solid var(--line)}
+.role-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);transition:background .2s}
+.role-row:hover{background:rgba(46,110,95,.05)}
+.role-row>div{padding:20px 24px;font-size:13px;line-height:1.85}
+.role-row>div:first-child{border-right:1px solid var(--line)}
+.role-row .label{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:5px;font-family:var(--body)}
+
+/* decisions */
+.dec{border-top:1px solid var(--line);border-radius:2px}
+.dec:last-child{border-bottom:1px solid var(--line)}
+.dec-head{width:100%;display:grid;grid-template-columns:56px 1fr 30px;align-items:center;gap:14px;text-align:left;background:none;border:0;padding:24px 10px;cursor:pointer;transition:background .25s}
+.dec-head:hover{background:linear-gradient(90deg,rgba(46,110,95,.07),transparent 60%)}
+.dec-num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;font-family:var(--num)}
+.dec-title{font-size:17px;font-weight:700;transition:color .2s}
+.dec-head:hover .dec-title{color:var(--accent)}
+.dec-sign{font-size:22px;color:var(--faint);text-align:center;line-height:1}
+.dec-body{display:none;padding:0 10px 30px 70px;max-width:88ch}
+.dec.open .dec-body{display:block;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dec-field{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:8px 0;font-size:13px;line-height:1.9}
+.dec-field b{font-size:12px;color:var(--muted);font-weight:700;padding-top:3px;letter-spacing:.04em}
+.dec-field.pick b{color:var(--accent)}
+.dec-field.pick span{background:var(--accent-soft);border-radius:var(--r-sm);padding:6px 12px;margin:-6px 0 2px -12px;display:inline-block}
+
+/* flow */
+.phases{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:28px}
+.phase{border-top:3px solid var(--accent);padding-top:20px}
+.phase.mid{border-color:#8FB5A8}
+.phase.end{border-color:#B2B8B9}
+.phase h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between}
+.phase h3 span{font-size:11px;color:var(--faint);font-family:var(--num);letter-spacing:.1em}
+.step{display:flex;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.step i{font-style:normal;font-size:11px;color:var(--accent);font-family:var(--num);width:20px;flex:none}
+.bypass{margin-top:28px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r-md);padding:16px 20px;line-height:1.9}
+
+/* gallery */
+.gal-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:26px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:var(--r-pill);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:10px 16px;font-size:12px;width:230px;outline:none;transition:border-color .25s}
+.search:focus{border-color:var(--accent)}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.shot{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);overflow:hidden;text-align:left;padding:0;cursor:pointer;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
+.shot.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.shot:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px -30px rgba(51,51,51,.5)}
+.shot:active{transform:translateY(-1px)}
+.thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(100deg,#E6E3DE 25%,#F5F3F0 45%,#E6E3DE 65%);background-size:220% 100%;animation:shimmer 1.5s linear infinite;overflow:hidden;display:grid;place-items:center}
+@keyframes shimmer{to{background-position:-220% 0}}
+.thumb img{height:100%;width:auto;max-width:100%;object-fit:contain;opacity:0;transition:opacity .45s,transform .6s var(--ease)}
+.shot:hover .thumb img{transform:scale(1.02)}
+.thumb.loaded img{opacity:1}
+.thumb.loaded{animation:none;background:#FFFFFF}
+.shot.feature .shot-meta strong{font-size:15px}
+.shot-meta{padding:14px 16px 16px}
+.shot-meta strong{display:block;font-size:13px;font-weight:700}
+.shot-meta span{font-size:12px;color:var(--faint)}
+.empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:var(--r-md);padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;background:var(--surface)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:8px}
+.lightbox{position:fixed;inset:0;background:rgba(51,51,51,.94);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(1240px,92vw);max-height:76vh;border-radius:var(--r-sm);background:#fff}
+.lb-bar{display:flex;align-items:center;gap:14px;color:#EDEAE5;font-size:12px;flex-wrap:wrap;justify-content:center}
+.lb-bar button{border:1px solid rgba(255,255,255,.28);background:transparent;color:#EDEAE5;border-radius:var(--r-pill);padding:8px 16px;cursor:pointer;transition:border-color .2s}
+.lb-bar button:hover{border-color:#fff}
+
+/* demo — 复诊链路状态机 */
+.demo-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px}
+.panel h3{font-size:17px;font-weight:700;margin-bottom:5px}
+.panel .hint{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.8}
+.step-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.step-tab{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.step-tab:hover{border-color:var(--accent);color:var(--accent)}
+.step-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-view{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:18px;align-items:center}
+.step-shot{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);padding:10px;display:grid;place-items:center;min-height:240px}
+.step-shot img{max-height:280px;width:auto;max-width:100%;border-radius:10px;background:#fff}
+.step-info b{display:block;font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:8px;font-family:var(--num)}
+.step-info h4{font-size:18px;font-weight:700;margin-bottom:10px}
+.step-info p{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px}
+.step-info .kv{font-size:12px;line-height:1.85;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:12px}
+.step-info .kv em{font-style:normal;color:var(--accent);font-weight:700}
+.side-stack{display:flex;flex-direction:column;gap:24px}
+.log{list-style:none;margin:14px 0 0;padding:0;max-height:300px;overflow:auto}
+.log li{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px;line-height:1.6}
+.log time{font-family:var(--num);color:var(--accent);flex:none}
+.rule-note{font-size:12px;color:var(--muted);line-height:1.9;border-left:3px solid var(--accent);padding:6px 0 6px 16px}
+
+/* evidence */
+.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:72px}
+.ev-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.ev-table thead th{background:var(--surface-2)}
+.ev-table th,.ev-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft)}
+.ev-table tr:last-child td{border-bottom:0}
+.ev-table tbody tr:hover{background:var(--surface-2)}
+.ev-table th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.ev-table td:last-child,.ev-table th:last-child{text-align:right;font-family:var(--num)}
+.pass{color:var(--ok);font-weight:700}
+.fix{list-style:none;padding:0;margin:0}
+.fix li{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.9}
+.fix b{font-size:12px;color:var(--accent);font-family:var(--num);font-weight:900}
+.boundary{margin-top:44px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:30px 32px;font-size:13px;line-height:2;color:var(--ink-2)}
+.boundary strong{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:44px 0 72px;font-size:12px;color:var(--muted);line-height:2;background:var(--surface-2)}
+.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-row a{color:var(--ink);font-weight:700}
+
+/* responsive */
+@media(max-width:1200px){.shell{padding:0 36px}.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1080px){
+  #hero{grid-template-columns:1fr;gap:48px;padding:64px 0 84px}
+  .hero-title{max-width:16ch}.monitor{max-width:640px}
+  .two,.ev-grid{grid-template-columns:1fr;gap:40px}
+  .demo-grid{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:10px}.sec-head .idx{padding-top:0}
+}
+@media(max-width:860px){
+  .shell{padding:0 22px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  section{padding:76px 0}section.tight{padding:64px 0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(2n){border-right:0}.stat:last-child{border-bottom:0}
+  .phases{grid-template-columns:1fr;gap:30px}
+  .role-row{grid-template-columns:1fr}
+  .role-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .dec-body{padding-left:10px}.dec-field{grid-template-columns:1fr;gap:0}
+  .dec-field.pick span{margin:4px 0 2px}
+  .gal-tools{align-items:stretch;flex-direction:column}.search{width:100%}
+  .quote{padding-left:22px}
+  .step-view{grid-template-columns:1fr}.step-shot{min-height:200px}
+  .state-flow{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .top-links{display:none}.gallery{grid-template-columns:1fr;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="topbar"><div class="shell topbar-in">
+  <div class="brand"><span class="brand-mark">R</span>瑞合祥互联网医院 APP · 设计案例</div>
+  <nav class="top-links">
+    <a href="#context">背景</a><a href="#decisions">关键决策</a><a href="#gallery">界面证据</a><a href="#demo">链路演示</a>
+  </nav>
+</div></header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section id="hero">
+    <div class="hero-col">
+      <div class="eyebrow-row">
+        <span class="p084-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="eyebrow">RHY · INTERNET HOSPITAL / 01</span>
+        <span class="p084-slash" aria-hidden="true"><span class="bar"><b></b></span>双端协同</span>
+      </div>
+      <p class="hero-en-note">Reconstruct the follow-up visit.<br>Make every step traceable.</p>
+      <h1 class="hero-title"><span class="p084-bracketed">把线上复诊，<em>做成一条可核对的闭环。</em></span></h1>
+      <p class="hero-sub">一款面向中医复诊场景的双端 APP：患者端完成问诊与购药，医生端完成接诊与开方。我用一套同构的信息结构，把「资质核验—问诊—开方—履约」四段流程串成可确认、可追溯的路径。</p>
+      <div class="hero-meta">
+        <span class="tag">互联网医疗</span><span class="tag">双端 APP</span><span class="tag">复诊续方</span><span class="tag">瑞合祥</span>
+        <span class="p084-kr" aria-hidden="true">RHY</span>
+        <span class="p084-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#decisions">查看设计决策 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#gallery">浏览界面证据</a>
+      </div>
+    </div>
+    <aside class="monitor" aria-label="复诊闭环状态看板">
+      <div class="monitor-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="monitor-head"><strong>复诊闭环 · 四段状态</strong><span class="mono">FOLLOW-UP LOOP</span></div>
+      <div class="state-flow" id="stateFlow">
+        <button class="sflow on" data-flow="0"><h4>资质核验</h4><div class="en">01 / QUALIFY</div><div class="st"><i></i>实体机构病历前置</div></button>
+        <button class="sflow" data-flow="1"><h4>在线问诊</h4><div class="en">02 / CONSULT</div><div class="st"><i></i>问诊单双端同构</div></button>
+        <button class="sflow" data-flow="2"><h4>诊断开方</h4><div class="en">03 / PRESCRIBE</div><div class="st"><i></i>辨病辨证结构化</div></button>
+        <button class="sflow" data-flow="3"><h4>方案履约</h4><div class="en">04 / FULFIL</div><div class="st"><i></i>订单状态可追溯</div></button>
+      </div>
+      <div class="mini-note" id="flowNote">设计取舍：把「是否有实体机构诊断」做成不可跳过的确认动作——多一次点击，换取每一步的责任边界清晰。</div>
+    </aside>
+  </section>
+
+  <div class="marquee"><div class="shell marquee-track">
+    <span class="mq"><b>96</b> 张界面稿</span><span class="mq-dot"></span>
+    <span class="mq"><b>47 + 49</b> 双端分布</span><span class="mq-dot"></span>
+    <span class="mq"><b>750×1624</b> @2x 基准</span><span class="mq-dot"></span>
+    <span class="mq"><b>10</b> 科室入口</span><span class="mq-dot"></span>
+    <span class="mq"><b>5</b> 态订单</span><span class="mq-dot"></span>
+    <span class="mq"><b>2</b> 级助理权限</span>
+  </div></div>
+
+  <!-- ============ 定位 ============ -->
+  <section id="pitch" class="tight">
+    <div class="sec-head reveal"><div class="idx">02 / 定位</div><div>
+      <h2>一句话说清这个作品</h2>
+      <p>从 96 张界面稿中归纳设计命题，再逐段拆解我做的选择。所有数字均来自画面与文件名清点，口径在文末统一说明。</p>
+    </div></div>
+    <div class="quote reveal d1">把线下复诊的严谨，翻译成手机屏幕上可确认、可追溯的每一步。</div>
+    <div class="stats reveal d2">
+      <div class="stat"><b>96</b><span>界面稿总数</span></div>
+      <div class="stat"><b>2</b><span>患者端 + 医生端</span></div>
+      <div class="stat"><b>10</b><span>科室服务入口</span></div>
+      <div class="stat"><b>5</b><span>订单状态枚举</span></div>
+      <div class="stat"><b>2</b><span>助理权限级别</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 背景 ============ -->
+  <section id="context">
+    <div class="sec-head reveal"><div class="idx">03 / 背景</div><div>
+      <h2>真实场景与三条设计约束</h2>
+      <p>约束不是我假设的，而是界面原文反复出现的业务边界：线上只服务复诊、两端必须信息对称、处方剂量必须结构化。</p>
+    </div></div>
+    <div class="two">
+      <div class="prose reveal">
+        <p>互联网医院的产品难点不在「画一个问诊页」，而在把诊疗规则转译成界面动作：谁能开方、凭什么开方、开了什么、患者是否确认、药房如何换算。任何一环含糊，都会让复诊这件事失真。</p>
+        <p>我从两端 96 张稿里抽出三条反复出现的约束，作为后续所有决策的判断依据。</p>
+        <div class="callout">设计不改写诊疗含义——只负责把原文信息分层、分组、变得可读、可确认。</div>
+      </div>
+      <div class="reveal d1">
+        <div class="constraint"><b>C1</b><div><strong>复诊资质必须前置</strong><p>界面原文声明「仅适用于常见病、慢性病复诊」，并要求提供实体机构诊断证明——资质判断是入口，不是补充。</p></div></div>
+        <div class="constraint"><b>C2</b><div><strong>两端信息必须同源</strong><p>患者自述的身高、过敏史、既往病史，医生侧要原样看到；任一端口径不同都会造成判断偏差。</p></div></div>
+        <div class="constraint"><b>C3</b><div><strong>处方剂量必须结构化</strong><p>饮片与颗粒、剂数与每日次数、自主煎煮 vs 药房换算，都需要明确字段与单位，不能靠自由文本。</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 职责 ============ -->
+  <section id="role" class="tight band">
+    <div class="sec-head reveal"><div class="idx">04 / 职责</div><div>
+      <h2>我负责什么，产品给定什么</h2>
+      <p>先划清边界，再谈方法——避免把业务规则当成设计发明。</p>
+    </div></div>
+    <div class="role-table reveal d1">
+      <div class="role-row"><div><span class="label">我负责 · DESIGN</span>双端信息架构与导航结构<br>问诊单、诊疗方案确认、在线开方流程<br>订单 / 退款状态体系与助理权限模型<br>96 张界面的视觉语言与组件规范</div>
+      <div><span class="label">给定 · GIVEN</span>诊疗规则与免责声明文案<br>科室、药材、药品等业务数据<br>主体称谓、协议与政策文本<br>复诊资质的判定结论</div></div>
+      <div class="role-row"><div><span class="label">关键动作 · ACTION</span>把「确认」做成阻断式弹窗<br>把「问诊单」做成两端同构字段集<br>把「开方」拆成辨病 / 辨证 / 药材 / 用法四段<br>把「等待」做成可解释的排队状态</div>
+      <div><span class="label">取舍原则 · TRADE-OFF</span>安全动作宁可多一步确认<br>信息同构优先于单端最优<br>高频操作优先用模板复用<br>状态透明优先于界面简洁</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 决策 ============ -->
+  <section id="decisions">
+    <div class="sec-head reveal"><div class="idx">05 / 决策</div><div>
+      <h2>七个关键决策</h2>
+      <p>每个决策写清四件事：冲突是什么、有哪些备选、我选了什么、代价是什么。点开查看。</p>
+    </div></div>
+    <div id="dec-list">
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D1</span><span class="dec-title">资质核验：直接开方，还是阻断式确认</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>线上复诊的前提是患者已有实体机构诊断，但入口若不设卡，用户会把它当成首诊平台。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 首页弹一次免责声明；B. 开方前由医生口头确认；C. 诊疗方案页做阻断式确认弹窗并勾选同意书。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>C —— 把「确认实体机构已有该诊断」放到查看处方之前，与风险告知同意书同屏勾选。</span></div>
+        <div class="dec-field"><b>代价</b><span>每位患者多一次弹窗与勾选；对熟客是重复动作。换来的是责任边界在界面上可见、可留痕。</span></div>
+        <div class="dec-field"><b>依据</b><span>「诊疗方案 确认」页；「我的病例-上传实体病例」双授权勾选。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D2</span><span class="dec-title">问诊单：两端各做一套，还是同构字段集</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>患者填的病史与医生看到的资料若字段不同，会出现「患者填了、医生没看到」的信息断层。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 患者端轻量、医生端详细，后端做映射；B. 两端共用同一套字段，按角色只改呈现密度。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 身高体重、过敏史、既往病史、患者自述、实体病历、四个问诊问题，两端一字不差。</span></div>
+        <div class="dec-field"><b>代价</b><span>患者端表单比极简方案长；我用「预填示例 + 分组」降低填写负担，而不是删字段。</span></div>
+        <div class="dec-field"><b>依据</b><span>用户端与医生端各一张「问诊单.png」，字段与示例数据完全一致。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D3</span><span class="dec-title">视频等待：转圈提示，还是可解释的排队卡</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>视频问诊需按顺序叫号，未到号时用户面对空白或 spinner 无法判断还要等多久。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 通用加载动画；B. 显示排队位置的品牌等待页；C. 直接提示「稍后通知」关闭页面。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 展示预约时间、就诊排序、预计排到时间，配品牌视觉与「退出诊室」。</span></div>
+        <div class="dec-field"><b>代价</b><span>多一层排队状态的开发；换来的是等待从焦虑变成可预期。</span></div>
+        <div class="dec-field"><b>依据</b><span>「视频诊室」页：未达到视频时间 + 预约 4.21 周五 21:30 起 + 就诊排序第一位 + 预计 21:30 排到您。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D4</span><span class="dec-title">开方效率：逐味手输，还是模板复用</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>中医开方药味多、剂量单位杂，逐味录入拖慢高频复诊，也提高出错概率。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 纯手工录入；B. 常用方模板 + 颗粒模版，支持分类、搜索与调用后编辑。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 处方模板与颗粒模板都做「分类 / 搜索 / 新建 / 调用后编辑」。开方页提供「导入处方」「存模版」。</span></div>
+        <div class="dec-field"><b>代价</b><span>模板内容需要维护，且要处理「纸电药名可能不同」的说明；换来的是复诊开方从录入变为核对。</span></div>
+        <div class="dec-field"><b>依据</b><span>「处方模板」「处方草稿-颗粒模版」「新建颗粒模版」「快捷回复」共 8 张页面。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D5</span><span class="dec-title">剂量表达：自由文本，还是结构化字段</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>「3 剂、每日 1 剂、分 2 次服」这类信息若写成一句话，患者容易误读，药房也难以换算。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 医嘱文本框自由填写；B. 剂型 / 剂数 / 每日次数 / 服用时段拆成独立字段，并标注药房自动换算。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 内服/外用、饮片/颗粒、共 N 剂、每日 N 剂、分 N 次服用各自独立，配「药房自动转换」说明。</span></div>
+        <div class="dec-field"><b>代价</b><span>表单更长、字段必须填全；换来的是剂量从「读一句话」变成「核对几个值」。</span></div>
+        <div class="dec-field"><b>依据</b><span>「在线开方」页用法区与「精确剂量请按药品用量开出，药房将自动转换」原文。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D6</span><span class="dec-title">助理协作：单账号共用，还是两级权限</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>医生需要助理协助处理问诊与模板，但助理不应能改处方或独立复诊。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 共用医生账号；B. 助理独立账号，分初级与高级两档能力。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 初级：使用问诊单 / 编辑药房模板；高级：查看对话 / 编辑处方 / 复诊与处方设置。</span></div>
+        <div class="dec-field"><b>代价</b><span>多一层授权配置与账号管理；换来的是能力边界在界面上逐条列明。</span></div>
+        <div class="dec-field"><b>依据</b><span>「助理账号-权限设置」页：初级、高级两档权限逐项列出。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D7</span><span class="dec-title">订单状态：一个「已完成」，还是五态细分</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>药品履约涉及支付、自取/邮寄、退款，单一状态无法回答「到哪一步了」「还能做什么」。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 笼统的完成/未完成；B. 待支付、未完成、已完成、已取消、退款五态，退款再细分原因。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 五态订单 + 五种退款原因，且「未完成」另做自取变体。</span></div>
+        <div class="dec-field"><b>代价</b><span>状态机与页面数量增加（仅订单详情就有 6 张稿）；换来的是每个状态都有明确下一步。</span></div>
+        <div class="dec-field"><b>依据</b><span>「订单详情」系列 6 张 + 「订单-申请退款-退款原因」5 项原因。</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ 流程 ============ -->
+  <section id="flow" class="tight">
+    <div class="sec-head reveal"><div class="idx">06 / 流程</div><div>
+      <h2>一条不断线的复诊闭环</h2>
+      <p>三段主流程对应三种用户目标，旁路流程处理视频问诊与团队协作。</p>
+    </div></div>
+    <div class="phases">
+      <div class="phase reveal"><h3>复诊前 · 建立资质<span>PHASE A</span></h3>
+        <div class="step"><i>01</i>首页 10 科室宫格，进入对应科室</div>
+        <div class="step"><i>02</i>医生列表筛选 → 医生主页</div>
+        <div class="step"><i>03</i>选择就诊方式（图文 / 视频）</div>
+        <div class="step"><i>04</i>上传实体机构病历并双授权</div>
+        <div class="step"><i>05</i>填写问诊单（身高体重 / 过敏 / 既往 / 自述）</div>
+      </div>
+      <div class="phase mid reveal d1"><h3>复诊中 · 诊断开方<span>PHASE B</span></h3>
+        <div class="step"><i>01</i>医生端查看同构问诊单</div>
+        <div class="step"><i>02</i>填写辨病 / 辨证</div>
+        <div class="step"><i>03</i>选方或调用颗粒 / 处方模板</div>
+        <div class="step"><i>04</i>设用法：剂型 / 剂数 / 次数 / 医嘱</div>
+        <div class="step"><i>05</i>存草稿，或签名确认发送患者</div>
+      </div>
+      <div class="phase end reveal d2"><h3>复诊后 · 方案履约<span>PHASE C</span></h3>
+        <div class="step"><i>01</i>患者诊断确认 + 勾选同意书</div>
+        <div class="step"><i>02</i>查看处方，选择自取 / 邮寄</div>
+        <div class="step"><i>03</i>确认订单并提交</div>
+        <div class="step"><i>04</i>订单五态流转 / 退款五因</div>
+        <div class="step"><i>05</i>评价与我的订单回溯</div>
+      </div>
+    </div>
+    <div class="bypass reveal">旁路流程：视频问诊走「预约信息 → 选时间 → 视频诊室排队卡」；医生认证走「正脸照与资质 → 选择擅长（最多 20 项）→ 第二步」；助理协作按初级 / 高级两级授权；药品履约在云药房完成，支持图文支付与电话支付。</div>
+  </section>
+
+  <!-- ============ 证据 ============ -->
+  <section id="gallery">
+    <div class="sec-head reveal"><div class="idx">07 / 证据</div><div>
+      <h2>20 张关键界面，按五个功能组查看</h2>
+      <p>从 96 张稿中挑选覆盖主流程与关键决策的 20 张；点开看大图，可筛选、可搜索。</p>
+    </div></div>
+    <div class="gal-tools reveal">
+      <div class="filters" id="filters">
+        <button class="chip on" data-group="all">全部 20</button>
+        <button class="chip" data-group="entry">入口发现</button>
+        <button class="chip" data-group="consult">诊疗问诊</button>
+        <button class="chip" data-group="order">药品履约</button>
+        <button class="chip" data-group="doctor">医生工作台</button>
+        <button class="chip" data-group="mine">个人中心</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="搜索界面名称…" aria-label="搜索界面名称">
+    </div>
+    <div class="gallery reveal d1" id="gallery-grid"></div>
+  </section>
+
+  <!-- ============ 演示 ============ -->
+  <section id="demo">
+    <div class="sec-head reveal"><div class="idx">08 / 演示</div><div>
+      <h2>把复诊链路跑一遍</h2>
+      <p>点击任一步，查看对应界面与这一步的设计取舍；右侧记录按顺序推进的动作。</p>
+    </div></div>
+    <div class="demo-grid">
+      <div class="panel reveal">
+        <h3>四段链路 · 逐步查看</h3>
+        <p class="hint">演示使用设计稿示例数据，不代表真实患者或真实处方。</p>
+        <div class="step-tabs" id="stepTabs">
+          <button class="step-tab on" data-step="0">01 资质核验</button>
+          <button class="step-tab" data-step="1">02 在线问诊</button>
+          <button class="step-tab" data-step="2">03 诊断开方</button>
+          <button class="step-tab" data-step="3">04 方案履约</button>
+        </div>
+        <div class="step-view" id="stepView">
+          <div class="step-shot"><img id="stepImg" src="ruihe-screens/u-case.jpg" alt="上传实体机构病例界面"></div>
+          <div class="step-info">
+            <b id="stepEn">01 / QUALIFY</b><h4 id="stepTitle">上传实体机构病历</h4>
+            <p id="stepDesc">复诊资格不是一句声明，而是一份可上传的材料。双授权勾选把「材料归属」与「医生可用范围」拆成两个明确动作。</p>
+            <div class="kv" id="stepKv">界面证据：<em>我的病例 - 上传实体病例</em><br>设计取舍：多一次授权，换取责任边界清晰。</div>
+          </div>
+        </div>
+      </div>
+      <div class="side-stack reveal d1">
+        <div class="panel">
+          <h3>动作轨迹</h3><p class="hint">点击左侧步骤，轨迹按顺序追加。</p>
+          <ul class="log" id="log"></ul>
+        </div>
+        <div class="panel">
+          <h3>为什么这样做</h3><p class="hint">链路设计的三条判断依据。</p>
+          <div class="rule-note">① 每一步都留一个可确认动作，而不是默认通过。<br>② 信息一次录入、两端复用，避免重复填写与口径漂移。<br>③ 状态与排队位置外显，让等待可预期。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 验证 ============ -->
+  <section id="evidence" class="tight">
+    <div class="sec-head reveal"><div class="idx">09 / 验证</div><div>
+      <h2>可核查的结论与复盘</h2>
+      <p>左侧是能从设计稿直接核对的事实；右侧是如果重做，我会先处理的事。</p>
+    </div></div>
+    <div class="ev-grid">
+      <div class="ev-table-wrap reveal">
+        <table class="ev-table">
+          <thead><tr><th>核查项</th><th>口径</th><th>结果</th></tr></thead>
+          <tbody>
+            <tr><td>界面覆盖</td><td>文件名清点</td><td class="pass">96 张 · PASS</td></tr>
+            <tr><td>双端分布</td><td>目录清点</td><td class="pass">47 + 49 · PASS</td></tr>
+            <tr><td>问诊单同构</td><td>两端逐字段比对</td><td class="pass">字段一致 · PASS</td></tr>
+            <tr><td>订单状态枚举</td><td>订单详情页清点</td><td class="pass">5 态 · PASS</td></tr>
+            <tr><td>退款原因枚举</td><td>退款页清点</td><td class="pass">5 项 · PASS</td></tr>
+            <tr><td>助理权限分级</td><td>权限设置页清点</td><td class="pass">2 级 · PASS</td></tr>
+            <tr><td>底部导航</td><td>两端首页清点</td><td class="pass">各 4 项 · PASS</td></tr>
+            <tr><td>主体称谓一致性</td><td>三处界面文案比对</td><td>详见下方说明</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reveal d1">
+        <ul class="fix">
+          <li><b>01</b><div>示例数据：医生列表多张卡片示例文案重复、颗粒模板药材重复粘贴——若重做，先统一一套示例数据再出稿。</div></li>
+          <li><b>02</b><div>文案校对：个别页面存在断句与错字（如「处方办法」「转账顺序」）——统一润色，不改诊疗含义。</div></li>
+          <li><b>03</b><div>异常态补齐：空列表、网络失败、上传失败、支付中断四类状态在设计稿中未见——列为后续补充项。</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="boundary reveal">口径与边界说明：本文所有数字均来自 96 张设计稿的画面与文件名清点，<strong>不含真实运营数据</strong>。界面中出现三种主体称谓（「瑞合祥」「瑞和祥云药房」「平安正阳中医互联网医院」），作品中按界面原文保留，实际发布以项目主体资料为准统一。<strong>【待补充：上线后的业务指标、真实用户访谈与可用性测试数据】</strong>——未获得可核查数据前，不虚构转化与效率数值。</div>
+  </section>
+</main>
+
+<footer><div class="shell foot-row">
+  <div>瑞合祥互联网医院 APP · 双端 UI/UX 设计 · 复诊续方<br>作品分析依据：96 张 750×1624 @2x 界面稿、界面原文与文件名清点。</div>
+  <div>吕孝冬 · 10 年 UI/UX 设计 · 医疗器械 HMI / 复杂系统<br><a href="#hero">返回顶部 ↑</a></div>
+</div></footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="界面大图">
+  <img id="lb-img" alt="界面大图">
+  <div class="lb-bar"><button id="lb-prev">上一张</button><span class="mono" id="lb-count"></span><span id="lb-name"></span><button id="lb-next">下一张</button><button id="lb-close">关闭 Esc</button></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* hero 背景层高度同步 */
+  var heroEl=document.querySelector('#hero');
+  var syncHeroH=function(){ if(heroEl) document.documentElement.style.setProperty('--hero-h',Math.ceil(heroEl.getBoundingClientRect().height)+'px'); };
+  syncHeroH();
+  window.addEventListener('resize',syncHeroH,{passive:true});
+
+  /* scroll progress */
+  var progress=document.getElementById('progress');
+  var onScroll=function(){ var h=document.documentElement.scrollHeight-window.innerHeight; progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%'; };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  /* reveal */
+  if('IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+  } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');}); }
+
+  /* nav spy */
+  var navLinks=document.querySelectorAll('.top-links a');
+  if('IntersectionObserver' in window && navLinks.length){
+    var spy=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){navLinks.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id);});}});},{rootMargin:'-38% 0px -55% 0px'});
+    ['context','decisions','gallery','demo'].forEach(function(id){var el=document.getElementById(id);if(el)spy.observe(el);});
+  }
+
+  /* hero 状态看板 */
+  var flowNotes=[
+    '设计取舍：把「是否有实体机构诊断」做成不可跳过的确认动作——多一次点击，换取每一步的责任边界清晰。',
+    '设计取舍：问诊单两端共用同一套字段，按角色只改呈现密度——牺牲单端极简，换取信息对称。',
+    '设计取舍：开方拆成辨病 / 辨证 / 药材 / 用法四段，并提供模板复用——录入变核对，代价是字段更完整。',
+    '设计取舍：订单五态 + 退款五因，状态外显——页面数量增加，换来每一步都有明确下一步。'
+  ];
+  document.querySelectorAll('.sflow').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.sflow').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on');
+      document.getElementById('flowNote').textContent=flowNotes[Number(btn.dataset.flow)];
+    });
+  });
+
+  /* 决策手风琴 */
+  document.querySelectorAll('.dec-head').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var item=btn.parentElement,willOpen=!item.classList.contains('open');
+      document.querySelectorAll('.dec').forEach(function(d){d.classList.remove('open');d.querySelector('.dec-head').setAttribute('aria-expanded','false');d.querySelector('.dec-sign').textContent='+';});
+      if(willOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');btn.querySelector('.dec-sign').textContent='−';}
+    });
+  });
+
+  /* 图库 */
+  var shots=[
+    ['用户端 · 首页','entry','u-home',1],['专家医生列表','entry','u-doctors',0],['医生主页','entry','u-doctor',0],
+    ['问诊资料 · 患者填写','consult','u-intake',1],['诊疗方案 · 诊断确认','consult','u-plan',1],['视频诊室 · 排队等待','consult','u-video',0],['上传实体机构病例','consult','u-case',0],['问诊资料 · 医生查看','consult','d-intake',0],
+    ['云药房','order','u-pharmacy',0],['药品详情','order','u-drug',0],['确认订单 · 自取','order','u-order',1],['申请退款 · 原因','order','u-refund',0],
+    ['医生端 · 首页','doctor','d-home',1],['在线开方','doctor','d-prescribe',1],['颗粒模版','doctor','d-template',0],['患者档案','doctor','d-patient',0],['医生认证 · 选择擅长','doctor','d-verify',0],['助理账号 · 权限设置','doctor','d-assistant',1],['已开处方','doctor','d-prescriptions',0],
+    ['用户端 · 个人中心','mine','u-profile',0]
+  ];
+  var gname={entry:'入口发现',consult:'诊疗问诊',order:'药品履约',doctor:'医生工作台',mine:'个人中心'};
+  var gallery=document.getElementById('gallery-grid'),search=document.getElementById('search'),active='all',visible=[];
+  function renderGallery(){
+    var q=(search.value||'').trim().toLowerCase();
+    visible=shots.filter(function(s){return (active==='all'||s[1]===active)&&(!q||s[0].toLowerCase().indexOf(q)>=0);});
+    gallery.innerHTML='';
+    if(!visible.length){
+      var e=document.createElement('div');e.className='empty';e.innerHTML='<b>没有匹配的界面</b>试试功能组标签，或清空关键词后重试。';gallery.appendChild(e);return;
+    }
+    visible.forEach(function(s,i){
+      var btn=document.createElement('button');btn.className='shot'+(s[3]?' feature':'');
+      btn.setAttribute('aria-label','查看界面：'+s[0]);
+      btn.innerHTML='<span class="thumb"><img loading="lazy" src="ruihe-screens/'+s[2]+'.jpg" alt="'+s[0]+'"></span><span class="shot-meta"><strong>'+s[0]+'</strong><span>'+gname[s[1]]+' · 750×1624</span></span>';
+      var img=btn.querySelector('img'),mark=function(){btn.querySelector('.thumb').classList.add('loaded');};
+      if(img.complete)mark();else{img.addEventListener('load',mark);img.addEventListener('error',mark);}
+      btn.addEventListener('click',function(){openLb(i);});
+      gallery.appendChild(btn);
+    });
+  }
+  document.getElementById('filters').addEventListener('click',function(e){
+    var c=e.target.closest('.chip');if(!c)return;active=c.dataset.group;
+    document.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===c);});renderGallery();
+  });
+  search.addEventListener('input',renderGallery);
+  renderGallery();
+
+  /* 灯箱 */
+  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lb-img'),idx=0;
+  function paintLb(){var s=visible[idx];if(!s)return;lbImg.src='ruihe-screens/'+s[2]+'.jpg';lbImg.alt=s[0];
+    document.getElementById('lb-count').textContent=(idx+1)+' / '+visible.length;document.getElementById('lb-name').textContent=s[0];}
+  function openLb(i){idx=i;paintLb();lb.classList.add('open');}
+  function closeLb(){lb.classList.remove('open');}
+  document.getElementById('lb-close').addEventListener('click',closeLb);
+  document.getElementById('lb-prev').addEventListener('click',function(){idx=(idx-1+visible.length)%visible.length;paintLb();});
+  document.getElementById('lb-next').addEventListener('click',function(){idx=(idx+1)%visible.length;paintLb();});
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
+  document.addEventListener('keydown',function(e){
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLb();
+    if(e.key==='ArrowLeft'){idx=(idx-1+visible.length)%visible.length;paintLb();}
+    if(e.key==='ArrowRight'){idx=(idx+1)%visible.length;paintLb();}
+  });
+
+  /* 链路演示 */
+  var steps=[
+    {img:'u-case',alt:'上传实体机构病例界面',en:'01 / QUALIFY',title:'上传实体机构病历',desc:'复诊资格不是一句声明，而是一份可上传的材料。双授权勾选把「材料归属」与「医生可用范围」拆成两个明确动作。',kv:'界面证据：<em>我的病例 - 上传实体病例</em><br>设计取舍：多一次授权，换取责任边界清晰。',log:'上传实体机构病历材料'},
+    {img:'u-intake',alt:'问诊单患者填写界面',en:'02 / CONSULT',title:'填写同构问诊单',desc:'身高体重、过敏史、既往病史、自述与四个问诊问题一次录入。两端字段完全一致，医生侧看到的就是患者填的。',kv:'界面证据：<em>问诊单（患者端 / 医生端同构）</em><br>设计取舍：字段不删减，用分组降低负担。',log:'填写问诊单，字段两端复用'},
+    {img:'d-prescribe',alt:'医生在线开方界面',en:'03 / PRESCRIBE',title:'辨病辨证并结构化开方',desc:'辨病、辨证分开填写；药味支持模板调用；剂型 / 剂数 / 每日次数各自独立，并提示药房自动换算。',kv:'界面证据：<em>在线开方 / 处方草稿-颗粒模版</em><br>设计取舍：录入变核对，字段更完整。',log:'辨病辨证开方，调用模板'},
+    {img:'u-order',alt:'确认订单自取界面',en:'04 / FULFIL',title:'确认方案与订单履约',desc:'患者先完成诊断确认与同意书勾选，再查看处方，选择自取或邮寄并提交订单；后续五态可查、退款五因可选。',kv:'界面证据：<em>诊疗方案确认 / 确认订单-自取</em><br>设计取舍：状态外显，每步有明确下一步。',log:'确认诊疗方案，提交订单'}
+  ];
+  var stepTabs=document.getElementById('stepTabs'),log=document.getElementById('log'),fired={};
+  function addLog(t){var li=document.createElement('li'),d=new Date();
+    li.innerHTML='<time>'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+'</time><span>'+t+'</span>';
+    log.appendChild(li);log.scrollTop=log.scrollHeight;}
+  function setStep(i){var s=steps[i];
+    document.getElementById('stepImg').src='ruihe-screens/'+s.img+'.jpg';document.getElementById('stepImg').alt=s.alt;
+    document.getElementById('stepEn').textContent=s.en;document.getElementById('stepTitle').textContent=s.title;
+    document.getElementById('stepDesc').textContent=s.desc;document.getElementById('stepKv').innerHTML=s.kv;
+    document.querySelectorAll('.step-tab').forEach(function(b){b.classList.toggle('on',Number(b.dataset.step)===i);});
+    if(!fired[i]){fired[i]=1;addLog(s.log);}
+  }
+  stepTabs.addEventListener('click',function(e){var b=e.target.closest('.step-tab');if(!b)return;setStep(Number(b.dataset.step));});
+  setStep(0);
+})();
+</script>
+</body>
+</html>
