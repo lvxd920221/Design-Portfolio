@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>磁振磁电治疗仪 · 作品分析 | 吕孝冬</title>
+<style>
+:root{
+  --bg:#F3F2EF;--surface:#FFFFFF;--surface-2:#F7F6F3;
+  --ink:#333333;--ink-2:#3A3A3A;--muted:#535353;--faint:#828282;
+  --line:#DAD6D0;--line-soft:#ECE9E4;
+  --accent:#2E6E5F;--accent-ink:#245A4D;--accent-soft:rgba(46,110,95,.10);
+  --err:#B5471F;--ok:#2E6E5F;--warn:#C99A3B;
+  --r-sm:12px;--r-md:24px;--r-lg:48px;--r-pill:999px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --display:"LogoSC Unbounded Sans","Arial Black","PingFang SC","Microsoft YaHei",sans-serif;
+  --body:"Alibaba PuHuiTi","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --num:"Gilroy","Avenir Next",Montserrat,"Helvetica Neue",Arial,sans-serif;
+  --stroke:"Trash","Arial Black",Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:var(--accent);color:#fff}
+body{margin:0;color:var(--ink);line-height:1.6;
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  background:
+    linear-gradient(180deg,rgba(230,227,222,.55) 0,rgba(243,242,239,0) 640px),
+    radial-gradient(900px 480px at 90% 2%,rgba(46,110,95,.07),transparent 64%),
+    var(--bg)}
+h1,.display{font-family:var(--display);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2,h3,h4{font-family:var(--body);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2{font-family:var(--body);font-weight:900;line-height:1.2}
+p{margin:0}
+button{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+.shell{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(28px,5.2vw,76px)}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--num)}
+.mono{font-family:var(--num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.accent{color:var(--accent)}
+
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:200;transition:width .12s linear}
+
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-in{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.01em}
+.brand-mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--accent);font-size:13px;font-weight:900;font-family:var(--num)}
+.top-links{display:flex;gap:26px;font-size:12px;letter-spacing:.01em;color:var(--muted)}
+.top-links a{position:relative;padding:6px 0;transition:color .25s}
+.top-links a:hover{color:var(--accent)}
+.top-links a.on{color:var(--ink);font-weight:700}
+.top-links a.on:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:3px;background:var(--accent);border-radius:var(--r-pill)}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* ---------- HERO ---------- */
+#hero{position:relative;overflow:hidden;min-height:calc(100dvh - 64px);display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:88px 0 104px}
+/* p1_084 复刻：暖灰双层底 + 巨型缎带弧线（源 path 原样迁入，墨色 5.5% 透明度适配暖纸） */
+html:before{content:"";position:absolute;top:0;left:0;width:100%;height:var(--hero-h,900px);pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1617 922'%3E%3Cpath fill='%23333333' fill-opacity='0.055' d='M1323.08 61.2413C1297.85 163.764 1271.84 280.013 1239.38 391.308C1224.9 453.803 1219.22 503.317 1220.13 541.33C1221.45 596.118 1235.5 613.06 1239.83 617.235C1243.92 621.179 1259.83 633.476 1310.03 632.197C1360.79 630.9 1432.64 615.657 1527.99 580.102L1617 819.799C1508.42 860.283 1406.77 885.543 1316.53 887.85C1225.75 890.164 1133.06 869.141 1062.95 801.655C1057.54 796.45 1052.51 790.997 1047.62 785.499C975.221 865.179 878.081 921.999 746.258 922C664.853 921.999 585.733 898.593 524.182 838.042C496.131 810.445 475.194 778.4 459.583 743.993C401.62 796.47 333.678 832.19 256.559 846.79C172.249 862.751 85.6173 851.971 0 822.831L82.0631 580.699C136.633 599.274 177.909 601.432 209.177 595.512C239.254 589.817 268.255 575.154 297.392 545.853C356.044 486.857 412.427 370.807 452.538 175.025C462.138 122.017 473.425 66.6238 486.177 9.04701L735.392 64.4724C726.747 103.51 719.095 140.549 712.272 175.621L712.47 175.671C709.648 191.263 706.666 206.654 703.589 221.851C673.427 388.94 665.605 507.588 677.591 585.272C684.988 633.21 697.771 650.411 702.994 655.56C705.597 658.122 714.176 666.297 746.258 666.298C814.978 666.296 873.708 625.056 932.909 493.36C955.269 443.617 974.418 387.992 992.05 328.078C999.932 294.664 1009.21 260.07 1020.18 224.485C1038.47 153.136 1056.15 77.6068 1075.25 0L1323.08 61.2413Z'/%3E%3C/svg%3E"),linear-gradient(171.4deg,rgba(51,51,51,.075) 0%,rgba(249,249,249,0) 62%);
+  background-repeat:no-repeat,no-repeat;
+  background-position:calc(50% + 22vw) 2%,center top;
+  background-size:min(1180px,86vw) auto,100% 100%}
+.hero-col{position:relative;z-index:1}
+.eyebrow-row{display:flex;align-items:center;gap:16px}
+.eyebrow-row:after{content:"";flex:1;height:2px;background:var(--line);border-radius:var(--r-pill)}
+.hero-title{font-family:var(--display);font-size:clamp(40px,4.6vw,62px);font-weight:400;letter-spacing:-.012em;line-height:1.2;margin:26px 0 14px;max-width:18ch}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--muted);max-width:56ch;line-height:1.55}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.tag{font-size:12px;letter-spacing:.03em;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.8)}
+/* ---------- p1_084 复刻组件 ---------- */
+.p084-dots{display:inline-flex;gap:6px;flex:none;align-items:center}
+.p084-dots i{width:10px;height:10px;border-radius:50%;background:var(--ink-2);display:block}
+.p084-dots i+i{background:transparent;box-shadow:inset 0 0 0 1px rgba(58,58,58,.75);opacity:.5}
+.p084-kr{font-family:var(--stroke);font-size:15px;font-weight:700;line-height:1;color:var(--ink-2);border-radius:24px;box-shadow:inset 0 0 0 1px var(--ink-2);padding:8px 14px;white-space:nowrap;flex:none}
+#hero .eyebrow-row:after{height:1px;background:var(--ink-2);opacity:.22}
+.p084-slash{display:inline-flex;align-items:center;gap:10px;flex:none;font-size:clamp(15px,1.5vw,20px);font-weight:900;color:var(--ink-2);white-space:nowrap}
+.p084-slash .bar{position:relative;width:4px;height:26px;background:var(--ink-2);transform:rotate(11.7deg);flex:none;display:block}
+.p084-slash .bar b{position:absolute;top:0;left:0;width:6px;height:6px;background:var(--accent);display:block}
+.p084-arrow{width:34px;height:34px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;color:#F9FEFE;flex:none;transform:rotate(-32deg)}
+.p084-arrow svg{width:16px;height:16px}
+.hero-en-note{font-family:var(--stroke);font-size:14px;line-height:1.5;letter-spacing:.01em;color:var(--ink-2);opacity:.62;margin:0 0 12px;text-transform:uppercase}
+.p084-bracketed{position:relative;display:inline-block;padding:0 26px}
+.p084-bracketed:before,.p084-bracketed:after{content:"";position:absolute;width:15px;height:15px;border:2px solid var(--ink-2);opacity:.85;pointer-events:none}
+.p084-bracketed:before{left:0;top:.18em;border-right:0;border-bottom:0;border-radius:5px 0 0 0}
+.p084-bracketed:after{right:0;bottom:.18em;border-left:0;border-top:0;border-radius:0 0 5px 0}
+#hero .tag{border:0;box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.55)}
+.cta-row{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .25s var(--ease),background .25s,border-color .25s,color .25s}
+.btn svg{width:14px;height:14px;flex:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink);color:#fff}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+
+.monitor{position:relative;z-index:1;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:0 32px 70px -44px rgba(51,51,51,.32)}
+.monitor-dots{display:flex;gap:6px;margin-bottom:18px}
+.monitor-dots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.12}
+.monitor-dots i:first-child{opacity:.55}
+.monitor-dots i:nth-child(2){opacity:.24}
+.monitor-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+.monitor-head strong{font-size:15px}
+.monitor-head span{font-size:12px;color:var(--faint);letter-spacing:.08em}
+.mini-channels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.mini-ch{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2)}
+.mini-ch h4{font-size:15px;font-weight:700}
+.mini-ch .en{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px;font-family:var(--num)}
+.state{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:14px}
+.state-text{font:inherit;color:inherit}
+.dot{width:7px;height:7px;border-radius:50%;background:#B2B8B9;display:inline-block;flex:none}
+[data-state="running"] .dot{background:var(--accent);animation:breathe 2.6s ease-in-out infinite}
+[data-state="paused"] .dot{background:var(--warn)}
+[data-state="done"] .dot{background:#9A9690}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
+.big-time{font-size:36px;font-weight:900;letter-spacing:-.05em;margin-top:6px;line-height:1.1;font-family:var(--num)}
+.mini-note{border-top:1px dashed var(--line);margin-top:20px;padding-top:14px;font-size:12px;color:var(--muted);line-height:1.8}
+
+/* ---------- marquee ---------- */
+.marquee{border-top:1px solid var(--line);border-bottom:0;padding:20px 0;background:var(--surface)}
+.marquee-track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 40px;width:100%}
+.mq{font-size:12px;letter-spacing:.14em;color:var(--muted);white-space:nowrap;font-weight:700;font-family:var(--body)}
+.mq b{color:var(--ink);font-weight:900}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.45;flex:none}
+
+/* ---------- sections ---------- */
+section{padding:104px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
+section.tight{padding:88px 0}
+section.band{position:relative;background:var(--surface-2);box-shadow:0 0 0 100vmax var(--surface-2);clip-path:inset(0 -100vmax)}
+.sec-head{display:grid;grid-template-columns:190px minmax(0,1fr);gap:40px;margin-bottom:54px;align-items:start}
+.sec-head .idx{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:10px;display:flex;align-items:center;gap:10px}
+.sec-head .idx:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:var(--r-pill);flex:none}
+.sec-head h2{font-family:var(--body);font-size:clamp(24px,2.5vw,32px);font-weight:900;line-height:1.2;max-width:26ch}
+.sec-head p{color:var(--muted);font-size:15px;max-width:62ch;margin-top:16px;line-height:1.9}
+
+/* ---------- pitch ---------- */
+.quote{border-left:5px solid var(--accent);padding:14px 0 14px 34px;font-size:clamp(20px,2vw,26px);line-height:1.5;max-width:42ch;font-weight:700;letter-spacing:-.01em}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:60px;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.stat{padding:28px 24px 22px;border-right:1px solid var(--line)}
+.stat:nth-child(5n){border-right:0}
+.stat:first-child{background:var(--accent);border-color:var(--accent)}
+.stat:first-child b,.stat:first-child span{color:#fff}
+.stat:first-child span{opacity:.8}
+.stat b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;font-family:var(--num);line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+
+/* ---------- two column ---------- */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:80px}
+.prose p{font-size:15px;color:var(--ink-2);line-height:1.5;margin-bottom:22px}
+.constraint{display:grid;grid-template-columns:40px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
+.constraint:last-of-type{border-bottom:1px solid var(--line)}
+.constraint b{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:4px}
+.constraint strong{font-size:15px;font-weight:700}
+.constraint p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:5px}
+.callout{margin-top:36px;border-left:3px solid var(--accent);padding:16px 0 16px 22px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+
+/* ---------- role table ---------- */
+.role-table{border-top:1px solid var(--line)}
+.role-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);transition:background .2s}
+.role-row:hover{background:rgba(46,110,95,.05)}
+.role-row>div{padding:20px 24px;font-size:13px;line-height:1.85}
+.role-row>div:first-child{border-right:1px solid var(--line)}
+.role-row .label{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:5px;font-family:var(--body)}
+
+/* ---------- decisions ---------- */
+.dec{border-top:1px solid var(--line);border-radius:2px}
+.dec:last-child{border-bottom:1px solid var(--line)}
+.dec-head{width:100%;display:grid;grid-template-columns:56px 1fr 30px;align-items:center;gap:14px;text-align:left;background:none;border:0;padding:24px 10px;cursor:pointer;transition:background .25s}
+.dec-head:hover{background:linear-gradient(90deg,rgba(46,110,95,.07),transparent 60%)}
+.dec-num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;font-family:var(--num)}
+.dec-title{font-size:17px;font-weight:700;transition:color .2s}
+.dec-head:hover .dec-title{color:var(--accent)}
+.dec-sign{font-size:22px;color:var(--faint);text-align:center;line-height:1}
+.dec-body{display:none;padding:0 10px 30px 70px;max-width:88ch}
+.dec.open .dec-body{display:block;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dec-field{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:8px 0;font-size:13px;line-height:1.9}
+.dec-field b{font-size:12px;color:var(--muted);font-weight:700;padding-top:3px;letter-spacing:.04em}
+.dec-field.pick b{color:var(--accent)}
+.dec-field.pick span{background:var(--accent-soft);border-radius:var(--r-sm);padding:6px 12px;margin:-6px 0 2px -12px;display:inline-block}
+
+/* ---------- flow ---------- */
+.phases{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:28px}
+.phase{border-top:3px solid var(--accent);padding-top:20px}
+.phase.mid{border-color:#8FB5A8}
+.phase.end{border-color:#B2B8B9}
+.phase h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between}
+.phase h3 span{font-size:11px;color:var(--faint);font-family:var(--num);letter-spacing:.1em}
+.step{display:flex;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.step i{font-style:normal;font-size:11px;color:var(--accent);font-family:var(--num);width:20px;flex:none}
+.bypass{margin-top:28px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r-md);padding:16px 20px;line-height:1.9}
+
+/* ---------- gallery ---------- */
+.gal-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:26px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:var(--r-pill);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:10px 16px;font-size:12px;width:230px;outline:none;transition:border-color .25s}
+.search:focus{border-color:var(--accent)}
+.gcount{font-size:11px;color:var(--faint);margin-left:2px}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.shot{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);overflow:hidden;text-align:left;padding:0;cursor:pointer;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
+.shot.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.shot:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px -30px rgba(51,51,51,.5)}
+.shot:active{transform:translateY(-1px)}
+.thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(100deg,#E6E3DE 25%,#F5F3F0 45%,#E6E3DE 65%);background-size:220% 100%;animation:shimmer 1.5s linear infinite;overflow:hidden}
+@keyframes shimmer{to{background-position:-220% 0}}
+.thumb img{width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s,transform .6s var(--ease)}
+.shot:hover .thumb img{transform:scale(1.02)}
+.thumb.loaded img{opacity:1}
+.thumb.loaded{animation:none;background:#FFFFFF}
+.shot.feature .shot-meta strong{font-size:15px}
+.shot-meta{padding:14px 16px 16px}
+.shot-meta strong{display:block;font-size:13px;font-weight:700}
+.shot-meta span{font-size:12px;color:var(--faint)}
+.empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:var(--r-md);padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;background:var(--surface)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:8px}
+.empty svg{width:26px;height:26px;color:var(--faint);margin:0 auto 12px;display:block}
+
+.lightbox{position:fixed;inset:0;background:rgba(51,51,51,.94);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(1240px,92vw);max-height:76vh;border-radius:var(--r-sm);background:#fff}
+.lb-bar{display:flex;align-items:center;gap:14px;color:#EDEAE5;font-size:12px}
+.lb-bar button{border:1px solid rgba(255,255,255,.28);background:transparent;color:#EDEAE5;border-radius:var(--r-pill);padding:8px 16px;cursor:pointer;transition:border-color .2s}
+.lb-bar button:hover{border-color:#fff}
+
+/* ---------- demo ---------- */
+.demo-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px}
+.panel h3{font-size:17px;font-weight:700;margin-bottom:5px}
+.panel .hint{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.8}
+.patient{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2);display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:18px}
+.patient .who{font-size:15px;font-weight:700}
+.patient .detail{font-size:12px;color:var(--muted);margin-top:4px}
+.patient .link{border:0;background:none;color:var(--accent);font-size:12px;cursor:pointer;padding:6px 0;font-weight:700}
+.err{border-left:3px solid var(--err);color:var(--err);font-size:12px;padding:7px 0 7px 14px;margin-bottom:16px;display:none;line-height:1.7}
+.err.on{display:block}
+.channels{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ch{border:1px solid var(--line);border-radius:var(--r-md);padding:20px;background:var(--surface-2)}
+.ch h4{font-size:15px;font-weight:700}
+.ch .en{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:3px;font-family:var(--num)}
+.ch .state{margin-top:13px}
+.ch .time{font-size:40px;font-weight:900;letter-spacing:-.05em;line-height:1.1;margin-top:5px;font-family:var(--num)}
+.ch .time .t{font:inherit;color:inherit}
+.ch .time small{font-size:10px;color:var(--faint);letter-spacing:.06em;font-weight:400;margin-left:6px;font-family:var(--num)}
+.ch-actions{display:flex;gap:7px;margin-top:18px}
+.ch-actions button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:10px 2px;font-size:12px;cursor:pointer;transition:all .22s;font-weight:700}
+.ch-actions button:not(:disabled):hover{border-color:var(--accent);color:var(--accent)}
+.ch-actions button.primary:not(:disabled){background:var(--accent);border-color:var(--accent);color:#fff}
+.ch-actions button:active:not(:disabled){transform:translateY(1px)}
+.stepper{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:13px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted)}
+.stepper .ctl{display:flex;align-items:center;gap:9px}
+.stepper button{width:30px;height:30px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);cursor:pointer;font-size:16px;line-height:1}
+.stepper b{font-family:var(--num);font-size:16px;color:var(--ink);min-width:26px;text-align:center}
+.side-stack{display:flex;flex-direction:column;gap:24px}
+.switch-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
+.switch-row span{font-size:13px}
+.switch{position:relative;width:46px;height:26px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#C8C8C8;border-radius:var(--r-pill);cursor:pointer;transition:background .25s}
+.slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .25s var(--ease)}
+.switch input:checked+.slider{background:var(--accent)}
+.switch input:checked+.slider:before{transform:translateX(20px)}
+.privacy-note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.9}
+.log{list-style:none;margin:14px 0 0;padding:0;max-height:218px;overflow:auto}
+.log li{font-size:12px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px}
+.log time{font-family:var(--num);color:var(--accent);flex:none}
+
+/* ---------- modal ---------- */
+.mask{position:fixed;inset:0;background:rgba(51,51,51,.58);z-index:140;display:none;align-items:center;justify-content:center;padding:20px}
+.mask.open{display:flex}
+.dialog{width:min(640px,100%);background:var(--surface);border-radius:var(--r-lg);padding:34px;max-height:86vh;overflow:auto;box-shadow:0 34px 90px -44px rgba(0,0,0,.55)}
+.dialog h3{font-size:22px;font-weight:700;margin-bottom:10px}
+.dialog>p{font-size:13px;color:var(--muted);line-height:1.9}
+.warn-list{list-style:none;padding:0;margin:20px 0;counter-reset:w}
+.warn-list li{counter-increment:w;display:grid;grid-template-columns:26px 1fr;gap:11px;font-size:13px;line-height:1.85;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+.warn-list li:before{content:counter(w);font-family:var(--num);color:var(--accent);font-weight:900}
+.warn-list strong{font-weight:700}
+.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+.pick-list{list-style:none;padding:0;margin:20px 0 0}
+.pick-list button{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r-md);padding:15px 17px;cursor:pointer;margin-bottom:9px;font-size:13px;transition:border-color .2s}
+.pick-list button:hover{border-color:var(--accent)}
+.pick-list small{color:var(--muted)}
+
+/* ---------- evidence ---------- */
+.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:72px}
+.ev-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.ev-table thead th{background:var(--surface-2)}
+.ev-table th,.ev-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft)}
+.ev-table tr:last-child td{border-bottom:0}
+.ev-table tr{transition:background .2s}
+.ev-table tbody tr:hover{background:var(--surface-2)}
+.ev-table th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.ev-table td:last-child,.ev-table th:last-child{text-align:right;font-family:var(--num)}
+.pass{color:var(--ok);font-weight:700}.fail{color:var(--err);font-weight:700}
+.fix{list-style:none;padding:0;margin:0}
+.fix li{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.9}
+.fix b{font-size:12px;color:var(--accent);font-family:var(--num);font-weight:900}
+.boundary{margin-top:44px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:30px 32px;font-size:13px;line-height:2;color:var(--ink-2)}
+.boundary strong{color:var(--ink)}
+
+
+footer{border-top:1px solid var(--line);padding:44px 0 72px;font-size:12px;color:var(--muted);line-height:2;background:var(--surface-2)}
+.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-row a{color:var(--ink);font-weight:700}
+
+/* ---------- responsive ---------- */
+@media(max-width:1200px){
+  .shell{padding:0 36px}
+  .gallery{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1080px){
+  #hero{grid-template-columns:1fr;gap:48px;padding:64px 0 84px}
+  .hero-title{max-width:16ch}
+  .monitor{max-width:640px}
+  .two,.ev-grid{grid-template-columns:1fr;gap:40px}
+  .demo-grid{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:10px}
+  .sec-head .idx{padding-top:0}
+}
+@media(max-width:860px){
+  .shell{padding:0 22px}
+  .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  section{padding:76px 0}
+  section.tight{padding:64px 0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(2n){border-right:0}
+  .stat:last-child{border-bottom:0}
+  .channels,.mini-channels{grid-template-columns:1fr}
+  .phases{grid-template-columns:1fr;gap:30px}
+  .role-row{grid-template-columns:1fr}
+  .role-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .dec-body{padding-left:10px}
+  .dec-field{grid-template-columns:1fr;gap:0}
+  .dec-field.pick span{margin:4px 0 2px}
+  .gal-tools{align-items:stretch;flex-direction:column}
+  .search{width:100%}
+  .quote{padding-left:22px}
+}
+@media(max-width:640px){
+  .top-links{display:none}
+  .gallery{grid-template-columns:1fr;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="topbar"><div class="shell topbar-in">
+  <div class="brand"><span class="brand-mark">R</span>磁振磁电治疗仪 · 设计案例</div>
+  <nav class="top-links">
+    <a href="#context">背景</a><a href="#decisions">关键决策</a><a href="#gallery">界面证据</a><a href="#demo">交互演示</a>
+  </nav>
+</div></header>
+
+<main class="shell">
+  <!-- 01 -->
+  <section id="hero">
+    <div class="hero-col reveal">
+      <div class="eyebrow-row">
+        <span class="p084-dots" aria-hidden="true"><i></i><i></i></span>
+        <span class="p084-kr">KR1</span>
+        <span class="eyebrow">Case study / Medical HMI</span>
+        <span class="p084-slash"><span class="bar" aria-hidden="true"></span>医疗器械 HMI<span class="bar" aria-hidden="true"><b></b></span></span>
+        <span class="p084-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13 13 3M6 3h7v7"/></svg></span>
+      </div>
+      <h1 class="hero-title"><span class="p084-bracketed">在不能妥协的地方，<em>把设计做成规则。</em></span></h1>
+      <p class="hero-en-note">Reconstruct the treatment flow.<br>Strengthen the safety guidance.</p>
+      <p class="hero-sub">磁振磁电治疗仪 · 设备端 UI / 交互设计。为一款双通道医疗设备从 0 到 1 建立 18 屏触控交互系统——在医学文案不可改、安全必须前置、两路治疗要并行的约束下，把"治疗师能不能安全、高效地完成一次治疗"拆成一组可复用、可验收的界面规则。</p>
+      <div class="hero-meta">
+        <span class="tag">RHY-CZCD-IIAS · 心爱系列</span>
+        <span class="tag">18 屏 / 5 功能组</span>
+        <span class="tag">1920×1080 触控一体机</span>
+        <span class="tag">郑州仁惠医疗 · Realhope</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#decisions">查看设计决策<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"/></svg></a>
+        <a class="btn" href="#gallery">查看 18 张界面</a>
+        <a class="btn" href="#demo">试一次治疗流程</a>
+      </div>
+    </div>
+    <aside class="monitor reveal d1" aria-label="双通道状态预览">
+      <div class="monitor-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="monitor-head"><strong>通道状态 · 实时预览</strong><span class="mono">TREATMENT MONITOR</span></div>
+      <div class="mini-channels">
+        <div class="mini-ch" data-state="idle">
+          <h4>磁振治疗</h4><div class="en">Magnetic resonance</div>
+          <div class="state"><span class="dot"></span>未开始</div>
+          <div class="big-time mono">30:00</div>
+          <div class="mini-note">开始按钮可用 / 暂停停止禁用</div>
+        </div>
+        <div class="mini-ch" data-state="running">
+          <h4>磁电治疗</h4><div class="en">Magnetic electrotherapy</div>
+          <div class="state"><span class="dot"></span>治疗中</div>
+          <div class="big-time mono">18:42</div>
+          <div class="mini-note">暂停停止可用 / 状态点 + 文字双编码</div>
+        </div>
+      </div>
+      <div class="mini-note" style="border-top:0;padding-top:16px">两路状态同屏可见、互不混淆。下方演示可以把这套状态机真正跑一遍。</div>
+    </aside>
+  </section>
+</main>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="mq">状态无歧义</span><span class="mq-dot"></span>
+    <span class="mq">安全前置</span><span class="mq-dot"></span>
+    <span class="mq">组件跨 <b>3</b> 域复用</span><span class="mq-dot"></span>
+    <span class="mq">医学文案零改写</span><span class="mq-dot"></span>
+    <span class="mq"><b>18</b> 屏完整闭环</span><span class="mq-dot"></span>
+    <span class="mq">核心对比度 <b>14.13:1</b></span><span class="mq-dot"></span>
+    <span class="mq">约束是给定的，解法是我设计的</span><span class="mq-dot"></span>
+  </div>
+</div>
+
+<main class="shell">
+  <!-- 02 -->
+  <section id="pitch">
+    <div class="sec-head reveal"><div class="idx">02 / 定位</div><div>
+      <h2>一句话说清这个作品</h2>
+      <p>作品面向 HR 与面试官：重点不是界面画了多少张，而是在强约束下做了哪些讲得清依据的判断。</p>
+    </div></div>
+    <blockquote class="quote reveal">我为一款双通道医疗设备，从 0 到 1 设计了一套 18 屏的触控交互系统——在医学文案不可改、安全必须前置、两路治疗要并行的强约束下，把"治疗师能不能安全、高效地完成一次治疗"，拆成一组可复用、可验收的界面规则。</blockquote>
+    <div class="stats reveal d1">
+      <div class="stat"><b>18</b><span>张界面稿 · 全覆盖</span></div>
+      <div class="stat"><b>5</b><span>个功能组</span></div>
+      <div class="stat"><b>14.13:1</b><span>核心倒计时对比度</span></div>
+      <div class="stat"><b>70–80px</b><span>主触控目标</span></div>
+      <div class="stat"><b>3</b><span>个域复用同一套组件</span></div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="context">
+    <div class="sec-head reveal"><div class="idx">03 / 背景</div><div>
+      <h2>真实场景与三条硬约束</h2>
+      <p>约束不是障碍，是我设计的起点。</p>
+    </div></div>
+    <div class="two">
+      <div class="prose reveal">
+        <p>这是一款面向医疗机构的双通道物理治疗设备，可同时对患者施加"磁振"与"磁电"两路治疗。设备形态较新，操作界面没有成熟范式可照搬。</p>
+        <p>治疗师站在床旁一体机前，要在有限步骤内完成身份确认、建档选患者、设置双通道参数、执行并监控治疗、最后归档记录。一次治疗有固定时长，过程中要能随时看清"哪一路在治、治的是谁、还剩多久"。</p>
+        <p>角色画像来自界面功能的反向归纳：临床操作者负责患者管理与双通道执行；评估查阅者回看档案与评估时间线；设备管理者通过密码进入次数设置。场景依据是床旁一体机、固定治疗时长、站立操作与强光诊室——这是从界面稿可见事实推出的使用场景，不是访谈结论。</p>
+        <div class="callout">约束是给定的，解法是我设计的。</div>
+      </div>
+      <div class="reveal d1">
+        <div class="constraint"><b>01</b><div><strong>医学文案由产品资料给定</strong><p>设备原理、治疗范围、禁忌症条目我无权改写，设计价值放在结构与可读性上。</p></div></div>
+        <div class="constraint"><b>02</b><div><strong>安全确认必须发生在治疗开始之前</strong><p>交互顺序服务于安全，效率要让位；漏确认的代价高于多一次点击。</p></div></div>
+        <div class="constraint"><b>03</b><div><strong>磁振 + 磁电两路并行且各自独立</strong><p>界面必须让两路状态同时可见、互不混淆，任一路变化不改变另一路的阅读位置。</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="role" class="tight band">
+    <div class="sec-head reveal"><div class="idx">04 / 职责</div><div>
+      <h2>我负责什么，产品给定什么</h2>
+      <p>边界划清，才显专业。我的价值不在于把屏幕做满，而在于把不可动摇的约束翻译成治疗师能快速、准确执行的操作路径。</p>
+    </div></div>
+    <div class="role-table reveal">
+      <div class="role-row"><div><span class="label">医学内容</span>设备原理、治疗范围、禁忌症原文</div><div><span class="label">我设计并交付</span>信息层级重组、分组、确认时机设计</div></div>
+      <div class="role-row"><div><span class="label">业务流程</span>登记 → 评估 → 治疗 → 归档</div><div><span class="label">我设计并交付</span>收束为不被打断的直线路径、定义页面状态</div></div>
+      <div class="role-row"><div><span class="label">双通道</span>磁振 + 磁电两路并行</div><div><span class="label">我设计并交付</span>对等分卡结构、三重状态编码、歧义消除</div></div>
+      <div class="role-row"><div><span class="label">安全告知</span>禁忌症、中断须确认的节点</div><div><span class="label">我设计并交付</span>用模态而非提示条的交互取舍</div></div>
+      <div class="role-row"><div><span class="label">品牌文案</span>"仁济天下 惠达众生"等</div><div><span class="label">我设计并交付</span>视觉呈现、双语标签体系、色彩语义分工</div></div>
+      <div class="role-row"><div><span class="label">组件系统</span>—</div><div><span class="label">我设计并交付</span>筛选 / 表格 / 分页 / 弹窗的跨域复用规范</div></div>
+    </div>
+    <p class="muted reveal d1" style="font-size:12px;margin-top:18px">项目交付物为界面设计稿与规范说明；起止日期、团队编制及研发还原、注册评审由对应团队负责。</p>
+  </section>
+
+  <!-- 05 -->
+  <section id="decisions">
+    <div class="sec-head reveal"><div class="idx">05 / 决策</div><div>
+      <h2>七个关键决策</h2>
+      <p>每条按「冲突 → 备选 → 选择 → 依据」展开。这是最能体现设计判断力的部分。</p>
+    </div></div>
+    <div id="dec-list">
+      <div class="dec open"><button class="dec-head" aria-expanded="true"><span class="dec-num">D01</span><span class="dec-title">双通道用对等分卡，不用合并面板</span><span class="dec-sign">−</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>两路并行，操作者可能在未确认"当前是哪一路"时就暂停或调参。</span></div><div class="dec-field"><b>备选</b><span>A 单一面板 + 通道切换 Tab；B 上下 / 左右对等双卡。</span></div><div class="dec-field pick"><b>选择</b><span>B——两卡结构、字号、间距、控件顺序严格一致。</span></div><div class="dec-field"><b>依据</b><span>合并面板强制多一次"当前选中哪一路"的判断，而这个二次判断正是错误源。我用空间换确定性——空间是可控成本，误操作不是。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D02</span><span class="dec-title">安全告知用模态，不用提示条</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>禁忌症确认要打断治疗前的流程。</span></div><div class="dec-field"><b>备选</b><span>A 页面内提示条 + 勾选；B 居中模态 + 遮罩锁定背景。</span></div><div class="dec-field pick"><b>选择</b><span>B——"重要安全警告""治疗未结束"都做成必须选择的模态。</span></div><div class="dec-field"><b>依据</b><span>提示条允许"边读边操作"，而禁忌症确认必须精确发生在治疗开始之前这一个时间点。我用一次确认动作，换取确认行为不可跳过。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D03</span><span class="dec-title">状态用三重编码，不只靠颜色</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>诊室强光、操作者远近切换，单一颜色状态不可靠。</span></div><div class="dec-field"><b>备选</b><span>A 仅用状态色；B 色点 + 状态文字 + 按钮可用性。</span></div><div class="dec-field pick"><b>选择</b><span>B——"未开始/治疗中"同时由圆点、文字、按钮是否可用三处表达。</span></div><div class="dec-field"><b>依据</b><span>我不想让单一色彩承载全部信息。冗余编码让状态在任何光线下都能被读懂，这是可用性上的基本判断。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D04</span><span class="dec-title">患者绑定做成显式分态</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>"当前治疗对象是谁"若不明确，可能张冠李戴。</span></div><div class="dec-field"><b>备选</b><span>A 始终显示下拉选择；B 未选态只给"添加 / 选择"，已选态回显头像、姓名、性别年龄、掩码电话。</span></div><div class="dec-field pick"><b>选择</b><span>B。</span></div><div class="dec-field"><b>依据</b><span>把治疗对象做成常驻可见信息，是避免错配的最低成本手段；掩码电话是我对患者隐私的主动处理。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D05</span><span class="dec-title">表单用编号双栏，不做单列长表单</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>建档字段多，填表负担重，但不能删字段。</span></div><div class="dec-field"><b>备选</b><span>A 单列滚动；B "01 基本信息 / 02 病情评估"等宽双栏。</span></div><div class="dec-field pick"><b>选择</b><span>B——必填红星前置、下拉收窄输入、标签多选、就地校验。</span></div><div class="dec-field"><b>依据</b><span>编号把长表单切成两个可完成的小任务，降低"还有多少要填"的未知感。我的目标不是删字段，而是把"填表"变成"核对"。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D06</span><span class="dec-title">记录页复用患者列表组件，而非重新设计</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>新增记录界面，是否要另起一套设计。</span></div><div class="dec-field"><b>备选</b><span>A 为治疗记录单独设计表格；B 复用四维筛选 / 表格 / 分页 / 行操作。</span></div><div class="dec-field pick"><b>选择</b><span>B——只替换字段语义（患者 / 治疗类型 / 起止时间 / 时长）。</span></div><div class="dec-field"><b>依据</b><span>同一套组件贯穿患者管理与治疗记录，新增界面不再产生新的学习成本。这是我刻意把组件复用当作设计决策、而非实现便利的原因。</span></div></div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D07</span><span class="dec-title">医学文案零改写，只做层级与分组</span><span class="dec-sign">+</span></button>
+        <div class="dec-body"><div class="dec-field"><b>冲突</b><span>产品资料原文偏长，按 UI 习惯精简会更好看。</span></div><div class="dec-field"><b>备选</b><span>A 通俗化改写；B 原文呈现，只处理结构与可读性。</span></div><div class="dec-field pick"><b>选择</b><span>B。</span></div><div class="dec-field"><b>依据</b><span>设备原理、治疗范围、禁忌症由产品资料给定，设计师不是医学内容的作者。我主动放弃"改写的权力"，把设计价值放在结构与可读性上——这是专业边界感。</span></div></div></div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section id="flow" class="tight">
+    <div class="sec-head reveal"><div class="idx">06 / 流程</div><div>
+      <h2>一条不被打断的治疗闭环</h2>
+      <p>治疗前 → 治疗中 → 治疗后，九步串起建档、执行、归档。</p>
+    </div></div>
+    <div class="phases reveal">
+      <div class="phase"><h3>治疗前 · 准备<span>PHASE A</span></h3>
+        <div class="step"><i>01</i><span>设备密码登录，错误就地提示</span></div>
+        <div class="step"><i>02</i><span>患者列表四维筛选与查询</span></div>
+        <div class="step"><i>03</i><span>新建 / 编辑患者：编号双栏表单</span></div>
+        <div class="step"><i>04</i><span>绑定当前治疗对象，回显身份</span></div>
+      </div>
+      <div class="phase mid"><h3>治疗中 · 执行<span>PHASE B</span></h3>
+        <div class="step"><i>05</i><span>重要安全警告：禁忌症强制确认</span></div>
+        <div class="step"><i>06</i><span>磁振 / 磁电双通道参数与启动</span></div>
+        <div class="step"><i>07</i><span>倒计时监控与中断保护确认</span></div>
+      </div>
+      <div class="phase end"><h3>治疗后 · 归档<span>PHASE C</span></h3>
+        <div class="step"><i>08</i><span>结束治疗，状态归位</span></div>
+        <div class="step"><i>09</i><span>记录汇总 / 个人视图追溯</span></div>
+      </div>
+    </div>
+    <div class="bypass reveal d1">旁路流程：待机页持续播报双路剩余时间与产品原理轮播；次数设置走「密码验证 → 设定次数」两级，与临床主流程不交叉。</div>
+  </section>
+
+  <!-- 07 -->
+  <section id="gallery">
+    <div class="sec-head reveal"><div class="idx">07 / 证据</div><div>
+      <h2>18 张界面，按五个功能组查看</h2>
+      <p>所有图像均为项目原始界面稿（1920×1080）。两张治疗主界面放大展示——它是全案重心；点击任意卡片放大，方向键切换，Esc 关闭。</p>
+    </div></div>
+    <div class="gal-tools reveal">
+      <div class="filters" id="filters">
+        <button class="chip on" data-group="all">全部 <span class="gcount">18</span></button>
+        <button class="chip" data-group="brand">引导品牌</button>
+        <button class="chip" data-group="auth">身份授权</button>
+        <button class="chip" data-group="patient">患者管理</button>
+        <button class="chip" data-group="treat">治疗控制</button>
+        <button class="chip" data-group="record">记录追溯</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="搜索界面名称…" aria-label="搜索界面名称">
+    </div>
+    <div class="gallery reveal d1" id="gallery-grid"></div>
+  </section>
+
+  <!-- 08 -->
+  <section id="demo">
+    <div class="sec-head reveal"><div class="idx">08 / 演示</div><div>
+      <h2>把关键决策跑一遍</h2>
+      <p>下面是可操作的交互小样：未绑定患者时启动、禁忌症模态、倒计时与按钮可用性、隐私掩码开关，都按项目里的真实规则实现。演示中的患者资料为界面稿可见示例，不代表真实患者。</p>
+    </div></div>
+    <div class="demo-grid reveal">
+      <div class="panel">
+        <h3>当前治疗对象</h3>
+        <div class="hint">把"是谁在治疗"做成常驻可见信息，是避免错配的最低成本手段。</div>
+        <div class="patient">
+          <div><div class="who" id="p-name">尚未绑定患者</div><div class="detail" id="p-detail">未选择时只提供「添加 / 选择」入口</div></div>
+          <button class="link" id="pick-btn">选择患者</button>
+        </div>
+        <div class="err" id="demo-err">请先绑定治疗对象，再启动治疗。</div>
+        <div class="channels">
+          <div class="ch" data-state="idle" id="ch-mr">
+            <h4>磁振治疗</h4><div class="en">Magnetic resonance</div>
+            <div class="state"><span class="dot"></span><span class="state-text">未开始</span></div>
+            <div class="time mono"><span class="t">30:00</span><small>min / sec</small></div>
+            <div class="ch-actions">
+              <button class="primary" data-act="start">开始</button><button data-act="pause" disabled>暂停</button><button data-act="stop" disabled>停止</button>
+            </div>
+          </div>
+          <div class="ch" data-state="running" id="ch-me">
+            <h4>磁电治疗</h4><div class="en">Magnetic electrotherapy</div>
+            <div class="state"><span class="dot"></span><span class="state-text">治疗中</span></div>
+            <div class="time mono"><span class="t">18:42</span><small>min / sec</small></div>
+            <div class="ch-actions">
+              <button class="primary" data-act="start" disabled>开始</button><button data-act="pause">暂停</button><button data-act="stop">停止</button>
+            </div>
+            <div class="stepper"><span>强度 Strength</span><div class="ctl"><button data-step="int" data-dir="-1" aria-label="减小强度">−</button><b id="v-int">88</b><button data-step="int" data-dir="1" aria-label="增大强度">+</button></div></div>
+            <div class="stepper"><span>频率 Frequency</span><div class="ctl"><button data-step="freq" data-dir="-1" aria-label="减小频率">−</button><b id="v-freq">88</b><button data-step="freq" data-dir="1" aria-label="增大频率">+</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="side-stack">
+        <div class="panel">
+          <h3>隐私显示</h3>
+          <div class="hint">治疗记录-个人页已有掩码写法，差异在于规范尚未统一。</div>
+          <div class="switch-row"><span id="phone-label">手机号（掩码）</span><label class="switch"><input type="checkbox" id="privacy" aria-label="切换明文与掩码"><span class="slider"></span></label></div>
+          <div class="privacy-note" id="privacy-note">当前显示 132****0487。切换开关可对比明文呈现——我选择掩码，代价是完整号码需要一次额外操作。</div>
+        </div>
+        <div class="panel">
+          <h3>操作轨迹</h3>
+          <div class="hint">关键动作留痕，治疗后可以回看。</div>
+          <ul class="log" id="log"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section id="evidence" class="tight">
+    <div class="sec-head reveal"><div class="idx">09 / 验证</div><div>
+      <h2>可核查的结论与主动修订单</h2>
+      <p>实测数值来自界面稿像素反推，供工程复核参考；可用性测试未纳入本次交付，不作推断性结论。</p>
+    </div></div>
+    <div class="ev-grid reveal">
+      <div>
+        <table class="ev-table"><thead><tr><th>实测项</th><th>数值 / 判定</th></tr></thead><tbody>
+          <tr><td>倒计时大字对比度</td><td>14.13:1 <span class="pass">PASS</span></td></tr>
+          <tr><td>「磁振治疗」标题</td><td>14.57:1 <span class="pass">PASS</span></td></tr>
+          <tr><td>「倒计时」label</td><td>6.93:1 <span class="pass">PASS AA</span></td></tr>
+          <tr><td>英文副标 / 状态小字</td><td>3.35:1</td></tr>
+          <tr><td>辅助说明小字</td><td>2.62:1</td></tr>
+          <tr><td>主按钮白字</td><td>3.91:1 <span class="pass">大字 PASS</span></td></tr>
+          <tr><td>圆形图标按钮</td><td>约 70×70px <span class="pass">PASS</span></td></tr>
+          <tr><td>通道按钮</td><td>72×80px <span class="pass">PASS</span></td></tr>
+          <tr><td>步进器箭头 / 行内链接</td><td>13×20px / 字高 10px</td></tr>
+        </tbody></table>
+      </div>
+      <div>
+        <ul class="fix">
+          <li><b>T1</b><span>禁忌症正文提升到 ≥18px（1920 画布下），关键词加粗，颜色加深到 ≥#595959——安全关键文案的可读性就是安全性。</span></li>
+          <li><b>T2</b><span>统一掩码：手机前 3 后 4、身份证前 6 后 4；编辑态保留完整值，保存后回显掩码。</span></li>
+          <li><b>T3</b><span>步进器箭头放大到 ≥24×24px，或把热区扩展到整条步进条。</span></li>
+          <li><b>T4</b><span>行内「查看/编辑」字高提升到 ≥14px，热区 ≥24px。</span></li>
+          <li><b>T5</b><span>副标签、状态字、辅助小字统一加深到 ≥#595959，禁用态豁免。</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="boundary reveal d1">
+      <strong>证据边界（面试时我会主动说明）：</strong>本次项目留存的是设计交付物与界面实测，不含装机量、任务完成率等业务数据。可核查的替代证据是 18/18 屏全覆盖、5 个功能组、核心对比度 14.13:1、主触控目标 70–80px、跨 3 域组件复用与上面 5 条可执行修订单。开发还原验收结论未纳入本次交付物；设备注册、适用标准与合规评审由厂商对应团队负责，本稿不推断相关结论。界面稿为成品图，无设计源工程，视觉规范按界面取样归纳，精确数值以源工程为准。使用方法页的视频区与说明文案沿用产品资料原稿，已在复盘中标注为后续完善项。没有正式竞品样本，因此不做未经核实的对比结论。
+    </div>
+  </section>
+
+</main>
+
+<footer><div class="shell foot-row">
+  <div>磁振磁电治疗仪 · 设备端 UI / 交互设计 · RHY-CZCD-IIAS<br>作品分析依据：18 张 1920×1080 界面稿、产品资料原文与 Product Design 审计实测。</div>
+  <div>吕孝冬 · 10 年 UI/UX 设计 · 医疗器械 HMI / VI 品牌<br><a href="#hero">返回顶部 ↑</a></div>
+</div></footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="界面大图">
+  <img id="lb-img" alt="界面大图">
+  <div class="lb-bar"><button id="lb-prev">上一张</button><span class="mono" id="lb-count"></span><span id="lb-name"></span><button id="lb-next">下一张</button><button id="lb-close">关闭 Esc</button></div>
+</div>
+
+<div class="mask" id="mask-patient">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pick-title">
+    <h3 id="pick-title">选择治疗对象</h3><p>演示数据，非真实患者。选择后治疗主界面常驻回显，避免张冠李戴。</p>
+    <ul class="pick-list">
+      <li><button data-pick="王慧敏|女 · 41 岁|132****0487"><span>王慧敏 <small>女 · 41 岁</small></span><small>132****0487</small></button></li>
+      <li><button data-pick="陈国栋|男 · 57 岁|137****3261"><span>陈国栋 <small>男 · 57 岁</small></span><small>137****3261</small></button></li>
+    </ul>
+    <div class="dialog-actions"><button class="btn" data-close="mask-patient">取消</button></div>
+  </div>
+</div>
+
+<div class="mask" id="mask-safety">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="safe-title">
+    <h3 id="safe-title">重要安全警告</h3><p>请在开始治疗前确认以下禁忌症条目。原文由产品资料给定，界面只做层级与可读性处理；此处按修订单 T1 放大字号并加粗关键词。</p>
+    <ol class="warn-list">
+      <li><span><strong>颈动脉、颅脑和心脏部位</strong>禁止直接治疗。</span></li>
+      <li><span>体内植入<strong>心脏起搏器</strong>者禁止使用。</span></li>
+      <li><span><strong>妊娠、孕妇</strong>腹部及腰骶部禁止使用。</span></li>
+      <li><span>出血倾向、急性感染或发热期患者应评估后使用。</span></li>
+      <li><span>恶性肿瘤局部区域禁止直接治疗。</span></li>
+      <li><span>治疗部位有金属植入物或破损皮肤时应避开。</span></li>
+    </ol>
+    <div class="dialog-actions"><button class="btn" id="safe-cancel">取消</button><button class="btn btn-primary" id="safe-ok">已知道，确定治疗</button></div>
+  </div>
+</div>
+
+<div class="mask" id="mask-stop">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="stop-title">
+    <h3 id="stop-title">治疗未结束</h3><p id="stop-desc">治疗疗程正在进行中，是否停止治疗？中断操作必须二次确认，避免一次误触终止疗程。</p>
+    <div class="dialog-actions"><button class="btn" id="stop-cancel">取消</button><button class="btn btn-primary" id="stop-ok">确定</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- hero 背景层高度同步（让 html::before 精确贴合 hero，不遮挡后续区块） ---------- */
+  var heroEl = document.querySelector('#hero');
+  var syncHeroH = function(){
+    if (!heroEl) return;
+    document.documentElement.style.setProperty('--hero-h', Math.ceil(heroEl.getBoundingClientRect().height) + 'px');
+  };
+  syncHeroH();
+  window.addEventListener('resize', syncHeroH, {passive:true});
+
+  /* ---------- scroll progress ---------- */
+  var progress = document.getElementById('progress');
+  var onScroll = function(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- reveal ---------- */
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); revealObs.unobserve(e.target); } });
+    }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ revealObs.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- nav scroll spy ---------- */
+  var navLinks = document.querySelectorAll('.top-links a');
+  if ('IntersectionObserver' in window && navLinks.length) {
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          navLinks.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); });
+        }
+      });
+    }, {rootMargin:'-38% 0px -55% 0px'});
+    ['context','decisions','gallery','demo'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) spy.observe(el);
+    });
+  }
+
+  /* ---------- accordion ---------- */
+  document.querySelectorAll('.dec-head').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.parentElement;
+      var willOpen = !item.classList.contains('open');
+      document.querySelectorAll('.dec').forEach(function(d){
+        d.classList.remove('open');
+        d.querySelector('.dec-head').setAttribute('aria-expanded','false');
+        d.querySelector('.dec-sign').textContent = '+';
+      });
+      if (willOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+        btn.querySelector('.dec-sign').textContent = '−';
+      }
+    });
+  });
+
+  /* ---------- gallery ---------- */
+  var shots = [
+    ['开机界面','brand'],['待机界面','brand'],['产品介绍','brand'],['使用方法','brand'],
+    ['登录','auth'],['次数设置','auth'],['次数设置-1','auth'],
+    ['患者列表','patient'],['患者信息','patient'],['患者信息-新建','patient'],['患者信息-编辑','patient'],['患者信息-弹窗','patient'],
+    ['治疗界面-未选患者','treat',1],['治疗界面-已选患者','treat',1],['治疗界面-禁忌症','treat'],['治疗界面-弹窗','treat'],
+    ['治疗记录-汇总','record'],['治疗记录-个人','record']
+  ];
+  var groupName = {brand:'引导品牌',auth:'身份授权',patient:'患者管理',treat:'治疗控制',record:'记录追溯'};
+  var gallery = document.getElementById('gallery-grid');
+  var search = document.getElementById('search');
+  var activeGroup = 'all';
+  var visible = [];
+
+  function renderGallery(){
+    var q = (search.value || '').trim().toLowerCase();
+    visible = shots.filter(function(s){
+      return (activeGroup === 'all' || s[1] === activeGroup) && (!q || s[0].toLowerCase().indexOf(q) >= 0);
+    });
+    gallery.innerHTML = '';
+    if (!visible.length) {
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><b>没有匹配的界面</b>试试功能组标签，或清空关键词后重试。';
+      gallery.appendChild(empty);
+      return;
+    }
+    visible.forEach(function(s, i){
+      var btn = document.createElement('button');
+      btn.className = 'shot' + (s[2] ? ' feature' : '');
+      btn.setAttribute('aria-label','查看界面：' + s[0]);
+      btn.innerHTML = '<span class="thumb"><img loading="lazy" src="device-screens/' + encodeURIComponent(s[0]) + '.jpg" alt="' + s[0] + '"></span>' +
+        '<span class="shot-meta"><strong>' + s[0] + '</strong><span>' + groupName[s[1]] + ' · 1920×1080</span></span>';
+      var img = btn.querySelector('img');
+      var mark = function(){ btn.querySelector('.thumb').classList.add('loaded'); };
+      if (img.complete) mark(); else { img.addEventListener('load', mark); img.addEventListener('error', mark); }
+      btn.addEventListener('click', function(){ openLightbox(i); });
+      gallery.appendChild(btn);
+    });
+  }
+  document.getElementById('filters').addEventListener('click', function(e){
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    activeGroup = chip.dataset.group;
+    document.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+    renderGallery();
+  });
+  search.addEventListener('input', renderGallery);
+  renderGallery();
+
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lb-img');
+  var lbIndex = 0;
+  function paintLightbox(){
+    if (!visible.length) return;
+    var s = visible[lbIndex];
+    lbImg.src = 'device-screens/' + encodeURIComponent(s[0]) + '.jpg';
+    lbImg.alt = s[0];
+    document.getElementById('lb-count').textContent = (lbIndex + 1) + ' / ' + visible.length;
+    document.getElementById('lb-name').textContent = s[0] + ' · ' + groupName[s[1]];
+  }
+  function openLightbox(i){ lbIndex = i; paintLightbox(); lb.classList.add('open'); }
+  function closeLightbox(){ lb.classList.remove('open'); }
+  function stepLightbox(d){ if (!visible.length) return; lbIndex = (lbIndex + d + visible.length) % visible.length; paintLightbox(); }
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', function(){ stepLightbox(-1); });
+  document.getElementById('lb-next').addEventListener('click', function(){ stepLightbox(1); });
+  lb.addEventListener('click', function(e){ if (e.target === lb) closeLightbox(); });
+  document.addEventListener('keydown', function(e){
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') stepLightbox(-1);
+    if (e.key === 'ArrowRight') stepLightbox(1);
+  });
+
+  /* ---------- demo state machine ---------- */
+  var state = {
+    mr:{label:'磁振治疗', status:'idle', sec:30*60},
+    me:{label:'磁电治疗', status:'running', sec:18*60+42}
+  };
+  var statusText = {idle:'未开始',running:'治疗中',paused:'已暂停',done:'已结束'};
+  var patient = null;
+  var pending = null;
+  var logEl = document.getElementById('log');
+  var errEl = document.getElementById('demo-err');
+
+  function stamp(){ var d = new Date(); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + ':' + String(d.getSeconds()).padStart(2,'0'); }
+  function log(msg){
+    var li = document.createElement('li');
+    li.innerHTML = '<time>' + stamp() + '</time><span>' + msg + '</span>';
+    logEl.insertBefore(li, logEl.firstChild);
+    while (logEl.children.length > 7) logEl.removeChild(logEl.lastChild);
+  }
+  function fmt(s){ return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+  function paintChannel(key){
+    var c = state[key];
+    var root = document.getElementById(key === 'mr' ? 'ch-mr' : 'ch-me');
+    root.dataset.state = c.status;
+    root.querySelector('.state-text').textContent = statusText[c.status];
+    root.querySelector('.t').textContent = fmt(c.sec);
+    var btns = root.querySelectorAll('.ch-actions button');
+    var start = btns[0], pause = btns[1], stop = btns[2];
+    start.disabled = c.status !== 'idle' && c.status !== 'paused';
+    start.textContent = c.status === 'paused' ? '继续' : '开始';
+    start.classList.toggle('primary', c.status === 'idle' || c.status === 'paused');
+    pause.disabled = c.status !== 'running';
+    stop.disabled = !(c.status === 'running' || c.status === 'paused');
+  }
+  function paintAll(){ paintChannel('mr'); paintChannel('me'); }
+  paintAll();
+  log('系统就绪：磁振未开始 / 磁电治疗中');
+
+  setInterval(function(){
+    var changed = false;
+    ['mr','me'].forEach(function(k){
+      if (state[k].status === 'running') {
+        state[k].sec = Math.max(0, state[k].sec - 1);
+        changed = true;
+        if (state[k].sec === 0) { state[k].status = 'done'; log(state[k].label + '疗程结束'); }
+      }
+    });
+    if (changed) paintAll();
+  }, 1000);
+
+  function openMask(id){ document.getElementById(id).classList.add('open'); }
+  function closeMask(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', function(){ closeMask(b.dataset.close); }); });
+
+  document.getElementById('pick-btn').addEventListener('click', function(){ openMask('mask-patient'); });
+  document.querySelectorAll('[data-pick]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var p = b.dataset.pick.split('|');
+      patient = {name:p[0], meta:p[1], phone:p[2]};
+      document.getElementById('p-name').textContent = patient.name;
+      document.getElementById('p-detail').textContent = patient.meta + ' · ' + currentPhone();
+      closeMask('mask-patient');
+      errEl.classList.remove('on');
+      log('绑定治疗对象：' + patient.name);
+    });
+  });
+
+  function currentPhone(){
+    if (!patient) return '';
+    if (document.getElementById('privacy').checked) return patient.phone;
+    var parts = patient.phone.split('****');
+    return parts[0] + '****' + parts[1];
+  }
+  document.getElementById('privacy').addEventListener('change', function(e){
+    var plain = e.target.checked;
+    document.getElementById('phone-label').textContent = plain ? '手机号（明文示例）' : '手机号（掩码）';
+    document.getElementById('privacy-note').textContent = plain
+      ? '当前显示界面稿中出现的明文示例。问题不是没有掩码能力，而是三处界面未统一；治疗记录-个人页已有掩码写法。'
+      : '当前显示 ' + (patient ? currentPhone() : '132****0487') + '。切换开关可对比明文呈现——我选择掩码，代价是完整号码需要一次额外操作。';
+    if (patient) document.getElementById('p-detail').textContent = patient.meta + ' · ' + currentPhone();
+  });
+
+  document.querySelectorAll('.ch-actions button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var ch = btn.closest('.ch');
+      var key = ch.id === 'ch-mr' ? 'mr' : 'me';
+      var act = btn.dataset.act;
+      if (act === 'start') {
+        if (!patient) { errEl.classList.add('on'); log('启动被拦截：未绑定治疗对象'); return; }
+        errEl.classList.remove('on');
+        pending = {key:key, act:'start'};
+        openMask('mask-safety');
+        return;
+      }
+      pending = {key:key, act:act};
+      document.getElementById('stop-title').textContent = act === 'pause' ? '是否暂停治疗？' : '治疗未结束';
+      document.getElementById('stop-desc').textContent = act === 'pause'
+        ? state[key].label + '疗程正在进行中，是否暂停当前通道？暂停后可从原计时继续。'
+        : state[key].label + '疗程正在进行中，是否停止治疗？中断操作必须二次确认。';
+      openMask('mask-stop');
+    });
+  });
+
+  document.getElementById('safe-cancel').addEventListener('click', function(){ closeMask('mask-safety'); if(pending) log(pending.key.toUpperCase() + '启动已取消'); pending = null; });
+  document.getElementById('safe-ok').addEventListener('click', function(){
+    if (pending) {
+      var k = pending.key;
+      state[k].status = 'running';
+      paintAll();
+      log(state[k].label + '启动（禁忌症已确认）');
+    }
+    closeMask('mask-safety'); pending = null;
+  });
+  document.getElementById('stop-cancel').addEventListener('click', function(){ closeMask('mask-stop'); pending = null; });
+  document.getElementById('stop-ok').addEventListener('click', function(){
+    if (pending) {
+      var k = pending.key;
+      state[k].status = pending.act === 'pause' ? 'paused' : 'idle';
+      if (pending.act === 'stop') state[k].sec = (k === 'mr' ? 30*60 : 18*60+42);
+      paintAll();
+      log(state[k].label + (pending.act === 'pause' ? '已暂停' : '已停止'));
+    }
+    closeMask('mask-stop'); pending = null;
+  });
+
+  document.querySelectorAll('[data-step]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var id = b.dataset.step === 'int' ? 'v-int' : 'v-freq';
+      var el = document.getElementById(id);
+      var v = Math.max(0, Math.min(100, parseInt(el.textContent,10) + Number(b.dataset.dir)));
+      el.textContent = v;
+      log((b.dataset.step === 'int' ? '强度' : '频率') + '调整为 ' + v + '（原稿未标注单位）');
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
