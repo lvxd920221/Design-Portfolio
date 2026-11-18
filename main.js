@@ -109,6 +109,59 @@ const PROJECTS = [
   },
 
   {
+    id: "ruihe",
+    title: "瑞合祥互联网医院 APP",
+    sub: "把线上复诊做成可核对的闭环：资质前置、问诊单双端同构、开方结构化、履约状态可溯",
+    tags: ["App UI/UX", "互联网医疗", "双端协同"],
+    badge: "流程设计",
+    period: "【待补充】",
+    role: "UI/UX 设计主导",
+    industry: "互联网医疗 · 双端",
+    thumb: "assets/projects/ruihe/thumb.jpg",
+
+    background: "面向中医复诊场景的双端 APP：患者端完成问诊与购药，医生端完成接诊与开方。我从两端 96 张界面稿中归纳设计命题，把「资质核验—问诊—开方—履约」四段流程串成可确认、可追溯的路径。",
+
+    highlights: [
+      {
+        title: "线上复诊须先确认实体机构诊断，入口若不设卡会被当作首诊平台",
+        strategy: "以「阻断式确认」替代一次性免责声明，把资质判断做成不可跳过的动作",
+        solution: "在查看处方之前设置诊断确认弹窗，与《互联网诊疗风险告知及同意书》同屏勾选；病历上传页拆成「材料归属」与「医生可用范围」两项授权。代价是每位患者多一次确认，换来责任边界在界面上可见、可留痕。"
+      },
+      {
+        title: "患者自述与医生所见若字段不同，会出现信息断层与判断偏差",
+        strategy: "以「两端同构字段集」替代各自裁剪，按角色只改呈现密度",
+        solution: "身高体重、过敏史、既往病史、自述、实体病历与四个问诊问题，患者端与医生端逐字段一致（两端各一张同名问诊单稿可核对）。代价是患者端表单比极简方案长，用预填示例与分组降低填写负担。"
+      },
+      {
+        title: "视频问诊需按顺序叫号，空白等待态让无法判断还要等多久",
+        strategy: "以「可解释的排队卡」替代通用加载动画，把等待变成可预期状态",
+        solution: "视频诊室展示预约时间、就诊排序、预计排到时间与「退出诊室」；代价是多一层排队状态开发，换来等待从焦虑变为可预期。"
+      }
+    ],
+
+    keyPages: [
+      { src: "assets/projects/ruihe/card-3.jpg", caption: "诊疗方案 · 诊断确认", note: "阻断式确认弹窗与同意书勾选，把资质判断前置到查看处方之前" },
+      { src: "assets/projects/ruihe/card-2.jpg", caption: "在线开方 · 结构化录入", note: "辨病 / 辨证 / 药材 / 用法四段拆分，配模板复用与药房换算说明" }
+    ],
+
+    metrics: [
+      { value: "96", label: "界面稿总数" },
+      { value: "47+49", label: "患者端 / 医生端分布" },
+      { value: "5", label: "订单状态枚举" }
+    ],
+
+    capabilityTags: ["双端协同", "复诊流程设计", "信息架构", "状态设计", "医疗 UX"],
+
+    images: [
+      { src: "assets/projects/ruihe/card-1.jpg", caption: "患者端 · 首页" },
+      { src: "assets/projects/ruihe/card-2.jpg", caption: "医生端 · 在线开方" },
+      { src: "assets/projects/ruihe/card-3.jpg", caption: "诊疗方案 · 诊断确认" },
+      { src: "ruihe-screens/u-intake.jpg", caption: "问诊单 · 双端同构" },
+      { src: "ruihe-screens/d-assistant.jpg", caption: "助理账号 · 两级权限" }
+    ]
+  },
+
+  {
     id: "yilifang",
     title: "医立方",
     sub: "用「业务流驱动」把医生、患者、智能排班装进一个后台",
@@ -568,9 +621,13 @@ const sheet = document.getElementById("modalSheet");
 let currentCase = 0;
 
 function openCase(i) {
-  // 磁振磁电磁治疗仪：跳转到完整案例独立页（审查版全文）
+  // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥互联网医院 APP
   if (PROJECTS[i] && PROJECTS[i].id === "cizhen") {
     window.location.href = "cizhen-case-study.html";
+    return;
+  }
+  if (PROJECTS[i] && PROJECTS[i].id === "ruihe") {
+    window.location.href = "ruihe-case-study.html";
     return;
   }
   currentCase = i;
