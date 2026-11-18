@@ -12,7 +12,8 @@
   var mv = document.getElementById("hero3d");
   if (!stage || !mv) return;
 
-  var CDN = "https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js";
+  // 自托管 model-viewer 4.4.0（BSD-3-Clause, Google LLC），避免跨境 CDN 抖动
+  var LIB = "assets/vendor/model-viewer.min.js";
   var isReady = false;
 
   function ready() {
@@ -40,17 +41,18 @@
     var s = document.createElement("script");
     s.type = "module";
     s.crossOrigin = "anonymous";
-    s.src = CDN;
+    s.src = LIB;
     s.onerror = fail;
     document.head.appendChild(s);
-    // 兜底：12 秒仍未就绪则定格静态图（若之后加载成功仍会切换）
-    setTimeout(fail, 12000);
+    // 兜底：15 秒仍未就绪则定格静态图（若之后加载成功仍会切换）
+    setTimeout(fail, 15000);
   }
 
-  if ("requestIdleCallback" in window) {
-    requestIdleCallback(loadViewer, { timeout: 1500 });
+  // 页面 load 后再启动，既不抢首屏 LCP，也不受后台标签页 idle 节流影响
+  if (document.readyState === "complete") {
+    setTimeout(loadViewer, 300);
   } else {
-    setTimeout(loadViewer, 700);
+    addEventListener("load", function () { setTimeout(loadViewer, 300); }, { once: true });
   }
 
   // 首次交互后淡出提示文案
