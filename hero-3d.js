@@ -68,11 +68,12 @@
     setTimeout(fail, 15000);
   }
 
-  // 页面 load 后再启动，既不抢首屏 LCP，也不受后台标签页 idle 节流影响
-  if (document.readyState === "complete") {
-    setTimeout(loadViewer, 300);
+  // DOM 就绪即启动：不等图片 load（实测线上 load 可晚到 17s，机器人会迟到十几秒）；
+  // 脚本本身 defer，此时仅剩首屏文字与样式在跑，1MB 依赖不抢 LCP。
+  if (document.readyState === "loading") {
+    addEventListener("DOMContentLoaded", function () { setTimeout(loadViewer, 250); }, { once: true });
   } else {
-    addEventListener("load", function () { setTimeout(loadViewer, 300); }, { once: true });
+    setTimeout(loadViewer, 250);
   }
 
   // 首次交互后淡出提示文案
