@@ -2,7 +2,7 @@
    Hero 3D · 机器人分身
    - model-viewer 延迟加载（不阻塞首屏）
    - 加载失败 / 无 WebGL 时保留原静态图
-   - 拖拽旋转 / 滚轮缩放 / 双指缩放 / 自动旋转
+   - 拖拽旋转 / 滚轮缩放 / 双指缩放 / 轻微自动摆动
    ============================================================ */
 (function () {
   // 基准屏（?tpl=1）保持逐像素纯净，不加载任何 3D 资源
@@ -16,10 +16,31 @@
   var LIB = "assets/vendor/model-viewer.min.js";
   var isReady = false;
 
+  // 轻微左右摆动：始终展示正脸，又能读出体积感；用户一上手即停
+  var swayStopped = false, swayOn = false;
+  function stopSway() { swayStopped = true; }
+  function startSway() {
+    if (swayOn) return;
+    swayOn = true;
+    // pointerdown 若发生在 shadow tree 内会重定向到宿主，故舞台与宿主都监听
+    [stage, mv].forEach(function (t) {
+      t.addEventListener("pointerdown", stopSway, { once: true, passive: true });
+      t.addEventListener("wheel", stopSway, { once: true, passive: true });
+      t.addEventListener("touchstart", stopSway, { once: true, passive: true });
+    });
+    (function tick() {
+      if (swayStopped) return;
+      var t = performance.now() / 1000;
+      mv.cameraOrbit = (Math.sin(t * 0.33) * 11).toFixed(2) + "deg 80deg auto";
+      requestAnimationFrame(tick);
+    })();
+  }
+
   function ready() {
     isReady = true;
     stage.classList.remove("is-fallback");
     stage.classList.add("is-ready");
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) startSway();
   }
   function fail() {
     if (isReady) return;
@@ -31,7 +52,6 @@
 
   // 尊重「减少动态效果」偏好：不自动旋转、不自动播放
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    mv.removeAttribute("auto-rotate");
     mv.removeAttribute("autoplay");
     mv.removeAttribute("animation-name");
   }
