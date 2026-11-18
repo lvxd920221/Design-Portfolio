@@ -57,7 +57,7 @@ const PROJECTS = [
 
   {
     id: "cizhen",
-    title: "磁振磁电磁治疗仪",
+    title: "磁振磁电治疗仪",
     sub: "从 0 到 1 建立 18 屏触控交互系统，把安全前置与双通道并行做成可复用规则",
     tags: ["医疗器械 HMI", "嵌入式", "仁惠医疗"],
     badge: "状态设计",
@@ -568,7 +568,7 @@ const sheet = document.getElementById("modalSheet");
 let currentCase = 0;
 
 function openCase(i) {
-  // 磁振磁电磁治疗仪：跳转到完整案例独立页（审查版全文）
+  // 磁振磁电治疗仪：跳转到完整案例独立页（审查版全文）
   if (PROJECTS[i] && PROJECTS[i].id === "cizhen") {
     window.location.href = "cizhen-case-study.html";
     return;
