@@ -455,6 +455,12 @@ const list = stack || document.createElement("div");
   const mouse = { x: -9999, y: -9999 };
   addEventListener("mousemove", e => {
     mouse.x = e.clientX; mouse.y = e.clientY;
+    // 3D 画布内不位移，避免与拖拽旋转互相干扰
+    if (e.target && e.target.closest && e.target.closest("#portraitStage")) {
+      el.style.transition = inactiveTrans;
+      el.style.transform = "translate3d(0,0,0)";
+      return;
+    }
     const r = el.getBoundingClientRect();
     if (inRange(r)) {
       el.style.transition = activeTrans;
