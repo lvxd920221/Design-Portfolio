@@ -7,7 +7,7 @@
 <meta name="description" content="吕孝冬 — 11 年 UI/UX 设计师，复杂系统 / 数据可视化 / 设计系统。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%9A%3C/text%3E%3C/svg%3E">
 </head>
@@ -34,13 +34,12 @@
   <div class="hero-portrait" id="heroPortrait">
     <div class="magnet" id="heroMagnet">
       <div class="portrait-stage" id="portraitStage">
-        <img class="portrait-fallback" src="assets/avatar-300.png" alt="吕孝冬">
         <model-viewer id="hero3d" class="hero-3d" alt="吕孝冬的 3D 机器人分身，可拖拽旋转、滚轮缩放"
-          src="assets/models/robot-expressive.glb?v=4"
+          src="assets/models/robot-expressive.glb?v=5"
           camera-controls touch-action="pan-y"
           camera-orbit="0deg 80deg auto"
-          min-camera-orbit="auto 50deg 65%" max-camera-orbit="auto 108deg 155%"
-          min-field-of-view="16deg" max-field-of-view="40deg"
+          min-camera-orbit="auto 50deg 80%" max-camera-orbit="auto 108deg 220%"
+          max-field-of-view="45deg"
           interaction-prompt="none"
           shadow-intensity="0.9" shadow-softness="0.9" exposure="1"
           environment-image="neutral" loading="eager" reveal="auto" disable-tap>
@@ -66,10 +65,10 @@
 
   <!-- ================= ABOUT ================= -->
   <section class="about" id="about">
-    <img class="about-deco deco-tl" id="decoTL" src="assets/projects/yibin/thumb.jpg" alt="">
-    <img class="about-deco deco-tr" id="decoTR" src="assets/projects/aigc/thumb.jpg" alt="">
-    <img class="about-deco deco-bl" id="decoBL" src="assets/projects/cizhen/thumb.jpg" alt="">
-    <img class="about-deco deco-br" id="decoBR" src="assets/projects/xiaomeng/thumb.jpg" alt="">
+    <img loading="lazy" decoding="async" class="about-deco deco-tl" id="decoTL" src="assets/projects/yibin/thumb.jpg" alt="">
+    <img loading="lazy" decoding="async" class="about-deco deco-tr" id="decoTR" src="assets/projects/aigc/thumb.jpg" alt="">
+    <img loading="lazy" decoding="async" class="about-deco deco-bl" id="decoBL" src="assets/projects/cizhen/thumb.jpg" alt="">
+    <img loading="lazy" decoding="async" class="about-deco deco-br" id="decoBR" src="assets/projects/xiaomeng/thumb.jpg" alt="">
     <div class="about-inner">
       <h2 class="hero-heading about-title" id="aboutTitle">About me</h2>
       <p class="about-text" id="aboutText">With more than eleven years in design, I focus on complex systems, data visualization and design systems. I genuinely enjoy working with teams that aim to make the complicated feel effortless. Let's build something incredible together!</p>
@@ -116,7 +115,7 @@
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <button class="lightbox-close" id="lightboxClose" aria-label="关闭">✕</button>
   <button class="lightbox-nav prev" id="lightboxPrev" aria-label="上一张">‹</button>
-  <div class="lightbox-stage"><img id="lightboxImg" src="" alt=""></div>
+  <div class="lightbox-stage"><img loading="lazy" decoding="async" id="lightboxImg" src="" alt=""></div>
   <button class="lightbox-nav next" id="lightboxNext" aria-label="下一张">›</button>
   <p class="lightbox-caption" id="lightboxCaption"></p>
 </div>
@@ -149,35 +148,35 @@
   <div class="tb-body">
     <div class="tb-sec">
       <div class="tb-cap">
-        <img class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img class="pc-r" src="assets/tpl-left-paren.svg" alt="">
-        <span class="pd"></span><span class="pt">放大脑发热区</span><img class="pa" src="assets/tpl-arrow.svg" alt="">
+        <img loading="lazy" decoding="async" class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img loading="lazy" decoding="async" class="pc-r" src="assets/tpl-left-paren.svg" alt="">
+        <span class="pd"></span><span class="pt">放大脑发热区</span><img loading="lazy" decoding="async" class="pa" src="assets/tpl-arrow.svg" alt="">
       </div>
       <p class="tb-txt">经过用户调研我们发现触发用户点击关键点来源于头像是否引起用户兴趣/基本信息是否符</p>
     </div>
     <div class="tb-sec">
       <div class="tb-cap">
-        <img class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img class="pc-r" src="assets/tpl-left-paren.svg" alt="">
-        <span class="pd"></span><span class="pt">预判用户操作行为</span><img class="pa" src="assets/tpl-arrow.svg" alt="">
+        <img loading="lazy" decoding="async" class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img loading="lazy" decoding="async" class="pc-r" src="assets/tpl-left-paren.svg" alt="">
+        <span class="pd"></span><span class="pt">预判用户操作行为</span><img loading="lazy" decoding="async" class="pa" src="assets/tpl-arrow.svg" alt="">
       </div>
       <p class="tb-txt">考虑到 12% 的用户行为会点开用户的头像继续访问用户的个人相册，我们将部分相册照</p>
     </div>
     <div class="tb-sec">
       <div class="tb-cap">
-        <img class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img class="pc-r" src="assets/tpl-left-paren.svg" alt="">
-        <span class="pd"></span><span class="pt">构建设计规范实现团队标准统一</span><img class="pa" src="assets/tpl-arrow.svg" alt="">
+        <img loading="lazy" decoding="async" class="pc-l" src="assets/tpl-left-paren.svg" alt=""><img loading="lazy" decoding="async" class="pc-r" src="assets/tpl-left-paren.svg" alt="">
+        <span class="pd"></span><span class="pt">构建设计规范实现团队标准统一</span><img loading="lazy" decoding="async" class="pa" src="assets/tpl-arrow.svg" alt="">
       </div>
       <p class="tb-txt">建立设计规范系统，统一团队标准体系建设设计规范系统，统一团队标准</p>
     </div>
   </div>
   <div class="tb-imgs">
-    <figure><img src="assets/projects/yibin/yb-1.jpg" alt=""></figure>
-    <figure><img src="assets/projects/yibin/yb-2.jpg" alt=""></figure>
+    <figure><img loading="lazy" decoding="async" src="assets/projects/yibin/yb-1.jpg" alt=""></figure>
+    <figure><img loading="lazy" decoding="async" src="assets/projects/yibin/yb-2.jpg" alt=""></figure>
   </div>
-  <div class="tb-phone"><img src="assets/tpl-phone.png" alt=""></div>
+  <div class="tb-phone"><img loading="lazy" decoding="async" src="assets/tpl-phone.png" alt=""></div>
   <div class="tb-badge">
-    <img class="pc-l" src="assets/tpl-left-paren.svg" alt="">
+    <img loading="lazy" decoding="async" class="pc-l" src="assets/tpl-left-paren.svg" alt="">
     <span>视觉重塑</span>
-    <img class="pc-r" src="assets/tpl-left-paren.svg" alt="">
+    <img loading="lazy" decoding="async" class="pc-r" src="assets/tpl-left-paren.svg" alt="">
   </div>
   <div class="tb-foot">
     <span>© 吕孝冬 · UI/UX 设计师</span>
