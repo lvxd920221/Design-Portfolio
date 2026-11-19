@@ -3,746 +3,235 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>数字企业大数据监管平台 · 作品分析 | 吕孝冬</title>
+<meta name="color-scheme" content="dark">
+<title>数字企业大数据监管平台 · 案例重构方案</title>
 <style>
 :root{
-  --bg:#F3F2EF;--surface:#FFFFFF;--surface-2:#F7F6F3;
-  --ink:#333333;--ink-2:#3A3A3A;--muted:#535353;--faint:#828282;
-  --line:#DAD6D0;--line-soft:#ECE9E4;
-  --accent:#2E6E5F;--accent-ink:#245A4D;--accent-soft:rgba(46,110,95,.10);
-  --err:#B5471F;--ok:#2E6E5F;--warn:#C99A3B;
-  --r-sm:12px;--r-md:24px;--r-lg:48px;--r-pill:999px;
-  --ease:cubic-bezier(.16,1,.3,1);
-  --display:"LogoSC Unbounded Sans","Arial Black","PingFang SC","Microsoft YaHei",sans-serif;
-  --body:"Alibaba PuHuiTi","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  --num:"Gilroy","Avenir Next",Montserrat,"Helvetica Neue",Arial,sans-serif;
-  --stroke:"Trash","Arial Black",Impact,sans-serif;
+  --bg:#050b18;--bg-2:#08152a;--panel:#0b1a31;--panel-2:#0e2340;
+  --ink:#edf7ff;--muted:#91a8c5;--dim:#5c789c;--line:rgba(90,170,230,.2);
+  --cyan:#16c8ff;--blue:#378bff;--gold:#f0c84c;--green:#36dfb1;--red:#ff647f;
+  --max:1320px;--pad:clamp(22px,5vw,76px);--radius:22px;
+  --ease:cubic-bezier(.2,.75,.25,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-::selection{background:var(--accent);color:#fff}
-body{margin:0;color:var(--ink);line-height:1.6;font-family:var(--body);-webkit-font-smoothing:antialiased;
-  background:linear-gradient(180deg,rgba(230,227,222,.55) 0,rgba(243,242,239,0) 640px),
-    radial-gradient(900px 480px at 90% 2%,rgba(46,110,95,.07),transparent 64%),var(--bg)}
-h1,.display{font-family:var(--display);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
-h2,h3,h4{font-family:var(--body);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
-h2{font-family:var(--body);font-weight:900;line-height:1.2}
-p{margin:0}
-button{font:inherit;color:inherit}
-a{color:inherit;text-decoration:none}
-img{display:block;max-width:100%}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
-.shell{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(28px,5.2vw,76px)}
-.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--num)}
-.mono{font-family:var(--num);font-variant-numeric:tabular-nums}
-.muted{color:var(--muted)}
-.accent{color:var(--accent)}
-.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:200;transition:width .12s linear}
-
-/* topbar */
-.topbar{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-.topbar-in{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.01em}
-.brand-mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--accent);font-size:13px;font-weight:900;font-family:var(--num)}
-.top-links{display:flex;gap:26px;font-size:12px;letter-spacing:.01em;color:var(--muted)}
-.top-links a{position:relative;padding:6px 0;transition:color .25s}
-.top-links a:hover{color:var(--accent)}
-.top-links a.on{color:var(--ink);font-weight:700}
-.top-links a.on:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:3px;background:var(--accent);border-radius:var(--r-pill)}
-
-/* reveal */
-.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
-.reveal.in{opacity:1;transform:none}
-.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
-
-/* HERO — p1_084 复刻：暖灰双层底 + 巨型缎带弧线 + 动态高度同步 */
-#hero{position:relative;overflow:hidden;min-height:calc(100dvh - 64px);display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:88px 0 104px}
-html:before{content:"";position:absolute;top:0;left:0;width:100%;height:var(--hero-h,900px);pointer-events:none;z-index:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1617 922'%3E%3Cpath fill='%23333333' fill-opacity='0.055' d='M1323.08 61.2413C1297.85 163.764 1271.84 280.013 1239.38 391.308C1224.9 453.803 1219.22 503.317 1220.13 541.33C1221.45 596.118 1235.5 613.06 1239.83 617.235C1243.92 621.179 1259.83 633.476 1310.03 632.197C1360.79 630.9 1432.64 615.657 1527.99 580.102L1617 819.799C1508.42 860.283 1406.77 885.543 1316.53 887.85C1225.75 890.164 1133.06 869.141 1062.95 801.655C1057.54 796.45 1052.51 790.997 1047.62 785.499C975.221 865.179 878.081 921.999 746.258 922C664.853 921.999 585.733 898.593 524.182 838.042C496.131 810.445 475.194 778.4 459.583 743.993C401.62 796.47 333.678 832.19 256.559 846.79C172.249 862.751 85.6173 851.971 0 822.831L82.0631 580.699C136.633 599.274 177.909 601.432 209.177 595.512C239.254 589.817 268.255 575.154 297.392 545.853C356.044 486.857 412.427 370.807 452.538 175.025C462.138 122.017 473.425 66.6238 486.177 9.04701L735.392 64.4724C726.747 103.51 719.095 140.549 712.272 175.621L712.47 175.671C709.648 191.263 706.666 206.654 703.589 221.851C673.427 388.94 665.605 507.588 677.591 585.272C684.988 633.21 697.771 650.411 702.994 655.56C705.597 658.122 714.176 666.297 746.258 666.298C814.978 666.296 873.708 625.056 932.909 493.36C955.269 443.617 974.418 387.992 992.05 328.078C999.932 294.664 1009.21 260.07 1020.18 224.485C1038.47 153.136 1056.15 77.6068 1075.25 0L1323.08 61.2413Z'/%3E%3C/svg%3E"),linear-gradient(171.4deg,rgba(51,51,51,.075) 0%,rgba(249,249,249,0) 62%);
-  background-repeat:no-repeat,no-repeat;background-position:calc(50% + 22vw) 2%,center top;
-  background-size:min(1180px,86vw) auto,100% 100%}
-.hero-col{position:relative;z-index:1}
-.eyebrow-row{display:flex;align-items:center;gap:16px}
-.eyebrow-row:after{content:"";flex:1;height:2px;background:var(--line);border-radius:var(--r-pill)}
-.hero-title{font-family:var(--display);font-size:clamp(40px,4.6vw,62px);font-weight:400;letter-spacing:-.012em;line-height:1.2;margin:26px 0 14px;max-width:18ch}
-.hero-title em{font-style:normal;color:var(--accent)}
-.hero-sub{font-size:16px;color:var(--muted);max-width:56ch;line-height:1.55}
-.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
-.tag{font-size:12px;letter-spacing:.03em;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.8)}
-.p084-dots{display:inline-flex;gap:6px;flex:none;align-items:center}
-.p084-dots i{width:10px;height:10px;border-radius:50%;background:var(--ink-2);display:block}
-.p084-dots i+i{background:transparent;box-shadow:inset 0 0 0 1px rgba(58,58,58,.75);opacity:.5}
-.p084-kr{font-family:var(--stroke);font-size:15px;font-weight:700;line-height:1;color:var(--ink-2);border-radius:24px;box-shadow:inset 0 0 0 1px var(--ink-2);padding:8px 14px;white-space:nowrap;flex:none}
-#hero .eyebrow-row:after{height:1px;background:var(--ink-2);opacity:.22}
-.p084-slash{display:inline-flex;align-items:center;gap:10px;flex:none;font-size:clamp(15px,1.5vw,20px);font-weight:900;color:var(--ink-2);white-space:nowrap}
-.p084-slash .bar{position:relative;width:4px;height:26px;background:var(--ink-2);transform:rotate(11.7deg);flex:none;display:block}
-.p084-slash .bar b{position:absolute;top:0;left:0;width:6px;height:6px;background:var(--accent);display:block}
-.p084-arrow{width:34px;height:34px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;color:#F9FEFE;flex:none;transform:rotate(-32deg)}
-.p084-arrow svg{width:16px;height:16px}
-.hero-en-note{font-family:var(--stroke);font-size:14px;line-height:1.5;letter-spacing:.01em;color:var(--ink-2);opacity:.62;margin:0 0 12px;text-transform:uppercase}
-.p084-bracketed{position:relative;display:inline-block;padding:0 26px}
-.p084-bracketed:before,.p084-bracketed:after{content:"";position:absolute;width:15px;height:15px;border:2px solid var(--ink-2);opacity:.85;pointer-events:none}
-.p084-bracketed:before{left:0;top:.18em;border-right:0;border-bottom:0;border-radius:5px 0 0 0}
-.p084-bracketed:after{right:0;bottom:.18em;border-left:0;border-top:0;border-radius:0 0 5px 0}
-#hero .tag{border:0;box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.55)}
-.cta-row{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
-.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .25s var(--ease),background .25s,border-color .25s,color .25s}
-.btn svg{width:14px;height:14px;flex:none}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn:active{transform:translateY(1px)}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent-ink);color:#fff}
-
-/* monitor — 复诊闭环状态看板 */
-.monitor{position:relative;z-index:1;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:0 32px 70px -44px rgba(51,51,51,.32)}
-.monitor-dots{display:flex;gap:6px;margin-bottom:18px}
-.monitor-dots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.12}
-.monitor-dots i:first-child{opacity:.55}.monitor-dots i:nth-child(2){opacity:.24}
-.monitor-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
-.monitor-head strong{font-size:15px}.monitor-head span{font-size:12px;color:var(--faint);letter-spacing:.08em}
-.state-flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-.sflow{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2);cursor:pointer;transition:border-color .22s,background .22s;text-align:left}
-.sflow:hover{border-color:var(--accent)}
-.sflow.on{border-color:var(--accent);background:var(--accent-soft)}
-.sflow h4{font-size:15px;font-weight:700}
-.sflow .en{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px;font-family:var(--num)}
-.sflow .st{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:14px}
-.sflow .st i{width:7px;height:7px;border-radius:50%;background:#B2B8B9;display:inline-block;flex:none}
-.sflow.on .st i{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-.mini-note{border-top:1px dashed var(--line);margin-top:20px;padding-top:14px;font-size:12px;color:var(--muted);line-height:1.8}
-
-/* marquee */
-.marquee{border-top:1px solid var(--line);border-bottom:0;padding:20px 0;background:var(--surface)}
-.marquee-track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 40px;width:100%}
-.mq{font-size:12px;letter-spacing:.14em;color:var(--muted);white-space:nowrap;font-weight:700;font-family:var(--body)}
-.mq b{color:var(--ink);font-weight:900}
-.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.45;flex:none}
-
-/* sections */
-section{padding:104px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
-section.tight{padding:88px 0}
-section.band{position:relative;background:var(--surface-2);box-shadow:0 0 0 100vmax var(--surface-2);clip-path:inset(0 -100vmax)}
-.sec-head{display:grid;grid-template-columns:190px minmax(0,1fr);gap:40px;margin-bottom:54px;align-items:start}
-.sec-head .idx{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:10px;display:flex;align-items:center;gap:10px}
-.sec-head .idx:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:var(--r-pill);flex:none}
-.sec-head h2{font-family:var(--body);font-size:clamp(24px,2.5vw,32px);font-weight:900;line-height:1.2;max-width:26ch}
-.sec-head p{color:var(--muted);font-size:15px;max-width:62ch;margin-top:16px;line-height:1.9}
-
-/* pitch */
-.quote{border-left:5px solid var(--accent);padding:14px 0 14px 34px;font-size:clamp(20px,2vw,26px);line-height:1.5;max-width:42ch;font-weight:700;letter-spacing:-.01em}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:60px;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
-.stat{padding:28px 24px 22px;border-right:1px solid var(--line)}
-.stat:nth-child(5n){border-right:0}
-.stat:first-child{background:var(--accent);border-color:var(--accent)}
-.stat:first-child b,.stat:first-child span{color:#fff}
-.stat:first-child span{opacity:.8}
-.stat b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;font-family:var(--num);line-height:1.2}
-.stat span{font-size:12px;color:var(--muted)}
-
-/* two column */
-.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:80px}
-.prose p{font-size:15px;color:var(--ink-2);line-height:1.5;margin-bottom:22px}
-.constraint{display:grid;grid-template-columns:40px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
-.constraint:last-of-type{border-bottom:1px solid var(--line)}
-.constraint b{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:4px}
-.constraint strong{font-size:15px;font-weight:700}
-.constraint p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:5px}
-.callout{margin-top:36px;border-left:3px solid var(--accent);padding:16px 0 16px 22px;font-size:16px;font-weight:700;letter-spacing:-.01em}
-
-/* role table */
-.role-table{border-top:1px solid var(--line)}
-.role-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);transition:background .2s}
-.role-row:hover{background:rgba(46,110,95,.05)}
-.role-row>div{padding:20px 24px;font-size:13px;line-height:1.85}
-.role-row>div:first-child{border-right:1px solid var(--line)}
-.role-row .label{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:5px;font-family:var(--body)}
-
-/* decisions */
-.dec{border-top:1px solid var(--line);border-radius:2px}
-.dec:last-child{border-bottom:1px solid var(--line)}
-.dec-head{width:100%;display:grid;grid-template-columns:56px 1fr 30px;align-items:center;gap:14px;text-align:left;background:none;border:0;padding:24px 10px;cursor:pointer;transition:background .25s}
-.dec-head:hover{background:linear-gradient(90deg,rgba(46,110,95,.07),transparent 60%)}
-.dec-num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;font-family:var(--num)}
-.dec-title{font-size:17px;font-weight:700;transition:color .2s}
-.dec-head:hover .dec-title{color:var(--accent)}
-.dec-sign{font-size:22px;color:var(--faint);text-align:center;line-height:1}
-.dec-body{display:none;padding:0 10px 30px 70px;max-width:88ch}
-.dec.open .dec-body{display:block;animation:fade .4s var(--ease)}
-@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.dec-field{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:8px 0;font-size:13px;line-height:1.9}
-.dec-field b{font-size:12px;color:var(--muted);font-weight:700;padding-top:3px;letter-spacing:.04em}
-.dec-field.pick b{color:var(--accent)}
-.dec-field.pick span{background:var(--accent-soft);border-radius:var(--r-sm);padding:6px 12px;margin:-6px 0 2px -12px;display:inline-block}
-
-/* flow */
-.phases{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:28px}
-.phase{border-top:3px solid var(--accent);padding-top:20px}
-.phase.mid{border-color:#8FB5A8}
-.phase.end{border-color:#B2B8B9}
-.phase h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between}
-.phase h3 span{font-size:11px;color:var(--faint);font-family:var(--num);letter-spacing:.1em}
-.step{display:flex;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
-.step i{font-style:normal;font-size:11px;color:var(--accent);font-family:var(--num);width:20px;flex:none}
-.bypass{margin-top:28px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r-md);padding:16px 20px;line-height:1.9}
-
-/* gallery */
-.gal-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:26px}
-.filters{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1.5px solid var(--line);background:transparent;border-radius:var(--r-pill);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
-.chip:hover{border-color:var(--accent);color:var(--accent)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.search{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:10px 16px;font-size:12px;width:230px;outline:none;transition:border-color .25s}
-.search:focus{border-color:var(--accent)}
-.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.shot{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);overflow:hidden;text-align:left;padding:0;cursor:pointer;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
-.shot.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
-.shot:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px -30px rgba(51,51,51,.5)}
-.shot:active{transform:translateY(-1px)}
-.thumb{position:relative;aspect-ratio:8/3;background:linear-gradient(100deg,#E6E3DE 25%,#F5F3F0 45%,#E6E3DE 65%);background-size:220% 100%;animation:shimmer 1.5s linear infinite;overflow:hidden;display:grid;place-items:center}
-@keyframes shimmer{to{background-position:-220% 0}}
-.thumb img{height:100%;width:auto;max-width:100%;object-fit:contain;opacity:0;transition:opacity .45s,transform .6s var(--ease)}
-.shot:hover .thumb img{transform:scale(1.02)}
-.thumb.loaded img{opacity:1}
-.thumb.loaded{animation:none;background:#FFFFFF}
-.shot.feature .shot-meta strong{font-size:15px}
-.shot-meta{padding:14px 16px 16px}
-.shot-meta strong{display:block;font-size:13px;font-weight:700}
-.shot-meta span{font-size:12px;color:var(--faint)}
-.empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:var(--r-md);padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;background:var(--surface)}
-.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:8px}
-.lightbox{position:fixed;inset:0;background:rgba(51,51,51,.94);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
-.lightbox.open{display:flex}
-.lightbox img{max-width:min(1240px,92vw);max-height:76vh;border-radius:var(--r-sm);background:#fff}
-.lb-bar{display:flex;align-items:center;gap:14px;color:#EDEAE5;font-size:12px;flex-wrap:wrap;justify-content:center}
-.lb-bar button{border:1px solid rgba(255,255,255,.28);background:transparent;color:#EDEAE5;border-radius:var(--r-pill);padding:8px 16px;cursor:pointer;transition:border-color .2s}
-.lb-bar button:hover{border-color:#fff}
-
-/* demo — 复诊链路状态机 */
-.demo-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px}
-.panel h3{font-size:17px;font-weight:700;margin-bottom:5px}
-.panel .hint{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.8}
-.step-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.step-tab{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
-.step-tab:hover{border-color:var(--accent);color:var(--accent)}
-.step-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.step-view{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:18px;align-items:center}
-.step-shot{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);padding:10px;display:grid;place-items:center;min-height:240px}
-.step-shot img{max-height:280px;width:auto;max-width:100%;border-radius:10px;background:#fff}
-.step-info b{display:block;font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:8px;font-family:var(--num)}
-.step-info h4{font-size:18px;font-weight:700;margin-bottom:10px}
-.step-info p{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px}
-.step-info .kv{font-size:12px;line-height:1.85;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:12px}
-.step-info .kv em{font-style:normal;color:var(--accent);font-weight:700}
-.side-stack{display:flex;flex-direction:column;gap:24px}
-.log{list-style:none;margin:14px 0 0;padding:0;max-height:300px;overflow:auto}
-.log li{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px;line-height:1.6}
-.log time{font-family:var(--num);color:var(--accent);flex:none}
-.rule-note{font-size:12px;color:var(--muted);line-height:1.9;border-left:3px solid var(--accent);padding:6px 0 6px 16px}
-
-/* evidence */
-.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:72px}
-.ev-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
-.ev-table thead th{background:var(--surface-2)}
-.ev-table th,.ev-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft)}
-.ev-table tr:last-child td{border-bottom:0}
-.ev-table tbody tr:hover{background:var(--surface-2)}
-.ev-table th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}
-.ev-table td:last-child,.ev-table th:last-child{text-align:right;font-family:var(--num)}
-.pass{color:var(--ok);font-weight:700}
-.fix{list-style:none;padding:0;margin:0}
-.fix li{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.9}
-.fix b{font-size:12px;color:var(--accent);font-family:var(--num);font-weight:900}
-.boundary{margin-top:44px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:30px 32px;font-size:13px;line-height:2;color:var(--ink-2)}
-.boundary strong{color:var(--ink)}
-
-footer{border-top:1px solid var(--line);padding:44px 0 72px;font-size:12px;color:var(--muted);line-height:2;background:var(--surface-2)}
-.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.foot-row a{color:var(--ink);font-weight:700}
-
-/* responsive */
-@media(max-width:1200px){.shell{padding:0 36px}.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1080px){
-  #hero{grid-template-columns:1fr;gap:48px;padding:64px 0 84px}
-  .hero-title{max-width:16ch}.monitor{max-width:640px}
-  .two,.ev-grid{grid-template-columns:1fr;gap:40px}
-  .demo-grid{grid-template-columns:1fr}
-  .sec-head{grid-template-columns:1fr;gap:10px}.sec-head .idx{padding-top:0}
-}
-@media(max-width:860px){
-  .shell{padding:0 22px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
-  section{padding:76px 0}section.tight{padding:64px 0}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .stat{border-bottom:1px solid var(--line)}
-  .stat:nth-child(2n){border-right:0}.stat:last-child{border-bottom:0}
-  .phases{grid-template-columns:1fr;gap:30px}
-  .role-row{grid-template-columns:1fr}
-  .role-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
-  .dec-body{padding-left:10px}.dec-field{grid-template-columns:1fr;gap:0}
-  .dec-field.pick span{margin:4px 0 2px}
-  .gal-tools{align-items:stretch;flex-direction:column}.search{width:100%}
-  .quote{padding-left:22px}
-  .step-view{grid-template-columns:1fr}.step-shot{min-height:200px}
-  .state-flow{grid-template-columns:1fr 1fr}
-}
-@media(max-width:640px){
-  .top-links{display:none}.gallery{grid-template-columns:1fr;gap:14px}
-}
-@media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}
-}
-
-/* architecture — 设计侧架构四象限 */
-.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.arch-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:26px 28px}
-.arch-card .arch-k{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;font-family:var(--num)}
-.arch-card h3{font-size:17px;font-weight:700;margin:8px 0 14px}
-.arch-card p{font-size:13px;color:var(--muted);line-height:1.9}
-.arch-card p+p{margin-top:10px}
-.arch-card em{font-style:normal;color:var(--ink-2);font-weight:700}
-@media(max-width:860px){.arch-grid{grid-template-columns:1fr;gap:14px}}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:radial-gradient(1100px 600px at 70% -10%,rgba(16,105,194,.20),transparent 65%),var(--bg);color:var(--ink);font-family:Inter,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{font:inherit;color:inherit}
+::selection{background:rgba(22,200,255,.35);color:#fff}
+.progress{position:fixed;z-index:100;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--cyan),var(--gold));box-shadow:0 0 14px var(--cyan)}
+.topbar{position:sticky;top:0;z-index:80;background:rgba(5,11,24,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1480px;margin:auto;padding:0 var(--pad);height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border:1px solid rgba(22,200,255,.7);border-radius:9px;display:grid;place-items:center;color:var(--cyan);box-shadow:inset 0 0 16px rgba(22,200,255,.12),0 0 16px rgba(22,200,255,.12);font-size:15px}
+.nav{display:flex;gap:22px;align-items:center;overflow:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav a{font-size:11px;color:var(--muted);white-space:nowrap;transition:.2s}.nav a:hover,.nav a.active{color:var(--cyan)}
+.shell{max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.eyebrow{font:700 10px/1.2 Inter,Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--cyan);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}.kicker:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(22,200,255,.55),transparent)}
+.hero{padding:72px var(--pad) 64px;max-width:1480px;margin:auto;position:relative}
+.hero-grid{display:grid;grid-template-columns:minmax(300px,.78fr) minmax(520px,1.22fr);gap:clamp(32px,5vw,76px);align-items:center}
+.hero-title{font-size:clamp(42px,5.8vw,82px);line-height:1.12;letter-spacing:-.055em;font-weight:850;margin:26px 0 22px;max-width:10ch}
+.hero-title em{font-style:normal;color:var(--cyan);text-shadow:0 0 30px rgba(22,200,255,.28)}
+.hero-sub{font-size:15px;line-height:1.95;color:#b3c6dd;max-width:52ch}
+.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}.pill{display:inline-flex;align-items:center;border:1px solid rgba(118,173,224,.28);border-radius:999px;padding:7px 12px;color:#bdd2e8;font-size:11px;background:rgba(13,35,63,.6)}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(22,200,255,.55);background:rgba(22,200,255,.12);border-radius:999px;padding:12px 18px;font-size:12px;font-weight:700;transition:.25s}.btn:hover{background:rgba(22,200,255,.2);transform:translateY(-2px);box-shadow:0 10px 30px rgba(22,200,255,.12)}.btn.secondary{border-color:var(--line);background:rgba(255,255,255,.02);color:#bed0e4}
+.hero-visual{position:relative;border:1px solid rgba(22,200,255,.4);border-radius:18px;padding:9px;background:linear-gradient(145deg,rgba(19,106,174,.2),rgba(3,12,26,.7));box-shadow:0 28px 90px rgba(0,0,0,.42),0 0 48px rgba(22,200,255,.10)}
+.hero-visual:before{content:"";position:absolute;inset:-1px;border-radius:18px;pointer-events:none;background:linear-gradient(120deg,rgba(22,200,255,.45),transparent 35%,transparent 70%,rgba(240,200,76,.35));padding:1px;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.image-frame{background:#020917;overflow:hidden;border-radius:11px;position:relative}.image-frame img{width:100%;aspect-ratio:8/3;object-fit:contain;background:#020917}.image-label{position:absolute;left:14px;bottom:12px;padding:6px 10px;border-radius:6px;background:rgba(3,10,22,.82);border:1px solid rgba(22,200,255,.25);font-size:10px;color:#c8eaff;backdrop-filter:blur(8px)}
+.hero-foot{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:12px;color:var(--dim);font:10px Inter,Arial,sans-serif;letter-spacing:.08em}
+.note{border-left:2px solid var(--gold);padding:10px 14px;background:rgba(240,200,76,.06);color:#c5cbd3;font-size:11px;line-height:1.7;margin-top:22px}
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(8,23,43,.65);overflow:hidden}.marquee-in{max-width:1480px;margin:auto;padding:16px var(--pad);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.mq{font:700 10px Inter,Arial,sans-serif;letter-spacing:.15em;color:#a8bfd8;white-space:nowrap}.mq b{color:var(--gold);font-weight:800}
+section{padding:clamp(70px,8vw,112px) 0;border-bottom:1px solid rgba(90,170,230,.12)}
+.section-head{display:grid;grid-template-columns:170px 1fr;gap:34px;align-items:start;margin-bottom:42px}.section-no{color:var(--cyan);font:700 11px Inter,Arial,sans-serif;letter-spacing:.14em;padding-top:9px}.section-head h2{font-size:clamp(28px,3.4vw,44px);letter-spacing:-.035em;line-height:1.2;margin:0;font-weight:800}.section-head p{color:var(--muted);font-size:13px;max-width:70ch;line-height:1.85;margin:12px 0 0}
+.statement{font-size:clamp(22px,3vw,38px);line-height:1.5;letter-spacing:-.025em;font-weight:750;max-width:1050px}.statement span{color:var(--cyan)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:42px}.stat{padding:22px 22px 19px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,rgba(15,43,75,.78),rgba(7,18,35,.85));position:relative;overflow:hidden}.stat:after{content:"";position:absolute;right:-22px;top:-35px;width:90px;height:90px;border-radius:50%;border:1px solid rgba(22,200,255,.12);box-shadow:0 0 0 12px rgba(22,200,255,.025),0 0 0 28px rgba(22,200,255,.018)}.stat b{display:block;font:800 clamp(30px,4vw,48px)/1 Inter,Arial,sans-serif;letter-spacing:-.06em;color:var(--cyan)}.stat span{display:block;color:#9ab0c9;font-size:11px;margin-top:10px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:26px}.panel{background:linear-gradient(145deg,rgba(12,34,61,.9),rgba(6,17,33,.92));border:1px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3vw,34px)}.panel h3{font-size:17px;margin:0 0 14px}.panel p{font-size:13px;color:#a8bdd4;line-height:1.9;margin:0}.constraints{display:grid;gap:0}.constraint{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:18px 0;border-top:1px solid var(--line)}.constraint:first-child{border-top:0;padding-top:0}.constraint b{font:800 16px Inter,Arial,sans-serif;color:var(--gold)}.constraint strong{font-size:14px}.constraint p{font-size:11px;color:var(--muted);line-height:1.7;margin-top:5px}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.theme-card{appearance:none;text-align:left;background:linear-gradient(150deg,rgba(15,43,76,.78),rgba(6,16,31,.9));border:1px solid var(--line);border-radius:16px;padding:19px;min-height:168px;cursor:pointer;position:relative;overflow:hidden;transition:.25s}.theme-card:hover,.theme-card.active{border-color:rgba(22,200,255,.78);transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,0,0,.22),0 0 25px rgba(22,200,255,.09)}.theme-card .num{font:700 10px Inter,Arial,sans-serif;color:var(--cyan);letter-spacing:.15em}.theme-card h3{font-size:17px;margin:12px 0 8px}.theme-card p{font-size:11px;color:#9cb2cb;line-height:1.7;margin:0;max-width:32ch}.theme-card .arrow{position:absolute;right:18px;bottom:17px;color:var(--gold);font-size:18px}
+.gallery-shell{border:1px solid rgba(22,200,255,.25);border-radius:22px;background:linear-gradient(150deg,rgba(10,28,52,.9),rgba(4,12,25,.98));padding:clamp(14px,2vw,24px);box-shadow:0 25px 80px rgba(0,0,0,.28)}.gallery-tabs{display:flex;gap:8px;overflow:auto;padding-bottom:15px;margin-bottom:16px;border-bottom:1px solid var(--line);scrollbar-width:none}.gallery-tabs::-webkit-scrollbar{display:none}.tab{border:1px solid rgba(103,163,218,.25);background:rgba(255,255,255,.025);border-radius:999px;padding:9px 15px;font-size:11px;color:#9eb6d0;white-space:nowrap;cursor:pointer;transition:.2s}.tab:hover,.tab.active{color:#fff;border-color:var(--cyan);background:rgba(22,200,255,.12)}
+.screen-stage{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(220px,.45fr);gap:22px;align-items:center}.screen-image{border-radius:12px;overflow:hidden;border:1px solid rgba(22,200,255,.32);background:#020916;cursor:zoom-in}.screen-image img{width:100%;aspect-ratio:8/3;object-fit:contain}.screen-info .eyebrow{display:block;margin-bottom:12px}.screen-info h3{font-size:clamp(21px,2.3vw,30px);line-height:1.25;margin:0 0 12px}.screen-info p{font-size:12px;color:#9db4cd;line-height:1.9;margin:0}.screen-info .micro{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:10px;color:#718eaf}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.thumb{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#020916;opacity:.72;cursor:pointer;padding:0;transition:.2s}.thumb.active,.thumb:hover{opacity:1;border-color:var(--cyan)}.thumb img{width:100%;aspect-ratio:8/3;object-fit:cover}.thumb span{display:block;padding:8px 9px;font-size:10px;color:#b4c8de;text-align:left}
+.decisions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.decision{border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(13,37,66,.86),rgba(6,17,32,.9));padding:24px;min-height:265px}.decision .num{font:800 34px/1 Inter,Arial,sans-serif;color:rgba(22,200,255,.7);letter-spacing:-.06em}.decision h3{font-size:16px;line-height:1.45;margin:15px 0 12px}.decision .label{font-size:9px;letter-spacing:.15em;color:var(--gold);font-weight:800;text-transform:uppercase}.decision p{font-size:11px;line-height:1.85;color:#9cb2ca;margin:8px 0 0}.decision .trade{border-top:1px solid var(--line);padding-top:12px;margin-top:15px;color:#cad8e6}
+.carrier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.carrier{border:1px solid var(--line);border-radius:14px;background:rgba(9,27,51,.82);padding:16px 14px;min-height:155px}.carrier .symbol{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--cyan);border:1px solid rgba(22,200,255,.45);background:rgba(22,200,255,.08);font-size:19px;margin-bottom:14px}.carrier b{font-size:12px;display:block}.carrier p{font-size:10px;color:var(--muted);line-height:1.65;margin:7px 0 0}
+.mapping{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.map-item{border-top:2px solid rgba(22,200,255,.55);padding:16px 12px 0}.map-item b{display:block;font-size:13px}.map-item span{display:block;font-size:10px;color:var(--muted);margin-top:8px;line-height:1.7}
+.system-layout{display:grid;grid-template-columns:1fr .9fr;gap:18px;align-items:stretch}.system-diagram{border:1px solid var(--line);background:radial-gradient(ellipse at 50% 43%,rgba(18,122,209,.22),transparent 55%),#07152a;border-radius:20px;padding:26px;min-height:360px;display:flex;flex-direction:column;justify-content:space-between}.system-top{border:1px solid rgba(22,200,255,.45);padding:13px;border-radius:10px;text-align:center;color:#d8f6ff;font-weight:800;letter-spacing:.08em;font-size:13px;background:rgba(22,200,255,.08)}.system-modules{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.system-modules span{border:1px solid rgba(56,139,255,.42);background:rgba(33,95,163,.15);border-radius:7px;text-align:center;padding:10px 4px;font-size:10px;color:#b8d9f5}.system-main{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--cyan);font-size:12px}.system-main:before,.system-main:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(22,200,255,.7))}.system-main:after{transform:scaleX(-1)}.system-foot{border-top:1px solid rgba(22,200,255,.4);padding-top:12px;text-align:center;color:#7899bc;font-size:10px;letter-spacing:.15em}.principles{display:grid;gap:10px}.principle{padding:18px 20px;border-radius:13px;border:1px solid var(--line);background:rgba(10,28,51,.72)}.principle b{font-size:12px;color:var(--cyan)}.principle p{font-size:11px;color:#9cb2ca;line-height:1.8;margin:7px 0 0}
+.evidence{display:grid;grid-template-columns:1fr 1fr;gap:14px}.evidence-box{border:1px solid var(--line);border-radius:16px;padding:22px;background:rgba(9,25,46,.85)}.evidence-box h3{font-size:14px;margin:0 0 14px}.evidence-box ul{padding-left:18px;margin:0;color:#9cb3ce;font-size:11px;line-height:2}.boundary{border:1px solid rgba(240,200,76,.3);border-radius:14px;background:rgba(240,200,76,.06);padding:18px 20px;margin-top:14px;color:#c4ccda;font-size:11px;line-height:1.8}.boundary strong{color:var(--gold)}
+.footer{padding:34px 0 46px;color:#6f8aa9;font-size:10px}.footer-in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}
+.lightbox{position:fixed;inset:0;z-index:120;background:rgba(1,5,13,.96);display:none;align-items:center;justify-content:center;padding:4vw}.lightbox.open{display:flex}.lightbox img{width:min(94vw,1800px);max-height:82vh;object-fit:contain}.lb-bar{position:absolute;left:4vw;right:4vw;bottom:20px;display:flex;justify-content:center;align-items:center;gap:20px;color:#a7bdd5;font-size:11px}.lb-bar button{border:1px solid var(--line);background:rgba(12,33,58,.8);border-radius:999px;padding:9px 14px;cursor:pointer}.lb-close{position:absolute;right:24px;top:20px;border:1px solid var(--line);background:rgba(12,33,58,.8);border-radius:50%;width:40px;height:40px;cursor:pointer}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s var(--ease),transform .65s var(--ease)}.reveal.in{opacity:1;transform:none}
+@media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-title{max-width:14ch}.hero-visual{max-width:100%}.screen-stage{grid-template-columns:1fr}.screen-info{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}.screen-info .eyebrow,.screen-info h3{grid-column:1/-1}.screen-info .micro{margin-top:0}.carrier-grid{grid-template-columns:repeat(3,1fr)}.system-layout{grid-template-columns:1fr}}
+@media(max-width:680px){.topbar-in{height:60px}.brand{font-size:11px}.nav{gap:15px}.nav a{font-size:10px}.hero{padding-top:48px}.hero-title{font-size:clamp(38px,11vw,60px)}.hero-sub{font-size:13px}.section-head{grid-template-columns:1fr;gap:8px;margin-bottom:28px}.section-no{padding-top:0}.stats{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.theme-grid{grid-template-columns:repeat(2,1fr)}.theme-card{min-height:150px;padding:15px}.theme-card h3{font-size:14px}.decisions{grid-template-columns:1fr}.decision{min-height:0}.carrier-grid{grid-template-columns:repeat(2,1fr)}.mapping{grid-template-columns:repeat(2,1fr)}.system-modules{grid-template-columns:repeat(3,1fr)}.evidence{grid-template-columns:1fr}.screen-info{display:block}.screen-info .micro{margin-top:14px}.thumbs{grid-template-columns:repeat(2,1fr)}.mq{font-size:9px}.marquee-in{justify-content:flex-start}.hero-foot{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div>
-<header class="topbar"><div class="shell topbar-in">
-  <div class="brand"><span class="brand-mark">D</span>数字企业大数据监管平台 · 设计案例</div>
-  <nav class="top-links">
-    <a href="#context">背景</a><a href="#decisions">关键决策</a><a href="#architecture">架构</a><a href="#gallery">六屏展示</a><a href="#evidence">复盘</a>
+<header class="topbar"><div class="topbar-in">
+  <a class="brand" href="#top"><span class="brand-mark">数</span><span>数字企业大数据监管平台</span></a>
+  <nav class="nav" aria-label="页面导航">
+    <a href="#overview">项目定位</a><a href="#scope">六大主题</a><a href="#screens">界面展示</a><a href="#decisions">设计决策</a><a href="#system">视觉系统</a><a href="#evidence">项目边界</a>
   </nav>
 </div></header>
 
-<main>
-  <!-- ============ HERO ============ -->
-  <section id="hero">
-    <div class="hero-col">
-      <div class="eyebrow-row">
-        <span class="p084-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="eyebrow">GOVERNANCE DASHBOARD / 01</span>
-        <span class="p084-slash" aria-hidden="true"><span class="bar"><b></b></span>六屏并列</span>
-      </div>
-      <p class="hero-en-note">Six themes.<br>One visual language.</p>
-      <h1 class="hero-title"><span class="p084-bracketed">在六个主题之间，<em>把一套监管语言讲清楚。</em></span></h1>
-      <p class="hero-sub">一套国资监管场景的大屏可视化：六个并列主题，每屏自洽。我在 1920×720 的画布里，把总量、结构、趋势与分布译成一套可跨屏复用的图表与视觉语言。</p>
-      <div class="hero-meta">
-        <span class="tag">大屏可视化</span><span class="tag">国资监管</span><span class="tag">六主题并列</span><span class="tag">2022.04</span>
-        <span class="p084-kr" aria-hidden="true">DATA</span>
-        <span class="p084-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#decisions">查看设计决策 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn" href="#gallery">浏览六屏界面</a>
-      </div>
+<main id="top">
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="kicker">CASE STUDY / DATA VISUALIZATION</div>
+      <h1 class="hero-title">六个监管主题，<em>一套数据视觉系统。</em></h1>
+      <p class="hero-sub">数字企业大数据监管平台 · 国资监管场景大屏可视化。围绕国资总览、投资管理、经济运行、三重一大、党建管理、风险分析六个并列主题，在 1920×720 画布中建立稳定框架，并让各主题以不同的中心视觉载体表达业务语义。</p>
+      <div class="hero-meta"><span class="pill">国资监管</span><span class="pill">大屏可视化</span><span class="pill">六主题并列</span><span class="pill">1920 × 720</span></div>
+      <div class="hero-actions"><a class="btn" href="#screens">浏览六张主题屏 <span>↘</span></a><a class="btn secondary" href="#decisions">查看设计决策</a></div>
+      <div class="note">画面中的金额、比例、企业数量及统计数值均为界面示意数据，不代表经核验的真实监管业务指标。本案例重点呈现信息组织与视觉系统设计。</div>
     </div>
-    <aside class="monitor" aria-label="六主题模块预览">
-      <div class="monitor-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="monitor-head"><strong>六个主题 · 一屏一域</strong><span class="mono">SIX THEMES</span></div>
-      <div class="state-flow" id="stateFlow">
-        <button class="sflow on" data-flow="0"><h4>国资监管</h4><div class="en">01 / OVERVIEW</div><div class="st"><i></i>总览 · 3D 地球</div></button>
-        <button class="sflow" data-flow="1"><h4>投资管理</h4><div class="en">02 / INVEST</div><div class="st"><i></i>投资规模与结构</div></button>
-        <button class="sflow" data-flow="2"><h4>经济运行</h4><div class="en">03 / ECONOMY</div><div class="st"><i></i>资产负债与收入</div></button>
-        <button class="sflow" data-flow="3"><h4>三重一大</h4><div class="en">04 / MEETING</div><div class="st"><i></i>议事与事项统计</div></button>
-        <button class="sflow" data-flow="4"><h4>党建管理</h4><div class="en">05 / PARTY</div><div class="st"><i></i>组织与党员结构</div></button>
-        <button class="sflow" data-flow="5"><h4>风控分析</h4><div class="en">06 / CONTROL</div><div class="st"><i></i>预警能力与债务</div></button>
-      </div>
-      <div class="mini-note" id="flowNote">设计取舍：六个主题平铺在顶栏，每屏只讲一个业务域——不做多级下钻，代价是顶栏占高、单屏密度高。</div>
-    </aside>
-  </section>
+    <div class="hero-visual">
+      <div class="image-frame"><img src="gov-screens/gov-overview.jpg" alt="数字企业大数据监管平台国资总览主题大屏" fetchpriority="high"><span class="image-label">01 / 国资总览 · 原始项目界面</span></div>
+      <div class="hero-foot"><span>CANVAS 1920 × 720</span><span>6 THEMES / 1 VISUAL FRAMEWORK</span></div>
+    </div>
+  </div>
+</section>
 
-  <div class="marquee"><div class="shell marquee-track">
-    <span class="mq"><b>6</b> 主题屏</span><span class="mq-dot"></span>
-    <span class="mq"><b>6</b> 顶栏模块</span><span class="mq-dot"></span>
-    <span class="mq"><b>5</b> 种主视觉载体</span><span class="mq-dot"></span>
-    <span class="mq"><b>1920×720</b> 单屏画布</span><span class="mq-dot"></span>
-    <span class="mq"><b>5</b> 类图表编码</span><span class="mq-dot"></span>
-    <span class="mq"><b>1</b> 套跨屏视觉框架</span>
-  </div></div>
+<div class="marquee"><div class="marquee-in"><span class="mq"><b>06</b> 主题屏 · 截图清点</span><span class="mq"><b>06</b> 顶栏模块 · 六屏比对</span><span class="mq"><b>05</b> 主视觉载体类型 · 画面取样</span><span class="mq">NAVIGATION POSITION FIXED</span><span class="mq">CYAN / BLUE / GOLD</span></div></div>
 
-  <!-- ============ 定位 ============ -->
-  <section id="pitch" class="tight">
-    <div class="sec-head reveal"><div class="idx">02 / 定位</div><div>
-      <h2>一句话说清这个作品</h2>
-      <p>从六张界面里可清点的结构事实出发，再逐条拆解我做的选择。画面中的业务数字均为界面示意数据，口径在文末统一说明。</p>
+<div class="shell">
+<section id="overview">
+  <div class="section-head reveal"><div class="section-no">01 / PROJECT</div><div><h2>不是六套独立大屏，而是一套可切换的监管界面语言。</h2><p>六个业务域信息类型不同，但采用一致的顶栏导航、标题条、底部署款和蓝色科技视觉；主题差异主要由中央主视觉与两侧数据模块承载。</p></div></div>
+  <div class="statement reveal">把监管信息中的<span>总量、结构、趋势与分布</span>，组织成可被快速识别的主题大屏。</div>
+  <div class="stats reveal"><div class="stat"><b>06</b><span>主题屏 · 原稿截图清点</span></div><div class="stat"><b>06</b><span>顶栏模块 · 六屏比对</span></div><div class="stat"><b>05</b><span>主视觉载体类型 · 画面取样</span></div><div class="stat"><b>1920×720</b><span>大屏画布规格 · 项目资料</span></div></div>
+</section>
+
+<section id="scope">
+  <div class="section-head reveal"><div class="section-no">02 / SCOPE</div><div><h2>六个主题，各自回答一种监管问题。</h2><p>主题名称与内容均来自现有六张大屏。点击主题卡片可直接切换下方真实界面，不额外虚构业务模块。</p></div></div>
+  <div class="theme-grid reveal" id="themeGrid">
+    <button class="theme-card active" data-screen="0"><span class="num">01 / OVERVIEW</span><h3>国资总览</h3><p>从全局视角呈现国资监管总量、结构和重点关注信息。</p><span class="arrow">↗</span></button>
+    <button class="theme-card" data-screen="1"><span class="num">02 / INVESTMENT</span><h3>投资管理</h3><p>围绕企业总数、收入、资金分布、投资趋势与项目进展组织信息。</p><span class="arrow">↗</span></button>
+    <button class="theme-card" data-screen="2"><span class="num">03 / ECONOMY</span><h3>经济运行</h3><p>呈现资产负债率、资产周转、银行账户分布与重点关注指标。</p><span class="arrow">↗</span></button>
+    <button class="theme-card" data-screen="3"><span class="num">04 / GOVERNANCE</span><h3>三重一大</h3><p>以四类重大事项为中心，配合会议、事项、制度与议题统计。</p><span class="arrow">↗</span></button>
+    <button class="theme-card" data-screen="4"><span class="num">05 / PARTY</span><h3>党建管理</h3><p>围绕党组织、党员、党务活动、组织结构和党建动态呈现信息。</p><span class="arrow">↗</span></button>
+    <button class="theme-card" data-screen="5"><span class="num">06 / RISK</span><h3>风险分析</h3><p>呈现预警变化、行业预警、财务能力预警与债务偿还信息。</p><span class="arrow">↗</span></button>
+  </div>
+</section>
+
+<section id="context">
+  <div class="section-head reveal"><div class="section-no">03 / CHALLENGE</div><div><h2>设计挑战：业务域要有差异，平台感不能被拆散。</h2><p>原始六屏反映出三个相互牵制的设计问题：主题入口深度、中央视觉辨识度，以及跨屏框架的一致性。</p></div></div>
+  <div class="two-col reveal">
+    <div class="panel"><h3>项目场景</h3><p>平台以六个顶栏主题并列呈现国资监管相关信息。每个主题由不同类型的数据构成：有总量和占比，有趋势和进度，有事项与会议统计，也有风险维度与债务明细。设计需要在固定画布内同时保证整体识别和主题差异。</p><p style="margin-top:14px">因此，页面不采用六套完全不同的布局，也不把所有页面压成相同的图表模板，而是在统一框架内替换具有主题语义的中心视觉与数据组合。</p></div>
+    <div class="panel"><h3>三条设计约束</h3><div class="constraints">
+      <div class="constraint"><b>C1</b><div><strong>主题入口必须稳定、可见</strong><p>六个模块同排固定在顶栏；标题条与底部署款位置跨屏保持一致。</p></div></div>
+      <div class="constraint"><b>C2</b><div><strong>中央主视觉要表达主题差异</strong><p>地球、数据光柱、四立方体、党旗五角星和盾牌分别承担不同主题语义。</p></div></div>
+      <div class="constraint"><b>C3</b><div><strong>图表语言需要跨屏复用</strong><p>深蓝底、青蓝描边、金色点缀和统一光效构成共同视觉底座。</p></div></div>
     </div></div>
-    <div class="quote reveal d1">把六个业务域的差异，收进一套观众能跨屏复用的视觉语言。</div>
-    <div class="stats reveal d2">
-      <div class="stat"><b>6</b><span>主题屏</span></div>
-      <div class="stat"><b>6</b><span>顶栏模块</span></div>
-      <div class="stat"><b>5</b><span>主视觉载体</span></div>
-      <div class="stat"><b>1920×720</b><span>单屏画布</span></div>
-      <div class="stat"><b>1</b><span>套跨屏视觉框架</span></div>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ 背景 ============ -->
-  <section id="context">
-    <div class="sec-head reveal"><div class="idx">03 / 背景与目标</div><div>
-      <h2>六主题并列下的三类约束</h2>
-      <p>这里的场景判断来自 1920×720 的大屏形态与六主题并列布局的反向归纳，不是访谈结论；业务用户与真实使用方式【待补充】。</p>
-    </div></div>
-    <div class="two">
-      <div class="prose reveal">
-        <p>大屏面向集中监看与汇报场景，观众与屏幕有距离、停留时间短。六个业务域——国资总览、投资、经济运行、三重一大、党建、风控——指标口径各不相同，却要在同一套界面规则里被读懂。</p>
-        <p>目标是把「一屏读懂一个业务域」拆成可复用的界面结构：全局框架恒定，主题内容替换；图形负责快速识别，数值负责精确核对。</p>
-        <p><span class="muted">画面可观察的痛点：主题差异大使视觉语言易散；单位混杂（亿元 / 万元 / % / 项 / 次）；中央主视觉类型多，需要统一框架收束。</span></p>
-        <div class="callout">设计不改写业务含义——只把总量、结构、趋势与分布分层，让每一屏自己说得清。</div>
-      </div>
-      <div class="reveal d1">
-        <div class="constraint"><b>C1</b><div><strong>六主题并列，每屏自洽</strong><p>顶栏六模块在六张画面中位置与名称一致，未见必须顺序浏览的证据。跨屏交互与下钻规则【待补充】。</p></div></div>
-        <div class="constraint"><b>C2</b><div><strong>主视觉表意，左右栏承载读数</strong><p>中央依次出现地球、光柱、四立方体、党旗与盾牌五种载体；总量与明细留在左右数据栏，避免主视觉承担精确读数。</p></div></div>
-        <div class="constraint"><b>C3</b><div><strong>单位混杂，编码必须可跨屏复用</strong><p>趋势、占比、多维与分布在不同主题反复出现；同类数据若各画各的，跨屏阅读就要重新学一遍图例。</p></div></div>
-      </div>
+<section id="screens">
+  <div class="section-head reveal"><div class="section-no">04 / SCREENS</div><div><h2>六张主题屏，完整展示实际界面。</h2><p>以原始 1920×720 截图为主证据。保持 8:3 宽屏比例完整呈现，不裁切标题栏、图表和底部署款；点击大图可放大查看。</p></div></div>
+  <div class="gallery-shell reveal">
+    <div class="gallery-tabs" id="galleryTabs">
+      <button class="tab active" data-screen="0">01 国资总览</button><button class="tab" data-screen="1">02 投资管理</button><button class="tab" data-screen="2">03 经济运行</button><button class="tab" data-screen="3">04 三重一大</button><button class="tab" data-screen="4">05 党建管理</button><button class="tab" data-screen="5">06 风险分析</button>
     </div>
-  </section>
+    <div class="screen-stage">
+      <button class="screen-image" id="mainScreenBtn" aria-label="放大当前大屏"><img id="mainScreen" src="gov-screens/gov-overview.jpg" alt="国资总览界面"></button>
+      <div class="screen-info"><span class="eyebrow" id="screenEn">01 / OVERVIEW</span><h3 id="screenTitle">国资总览</h3><p id="screenDesc">以地球作为全局中心载体，左右两侧分别组织投资情况、领域分布、投入趋势与项目完成情况等信息。</p><div class="micro" id="screenNote">视觉载体：地球 / 恒定框架：顶栏、标题条、底部署款</div></div>
+    </div>
+    <div class="thumbs" id="thumbs">
+      <button class="thumb active" data-screen="0"><img src="gov-screens/gov-overview.jpg" alt="国资总览缩略图"><span>国资总览</span></button>
+      <button class="thumb" data-screen="1"><img src="gov-screens/gov-investment.jpg" alt="投资管理缩略图"><span>投资管理</span></button>
+      <button class="thumb" data-screen="2"><img src="gov-screens/gov-economy.jpg" alt="经济运行缩略图"><span>经济运行</span></button>
+      <button class="thumb" data-screen="3"><img src="gov-screens/gov-governance.jpg" alt="三重一大缩略图"><span>三重一大</span></button>
+      <button class="thumb" data-screen="4"><img src="gov-screens/gov-party.jpg" alt="党建管理缩略图"><span>党建管理</span></button>
+      <button class="thumb" data-screen="5"><img src="gov-screens/gov-risk.jpg" alt="风险分析缩略图"><span>风险分析</span></button>
+    </div>
+  </div>
+</section>
 
-  <!-- ============ 职责 ============ -->
-  <section id="role" class="tight band">
-    <div class="sec-head reveal"><div class="idx">04 / 职责与协作</div><div>
-      <h2>我负责什么，画面给定什么</h2>
-      <p>先划清边界，再谈方法——只写能从画面归纳的能力域，具体范围按资料实情标注。</p>
-    </div></div>
-    <div class="role-table reveal d1">
-      <div class="role-row"><div><span class="label">我设计并交付 · DESIGN</span>信息架构分层：全局层 / 主题层 / 落款层<br>六主题模块划分与五区布局<br>图表编码体系：趋势 / 占比 / 多维 / 分布<br>主视觉语义映射与跨屏视觉规范</div>
-      <div><span class="label">给定 · GIVEN</span>六大业务域口径与指标名称<br>画面中的界面示意数字<br>中央主视觉的主题意象<br>底部「2022.04 某集团」落款</div></div>
-      <div class="role-row"><div><span class="label">关键动作 · ACTION</span>把六主题收进同一套顶栏与底栏<br>按业务语义选择中央主视觉载体<br>同类指标统一图表读法与图例位置<br>用取样规范约束跨屏配色与描边</div>
-      <div><span class="label">取舍原则 · TRADE-OFF</span>跨屏一致性优先于单屏个性<br>精确数值可读优先于装饰密度<br>示意数据如实标注，不冒充业绩<br>【待补充：具体头衔、团队规模、参与深度、起止日期与协作对象】</div></div>
-    </div>
-  </section>
+<section id="decisions">
+  <div class="section-head reveal"><div class="section-no">05 / DECISIONS</div><div><h2>三个关键决策：框架统一，主题差异化。</h2><p>从原项目说明中提炼的设计判断。每个决策保留了收益与代价，避免只描述“做了什么”。</p></div></div>
+  <div class="decisions reveal">
+    <article class="decision"><span class="num">D01</span><div class="label">NAVIGATION / IA</div><h3>六个业务域平铺顶栏，不藏入多级菜单。</h3><p><b>问题：</b>业务域并列，多级下钻会增加寻找主题的路径。</p><p><b>选择：</b>六个模块固定在顶栏，一屏一主题，切换即换屏；标题条和底部署款维持固定位置。</p><p class="trade"><b>取舍：</b>顶栏占用画面高度，单屏信息密度较高；换来主题位置稳定、模块切换更直接。</p></article>
+    <article class="decision"><span class="num">D02</span><div class="label">VISUAL METAPHOR</div><h3>中央视觉按业务语义变化，不套同一个地球模板。</h3><p><b>问题：</b>统一使用地球虽然省资产，但会削弱主题辨识；完全自由又容易形成六套风格。</p><p><b>选择：</b>地球、数据光柱、四立方体、党旗五角星、盾牌分别承载相应主题。</p><p class="trade"><b>取舍：</b>需要维护多套中心视觉资产；换来不同主题一眼可辨，同时保留统一外框。</p></article>
+    <article class="decision"><span class="num">D03</span><div class="label">VISUAL SYSTEM</div><h3>固定视觉底座，主视觉和数据区按主题替换。</h3><p><b>问题：</b>六种主题图形差异较大，缺少恒定元素会让平台失去整体感。</p><p><b>选择：</b>统一深蓝背景、青蓝霓虹描边、金色点缀、标题条和底部署款，只替换中心载体与数据模块。</p><p class="trade"><b>取舍：</b>单个主题的视觉自由度受到约束；换来跨屏一致辨识与整体平台感。</p></article>
+  </div>
+</section>
 
-  <!-- ============ 决策 ============ -->
-  <section id="decisions">
-    <div class="sec-head reveal"><div class="idx">05 / 难点与解决方案</div><div>
-      <h2>六个关键决策</h2>
-      <p>每个决策写清五件事：冲突、备选、选择、代价、依据。依据都落到具体画面，点开查看。</p>
-    </div></div>
-    <div id="dec-list">
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D1</span><span class="dec-title">六主题入口：多级下钻，还是顶栏平铺</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>六个业务域差异很大，做成多级菜单容易把信息藏深；监看场景下观众未必愿意逐级点开。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 两级导航，按业务域分组；B. 顶栏平铺六个入口，一屏一主题；C. 首页做总入口再分发到各主题。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 六模块同排固定在顶栏，切换即换屏，标题条与落款跨屏恒定。</span></div>
-        <div class="dec-field"><b>代价</b><span>顶栏占高、单屏信息密度高；换来的是主题位置稳定，观众不需要学习目录结构。</span></div>
-        <div class="dec-field"><b>依据</b><span>六张画面顶栏均为「国资监管 / 投资管理 / 经济运行 / 三重一大 / 党建管理 / 风控分析」，标题条与底部落款位置一致。</span></div>
-      </div></div>
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D2</span><span class="dec-title">中央主视觉：统一模板，还是按主题换语义载体</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>统一用一个地球模板能省资产，但会丢掉主题辨识；完全自由发挥又会把六屏散成六套风格。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 六屏全用 3D 地球；B. 按主题语义更换中央载体，但沿用同一外框与光效体系。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 地球（总览 / 投资）、数据光柱（经济运行）、四立方体（三重一大）、党旗与五角星（党建）、盾牌（风控）各司其职。</span></div>
-        <div class="dec-field"><b>代价</b><span>需要多套主视觉资产，一致性维护成本上升；换来的是主题一眼可辨，而不是靠读标题才分清。</span></div>
-        <div class="dec-field"><b>依据</b><span>国资监管与投资管理为地球 + 光环；经济运行为蓝色光柱；三重一大为中央圆柱 + 四个立方体；党建为红旗与五角星；风控为蓝色盾牌。</span></div>
-      </div></div>
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D3</span><span class="dec-title">占比与完成度：只给数字，还是图形加数值双编码</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>画面里单位混杂（亿元 / 万元 / % / 项 / 次），纯数字表读不快，纯图形又读不准。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 统一做成数字表格；B. 环形 / 进度条 / 雷达做形状编码，旁边保留精确数值标注。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 图形负责一眼看出结构与差距，精确数值同屏可查，图例位置固定在数据区上方。</span></div>
-        <div class="dec-field"><b>代价</b><span>图形占位挤压列表空间；换来的是远距可辨与近距可核对同时成立。</span></div>
-        <div class="dec-field"><b>依据</b><span>国资监管页境内 55% / 境外 45% 与完成率读数；经济运行页综合关注 79% / 93%；风控页七维预警能力雷达。</span></div>
-      </div></div>
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D4</span><span class="dec-title">趋势类数据：各屏自选，还是统一折线读法</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>趋势在多个主题反复出现，若各屏自选图表形态，观众每换一屏都要重新理解坐标轴。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 按数据分布自由选图；B. 趋势统一折线 + 年度轴 + 双系列图例，分布类另配山形 / 柱状。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 趋势用同一套折线语法，跨屏只换数据不换读法。</span></div>
-        <div class="dec-field"><b>代价</b><span>趋势之外的形态要另设编码规则；换来的是一套图例跨屏复用。</span></div>
-        <div class="dec-field"><b>依据</b><span>投资管理页收入分析（2016–2022）与投资规模趋势（2018–2022）；经济运行页总资产增长率；风控页预警触发趋势。</span></div>
-      </div></div>
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D5</span><span class="dec-title">同值占位卡：填不同假数，还是如实标注示意</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>经济运行页中心五张卡显示同一个数值，若被当作真实 KPI 会误导读者对项目的判断。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 填几个不同数字让它看起来像真实数据；B. 保留画面原样，并在案例页统一标注「界面示意数据」。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 画面数字一律标注为界面示意数据、非经核实业务指标；不把它写进可量化成果。</span></div>
-        <div class="dec-field"><b>代价</b><span>少一点「真实业绩」的观感；换来的是作品陈述可被核查，不虚构数据。</span></div>
-        <div class="dec-field"><b>依据</b><span>经济运行页中心「企业总资产 / 利润总额 / 营业收入」等五张卡均为 1666 万元，属于占位示意。</span></div>
-      </div></div>
-      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D6</span><span class="dec-title">跨屏风格：主题自由发挥，还是统一框架收束</span><span class="dec-sign">+</span></button><div class="dec-body">
-        <div class="dec-field"><b>冲突</b><span>六种主视觉差异越大，越容易各自成一套；没有恒定元素，六屏就不像一个平台。</span></div>
-        <div class="dec-field"><b>备选</b><span>A. 各主题独立设计；B. 固定顶栏、标题条、底部署款、描边与点缀色，只替换主视觉与数据区。</span></div>
-        <div class="dec-field pick"><b>选择</b><span>B —— 用一套恒定的「框」承载差异化的「内容」，六屏共享同一视觉框架。</span></div>
-        <div class="dec-field"><b>代价</b><span>单主题个性受限；换来的是平台感与跨屏一致的辨识度。</span></div>
-        <div class="dec-field"><b>依据</b><span>六张画面均为深蓝底、青蓝描边与金色点缀，底部统一「2022.04 某集团」，顶栏结构完全一致。</span></div>
-      </div></div>
-    </div>
-  </section>
+<section id="visual-language">
+  <div class="section-head reveal"><div class="section-no">06 / DATA LANGUAGE</div><div><h2>让数据类型决定图表表达，而不是图表装饰数据。</h2><p>从六张实际画面归纳可见的信息表达方式。以下是图面类型总结，不代表额外新增的业务指标。</p></div></div>
+  <div class="mapping reveal">
+    <div class="map-item"><b>总量 / 关键数值</b><span>数字铭牌、中心指标和重点数值标签，突出需要快速读取的量级。</span></div>
+    <div class="map-item"><b>结构 / 占比</b><span>环形图、分布图、分层结构和比例条，表现构成关系。</span></div>
+    <div class="map-item"><b>趋势 / 变化</b><span>柱线组合与时间序列，表达阶段变化和计划对比。</span></div>
+    <div class="map-item"><b>分布 / 明细</b><span>排行列表、进度条和债务到期表格，便于定位具体对象与数值。</span></div>
+  </div>
+  <div class="panel reveal" style="margin-top:22px"><h3>风控主题的组合示例</h3><p>风险分析屏不是只放一个盾牌：左侧有预警变化趋势和行业预警分析，中间以盾牌建立风险主题识别，右侧组合财务能力雷达与债务偿还信息。抽象风险评价与精确到期值并置，既保留整体态势，也保留明细查询线索。</p></div>
+</section>
 
-  <!-- ============ 核心功能 ============ -->
-  <section id="flow" class="tight">
-    <div class="sec-head reveal"><div class="idx">06 / 核心功能</div><div>
-      <h2>一屏一主题的功能骨架</h2>
-      <p>六屏是并列主题，不是一条用户操作流。这里只描述画面可证的结构层次。</p>
-    </div></div>
-    <div class="phases">
-      <div class="phase reveal"><h3>全局层 · 恒定框架<span>LAYER A</span></h3>
-        <div class="step"><i>01</i>顶栏六模块：国资监管 → 风控分析</div>
-        <div class="step"><i>02</i>居中标题条「数字企业大数据监管平台」</div>
-        <div class="step"><i>03</i>深蓝底 + 青蓝描边 + 金色点缀</div>
-        <div class="step"><i>04</i>底部落款「2022.04 某集团」</div>
-      </div>
-      <div class="phase mid reveal d1"><h3>主题层 · 按屏替换<span>LAYER B</span></h3>
-        <div class="step"><i>01</i>中央语义主视觉：地球 / 光柱 / 立方体 / 党旗 / 盾牌</div>
-        <div class="step"><i>02</i>左侧数据栏：总量构成、活动条目、分类统计</div>
-        <div class="step"><i>03</i>右侧图表区：趋势、占比、雷达、列表</div>
-        <div class="step"><i>04</i>数值标签与图例固定在数据区</div>
-      </div>
-      <div class="phase end reveal d2"><h3>主题内容 · 六域各异<span>LAYER C</span></h3>
-        <div class="step"><i>01</i>国资监管：投资总额与投资类别分布</div>
-        <div class="step"><i>02</i>投资管理：企业总量、收入与行业排名</div>
-        <div class="step"><i>03</i>经济运行：资产负债、增长率、银行账户</div>
-        <div class="step"><i>04</i>三重一大：会议、事项、议事与法律审核</div>
-      </div>
+<section id="system">
+  <div class="section-head reveal"><div class="section-no">07 / FRAMEWORK</div><div><h2>一套恒定框架，容纳六种主题表达。</h2><p>下面将现有界面反复出现的结构关系抽象为一张系统图，方便面试官理解你的视觉规范能力。</p></div></div>
+  <div class="system-layout reveal">
+    <div class="system-diagram">
+      <div class="system-top">平台标题 / 数字企业大数据监管平台</div>
+      <div class="system-modules"><span>国资总览</span><span>投资管理</span><span>经济运行</span><span>三重一大</span><span>党建管理</span><span>风险分析</span></div>
+      <div class="system-main"><span>主题主视觉 + 数据内容区</span></div>
+      <div class="system-foot">统一标题条 · 统一底部署款 · 深蓝 / 青蓝 / 金色</div>
     </div>
-    <div class="bypass reveal">边界说明：以上六屏为并列主题，画面未见跨屏下钻或点击流程的可举证信息。党建管理的组织构成、党员结构，风控分析的预警趋势与债务到期，同样属于主题层内容，不构成先后步骤。<strong>【待补充：跨屏交互与下钻规则】</strong></div>
-  </section>
+    <div class="principles">
+      <div class="principle"><b>01 / 固定不变</b><p>平台名称、顶栏模块位置、标题条、底部署款和整体描边语言。</p></div>
+      <div class="principle"><b>02 / 按主题变化</b><p>中心主视觉载体、两侧数据区内容、指标组合与图表类型。</p></div>
+      <div class="principle"><b>03 / 跨屏复用</b><p>青蓝描边、深色背景、金色重点提示与统一的模块层级。</p></div>
+      <div class="principle"><b>04 / 取样色彩建议</b><p>深海军蓝作底、青蓝用于结构和数据强调、金色用于重点数值。色值为基于截图的展示建议，最终以原始设计源文件为准。</p></div>
+    </div>
+  </div>
+  <div class="carrier-grid reveal" style="margin-top:14px">
+    <div class="carrier"><div class="symbol">◎</div><b>地球</b><p>国资总览 / 投资管理，共用全球化总览语义。</p></div>
+    <div class="carrier"><div class="symbol">▥</div><b>数据光柱</b><p>经济运行，表达数据汇聚与经济运行态势。</p></div>
+    <div class="carrier"><div class="symbol">◇</div><b>四立方体</b><p>三重一大，对应四类重大事项。</p></div>
+    <div class="carrier"><div class="symbol">★</div><b>党旗五角星</b><p>党建管理，建立鲜明的党建主题识别。</p></div>
+    <div class="carrier"><div class="symbol">⬡</div><b>盾牌</b><p>风险分析，以防护意象承载预警主题。</p></div>
+  </div>
+</section>
 
-  <!-- ============ 设计侧架构 ============ -->
-  <section id="architecture" class="tight band">
-    <div class="sec-head reveal"><div class="idx">07 / 架构与选型</div><div>
-      <h2>设计侧架构与编码选型</h2>
-      <p>以下全部从画面归纳，属于设计架构；框架、语言、图表库、接口与部署等代码级信息【待补充】，不作推断。</p>
-    </div></div>
-    <div class="arch-grid">
-      <div class="arch-card reveal"><div class="arch-k">01 / INFORMATION ARCHITECTURE</div><h3>信息架构：三层 · 五区</h3>
-        <p>三层：全局层（顶栏 + 标题条）、主题层（主视觉 + 数据区）、落款层。五区：顶栏 / 左数据栏 / 中央主视觉 / 右图表区 / 底部署款，六屏共用同一分区。</p>
-        <p><em>选型理由：</em>分区恒定，换主题时只替换中间内容，跨屏学习成本最低。</p>
-      </div>
-      <div class="arch-card reveal d1"><div class="arch-k">02 / MODULE DIVISION</div><h3>模块划分：六主题并列</h3>
-        <p>国资监管、投资管理、经济运行、三重一大、党建管理、风控分析各占一屏；每屏回答一个业务域的「总量是多少、结构如何、趋势怎样」。</p>
-        <p><em>代价：</em>单屏信息密度高；换来的是主题入口稳定、无需多级导航。</p>
-      </div>
-      <div class="arch-card reveal d2"><div class="arch-k">03 / CHART ENCODING</div><h3>图表编码：按数据关系分类</h3>
-        <p>趋势 → 折线 + 年度轴 + 双系列图例；占比 / 完成度 → 环形与进度条；多维能力 → 雷达；类别分布 → 山形 / 柱状；公开信息 → 时间轴列表。</p>
-        <p><em>依据：</em>投资管理的收入与投资规模趋势、国资监管的境内境外占比、风控的七维雷达、三重一大的事项分布、党建的党务公开列表。</p>
-      </div>
-      <div class="arch-card reveal d3"><div class="arch-k">04 / VISUAL SYSTEM</div><h3>视觉规范：取样归纳，不冒充源 token</h3>
-        <p>深蓝底 + 霓虹青蓝描边 + 金色点缀；卡片、数值标签、图例与底部署款跨屏一致。精确色值、字号与间距<em>【待补充：源工程】</em>。</p>
-        <p><em>【待补充：开发框架、图表库、数据源接口、部署方式、源码与设计源文件】</em>——无资料，不猜测具体实现。</p>
-      </div>
-    </div>
-  </section>
+<section id="evidence">
+  <div class="section-head reveal"><div class="section-no">08 / SCOPE & EVIDENCE</div><div><h2>用可核查的画面事实收尾，不用虚构业务成绩。</h2><p>项目资料目前能支持的是设计产出与页面结构事实。项目周期、个人职责边界和真实业务指标仍需由你补充。</p></div></div>
+  <div class="evidence reveal">
+    <div class="evidence-box"><h3>目前可直接核查</h3><ul><li>六张主题屏：国资总览、投资管理、经济运行、三重一大、党建管理、风险分析。</li><li>六屏顶栏模块名称与位置一致。</li><li>六屏共享深蓝底、青蓝描边、金色点缀和底部署款。</li><li>中心视觉取样归纳为五类，地球载体在两个主题复用。</li><li>原始画布规格：1920 × 720。</li></ul></div>
+    <div class="evidence-box"><h3>发布前建议补齐</h3><ul><li>项目起止时间：现有资料标记为待补充。</li><li>个人职责：确认你负责需求分析、信息架构、图表设计、主视觉、动效或交付中的哪些部分。</li><li>协作关系：是否有产品、数据、前端、三维或动效协作人员。</li><li>数据口径：现有界面数据为示意数据，若有脱敏后的真实口径再替换。</li><li>落地情况：确认是否上线、展示运行或仅为设计交付。</li></ul></div>
+  </div>
+  <div class="boundary"><strong>重要说明：</strong>本案例原稿明确标注画面业务数字为界面示意数据，非经核实业务指标。因此本版只展示 6 张主题屏、6 个顶栏模块、5 种主视觉载体等设计产出统计，不将金额、企业数、比例或项目完成率描述为真实业绩。项目周期及具体职责暂不猜测。</div>
+</section>
 
-  <!-- ============ 六屏展示 ============ -->
-  <section id="gallery">
-    <div class="sec-head reveal"><div class="idx">08 / 关键页面展示</div><div>
-      <h2>六屏主题，逐张查看</h2>
-      <p>六张 1920×720 界面截图，可按模块筛选、按名称搜索，点开看大图。画面数字均为界面示意数据。</p>
-    </div></div>
-    <div class="gal-tools reveal">
-      <div class="filters" id="filters">
-        <button class="chip on" data-group="all">全部 6</button>
-        <button class="chip" data-group="overview">国资监管</button>
-        <button class="chip" data-group="investment">投资管理</button>
-        <button class="chip" data-group="economy">经济运行</button>
-        <button class="chip" data-group="governance">三重一大</button>
-        <button class="chip" data-group="party">党建管理</button>
-        <button class="chip" data-group="risk">风控分析</button>
-      </div>
-      <input class="search" id="search" type="search" placeholder="搜索主题名称…" aria-label="搜索主题名称">
-    </div>
-    <div class="gallery reveal d1" id="gallery-grid"></div>
-  </section>
-
-  <!-- ============ 图表编码演示 ============ -->
-  <section id="demo">
-    <div class="sec-head reveal"><div class="idx">09 / 编码解读</div><div>
-      <h2>逐屏看主视觉与图表取舍</h2>
-      <p>这是设计解读演示，不是原系统的可操作演示；原系统交互<strong>【待补充】</strong>。点击主题查看对应画面与一句取舍。</p>
-    </div></div>
-    <div class="demo-grid">
-      <div class="panel reveal">
-        <h3>六个主题 · 逐屏解读</h3>
-        <p class="hint">演示仅描述画面可见的视觉与编码关系，不代表真实业务数据。</p>
-        <div class="step-tabs" id="stepTabs">
-          <button class="step-tab on" data-step="0">01 国资监管</button>
-          <button class="step-tab" data-step="1">02 投资管理</button>
-          <button class="step-tab" data-step="2">03 经济运行</button>
-          <button class="step-tab" data-step="3">04 三重一大</button>
-          <button class="step-tab" data-step="4">05 党建管理</button>
-          <button class="step-tab" data-step="5">06 风控分析</button>
-        </div>
-        <div class="step-view" id="stepView">
-          <div class="step-shot"><img id="stepImg" src="gov-screens/gov-overview.jpg" alt="国资监管总览界面"></div>
-          <div class="step-info">
-            <b id="stepEn">01 / OVERVIEW</b><h4 id="stepTitle">国资监管 · 总览</h4>
-            <p id="stepDesc">中央地球 + 轨道环承载平台感，左右栏分别放投资总览与投资达成分析；占比用环形，完成率用数值与进度。</p>
-            <div class="kv" id="stepKv">界面证据：<em>国资监管总览页</em><br>设计取舍：主视觉表意，精确数值留给左右栏。</div>
-          </div>
-        </div>
-      </div>
-      <div class="side-stack reveal d1">
-        <div class="panel">
-          <h3>查看轨迹</h3><p class="hint">点击左侧主题，轨迹按顺序追加。</p>
-          <ul class="log" id="log"></ul>
-        </div>
-        <div class="panel">
-          <h3>为什么这样做</h3><p class="hint">贯穿六屏的三条判断依据。</p>
-          <div class="rule-note">① 全局框架恒定，主题内容替换——跨屏不用重新找入口。<br>② 主视觉负责语义识别，数值负责精确核对——各司其职。<br>③ 同类数据用同一图表读法——一套图例跨屏复用。</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 验证与复盘 ============ -->
-  <section id="evidence" class="tight">
-    <div class="sec-head reveal"><div class="idx">10 / 成果与复盘</div><div>
-      <h2>可核查事实与改进方向</h2>
-      <p>左侧是可从画面直接核对的结构事实；右侧是如果重做，我会先处理的事。真实业务成果【待补充】。</p>
-    </div></div>
-    <div class="ev-grid">
-      <div class="ev-table-wrap reveal">
-        <table class="ev-table">
-          <thead><tr><th>核查项</th><th>口径</th><th>结果</th></tr></thead>
-          <tbody>
-            <tr><td>主题屏覆盖</td><td>截图清点</td><td class="pass">6 / 6 · PASS</td></tr>
-            <tr><td>顶栏模块一致性</td><td>六屏逐屏比对</td><td class="pass">6 / 6 · PASS</td></tr>
-            <tr><td>主视觉载体类型</td><td>画面取样</td><td class="pass">5 类 · PASS</td></tr>
-            <tr><td>底部落款一致性</td><td>六屏逐屏比对</td><td class="pass">6 / 6 · PASS</td></tr>
-            <tr><td>图表编码类型</td><td>画面取样</td><td class="pass">5 类 · PASS</td></tr>
-            <tr><td>单屏画布</td><td>文件尺寸读取</td><td class="pass">1920×720 · PASS</td></tr>
-            <tr><td>真实业务指标</td><td>无来源资料</td><td>【待补充】</td></tr>
-            <tr><td>上线效果与用户量</td><td>无来源资料</td><td>【待补充】</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="reveal d1">
-        <ul class="fix">
-          <li><b>01</b><div>同值占位卡：经济运行页中心五卡均为 1666 万元。若重做，先统一占位样式并标注周期与单位，避免被读作真实指标。</div></li>
-          <li><b>02</b><div>单位与图例：亿元 / 万元 / % / 项 / 次同屏出现，建议统一单位后缀位置与图例停放区域。</div></li>
-          <li><b>03</b><div>远距可读性：建立跨屏最小字号与对比度下限，精确阈值【待补充：源工程与现场观看距离】。</div></li>
-          <li><b>04</b><div>图形与数值同屏：雷达与山形图旁建议固定数值表，让远距识别与近距核对都成立。</div></li>
-          <li><b>05</b><div>时间口径：党建页公开列表为 2021.11.12，底部落款为 2022.04，建议在页面上说明数据周期。</div></li>
-        </ul>
-      </div>
-    </div>
-    <div class="boundary reveal">口径与边界说明：本文所有业务数字均来自六张界面截图，为<strong>界面示意数据，非经核实业务指标</strong>，不用于陈述项目成效。「2022.04 某集团」按画面原文保留，不推断客户身份或项目周期。无源码、接口文档与设计源工程，故技术架构只写设计侧归纳，精确色值与字号以源工程为准。<strong>【待补充：真实业务指标、上线效果、用户量、个人头衔与团队规模、开发框架与部署方式、跨屏交互规则】</strong>——未获得可核查资料前，不虚构数值与实现细节。</div>
-  </section>
+<footer class="footer"><div class="footer-in"><span>数字企业大数据监管平台 · 国资监管 / 大屏可视化</span><span>案例分析重构稿 · 基于现有六张 1920×720 界面截图</span><a href="#top">返回顶部 ↑</a></div></footer>
+</div>
 </main>
 
-<footer><div class="shell foot-row">
-  <div>数字企业大数据监管平台 · 国资监管大屏可视化 · 六主题并列<br>作品分析依据：6 张 1920×720 界面截图与画面原文清点；业务数字为界面示意数据。</div>
-  <div>吕孝冬 · 10 年 UI/UX 设计 · 复杂系统与数据可视化<br><a href="#hero">返回顶部 ↑</a></div>
-</div></footer>
-
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="大屏界面大图">
-  <img id="lb-img" alt="大屏界面大图">
-  <div class="lb-bar"><button id="lb-prev">上一张</button><span class="mono" id="lb-count"></span><span id="lb-name"></span><button id="lb-next">下一张</button><button id="lb-close">关闭 Esc</button></div>
-</div>
-
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="大屏界面预览"><button class="lb-close" id="lbClose" aria-label="关闭">×</button><img id="lbImg" alt="大屏放大预览"><div class="lb-bar"><button id="lbPrev">← 上一张</button><span id="lbLabel">01 / 06 · 国资总览</span><button id="lbNext">下一张 →</button></div></div>
 <script>
 (function(){
-  'use strict';
-
-  var heroEl=document.querySelector('#hero');
-  var syncHeroH=function(){ if(heroEl) document.documentElement.style.setProperty('--hero-h',Math.ceil(heroEl.getBoundingClientRect().height)+'px'); };
-  syncHeroH();
-  window.addEventListener('resize',syncHeroH,{passive:true});
-
-  var progress=document.getElementById('progress');
-  var onScroll=function(){ var h=document.documentElement.scrollHeight-window.innerHeight; progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%'; };
-  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
-
-  if('IntersectionObserver' in window){
-    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
-    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
-  } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');}); }
-
-  var navLinks=document.querySelectorAll('.top-links a');
-  if('IntersectionObserver' in window && navLinks.length){
-    var spy=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){navLinks.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id);});}});},{rootMargin:'-38% 0px -55% 0px'});
-    ['context','decisions','architecture','gallery','evidence'].forEach(function(id){var el=document.getElementById(id);if(el)spy.observe(el);});
-  }
-
-  var flowNotes=[
-    '设计取舍：六个主题平铺在顶栏，每屏只讲一个业务域——不做多级下钻，代价是顶栏占高、单屏密度高。',
-    '设计取舍：中央主视觉按主题换语义载体，但沿用同一外框与光效——换来一眼可辨的主题感。',
-    '设计取舍：趋势统一折线、占比统一环形与进度条——一套图例跨屏复用，代价是分布类需另设编码。',
-    '设计取舍：主视觉负责表意，左右栏负责精确读数——避免让装饰元素承担读数的准确性。',
-    '设计取舍：组织、党员与党务公开同屏分区呈现——结构可读，代价是单屏信息量偏大。',
-    '设计取舍：七维预警用雷达 + 债务到期用列表——形状看差距，数字看确切值。'
+  const screens=[
+    {name:'国资总览',en:'01 / OVERVIEW',src:'gov-overview.jpg',desc:'以地球作为全局中心载体，左右两侧分别组织投资情况、领域分布、投入趋势与项目完成情况等信息。',note:'视觉载体：地球 / 信息组织：总量、领域结构、投资趋势、项目进展'},
+    {name:'投资管理',en:'02 / INVESTMENT',src:'gov-investment.jpg',desc:'中央仍采用地球视觉，但将两侧内容聚焦企业总数、收入分析、资金分布、投资规模趋势、项目进展与行业资产 TOP3。',note:'视觉载体：地球 / 信息组织：企业结构、收入、资金、趋势、项目进展'},
+    {name:'经济运行',en:'03 / ECONOMY',src:'gov-economy.jpg',desc:'以数据光柱作为中心载体，结合资产负债率、总资产周转率、银行账户分布，以及两侧重点关注与收入趋势信息。',note:'视觉载体：数据光柱 / 信息组织：指标、分布、趋势与重点关注'},
+    {name:'三重一大',en:'04 / GOVERNANCE',src:'gov-governance.jpg',desc:'中央四立方体对应重大事项决策、重要人事任免、大额资金使用、重大项目安排；左右两侧呈现会议、事项、制度、议题等统计。',note:'视觉载体：四立方体 / 信息组织：四类重大事项 + 会议与议题统计'},
+    {name:'党建管理',en:'05 / PARTY',src:'gov-party.jpg',desc:'以党旗和五角星建立主题识别，周边组织党组织数量、党员数量、新发展党员、党务活动、党员结构与党建动态。',note:'视觉载体：党旗五角星 / 信息组织：组织、党员、活动、结构、动态'},
+    {name:'风险分析',en:'06 / RISK',src:'gov-risk.jpg',desc:'以盾牌作为中心预警意象，左侧呈现预警变化趋势与行业预警分析，右侧组合财务能力雷达和债务偿还信息。',note:'视觉载体：盾牌 / 信息组织：预警趋势、行业分析、财务能力、债务偿还'}
   ];
-  document.querySelectorAll('.sflow').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      document.querySelectorAll('.sflow').forEach(function(b){b.classList.remove('on');});
-      btn.classList.add('on');
-      document.getElementById('flowNote').textContent=flowNotes[Number(btn.dataset.flow)];
-    });
-  });
-
-  document.querySelectorAll('.dec-head').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var item=btn.parentElement,willOpen=!item.classList.contains('open');
-      document.querySelectorAll('.dec').forEach(function(d){d.classList.remove('open');d.querySelector('.dec-head').setAttribute('aria-expanded','false');d.querySelector('.dec-sign').textContent='+';});
-      if(willOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');btn.querySelector('.dec-sign').textContent='−';}
-    });
-  });
-
-  var shots=[
-    ['国资监管 · 总览','overview','gov-overview',1],
-    ['投资管理','investment','gov-investment',0],
-    ['经济运行','economy','gov-economy',0],
-    ['三重一大','governance','gov-governance',0],
-    ['党建管理','party','gov-party',0],
-    ['风控分析','risk','gov-risk',1]
-  ];
-  var gname={overview:'国资监管',investment:'投资管理',economy:'经济运行',governance:'三重一大',party:'党建管理',risk:'风控分析'};
-  var gallery=document.getElementById('gallery-grid'),search=document.getElementById('search'),active='all',visible=[];
-  function renderGallery(){
-    var q=(search.value||'').trim().toLowerCase();
-    visible=shots.filter(function(s){return (active==='all'||s[1]===active)&&(!q||s[0].toLowerCase().indexOf(q)>=0);});
-    gallery.innerHTML='';
-    if(!visible.length){
-      var e=document.createElement('div');e.className='empty';e.innerHTML='<b>没有匹配的界面</b>试试模块标签，或清空关键词后重试。';gallery.appendChild(e);return;
-    }
-    visible.forEach(function(s,i){
-      var btn=document.createElement('button');btn.className='shot'+(s[3]?' feature':'');
-      btn.setAttribute('aria-label','查看界面：'+s[0]);
-      btn.innerHTML='<span class="thumb"><img loading="lazy" src="gov-screens/'+s[2]+'.jpg" alt="'+s[0]+'"></span><span class="shot-meta"><strong>'+s[0]+'</strong><span>'+gname[s[1]]+' · 1920×720 · 界面示意数据</span></span>';
-      var img=btn.querySelector('img'),mark=function(){btn.querySelector('.thumb').classList.add('loaded');};
-      if(img.complete)mark();else{img.addEventListener('load',mark);img.addEventListener('error',mark);}
-      btn.addEventListener('click',function(){openLb(i);});
-      gallery.appendChild(btn);
-    });
+  const base='gov-screens/';
+  const main=document.getElementById('mainScreen'),title=document.getElementById('screenTitle'),en=document.getElementById('screenEn'),desc=document.getElementById('screenDesc'),note=document.getElementById('screenNote');
+  let current=0;
+  function setScreen(i){current=(i+screens.length)%screens.length;const s=screens[current];main.src=base+s.src;main.alt=s.name+'主题大屏';title.textContent=s.name;en.textContent=s.en;desc.textContent=s.desc;note.textContent=s.note;
+    document.querySelectorAll('[data-screen]').forEach(el=>el.classList.toggle('active',Number(el.dataset.screen)===current));
   }
-  document.getElementById('filters').addEventListener('click',function(e){
-    var c=e.target.closest('.chip');if(!c)return;active=c.dataset.group;
-    document.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===c);});renderGallery();
-  });
-  search.addEventListener('input',renderGallery);
-  renderGallery();
-
-  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lb-img'),idx=0;
-  function paintLb(){var s=visible[idx];if(!s)return;lbImg.src='gov-screens/'+s[2]+'.jpg';lbImg.alt=s[0];
-    document.getElementById('lb-count').textContent=(idx+1)+' / '+visible.length;document.getElementById('lb-name').textContent=s[0];}
-  function openLb(i){idx=i;paintLb();lb.classList.add('open');}
-  function closeLb(){lb.classList.remove('open');}
-  document.getElementById('lb-close').addEventListener('click',closeLb);
-  document.getElementById('lb-prev').addEventListener('click',function(){idx=(idx-1+visible.length)%visible.length;paintLb();});
-  document.getElementById('lb-next').addEventListener('click',function(){idx=(idx+1)%visible.length;paintLb();});
-  lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
-  document.addEventListener('keydown',function(e){
-    if(!lb.classList.contains('open'))return;
-    if(e.key==='Escape')closeLb();
-    if(e.key==='ArrowLeft'){idx=(idx-1+visible.length)%visible.length;paintLb();}
-    if(e.key==='ArrowRight'){idx=(idx+1)%visible.length;paintLb();}
-  });
-
-  var steps=[
-    {img:'gov-overview',alt:'国资监管总览界面',en:'01 / OVERVIEW',title:'国资监管 · 总览',desc:'中央地球与轨道环承载平台感，左右栏分别放投资总览与投资达成分析。境内境外占比用环形，完成率用数值与进度。',kv:'界面证据：<em>国资监管总览页</em><br>设计取舍：主视觉表意，精确数值留给左右栏。',log:'查看国资监管总览'},
-    {img:'gov-investment',alt:'投资管理界面',en:'02 / INVEST',title:'投资管理',desc:'企业总量、收入分析与行业投资排名分列两侧，中心地球串联七项经营指标。趋势折线统一年度轴与双系列图例。',kv:'界面证据：<em>投资管理页</em><br>设计取舍：趋势统一读法，跨屏不重学图例。',log:'查看投资管理'},
-    {img:'gov-economy',alt:'经济运行界面',en:'03 / ECONOMY',title:'经济运行',desc:'资产负债、总资产增长率与银行账户分区呈现，中央为蓝色数据光柱。中心五卡为同值占位，已按示意数据标注。',kv:'界面证据：<em>经济运行页</em><br>设计取舍：占位如实标注，不冒充真实指标。',log:'查看经济运行'},
-    {img:'gov-governance',alt:'三重一大界面',en:'04 / MEETING',title:'三重一大',desc:'中央四立方体对应重大决策、重要人事任免、重大项目安排与大额资金使用；两侧为会议、事项与议事统计。',kv:'界面证据：<em>三重一大页</em><br>设计取舍：语义载体换主题，外框与光效保持统一。',log:'查看三重一大'},
-    {img:'gov-party',alt:'党建管理界面',en:'05 / PARTY',title:'党建管理',desc:'红旗与五角星作为主题主视觉，党组织构成与党员结构分列左右，党务公开以时间轴列表呈现。',kv:'界面证据：<em>党建管理页</em><br>设计取舍：分类统计用卡片，明细用列表，互不抢占。',log:'查看党建管理'},
-    {img:'gov-risk',alt:'风控分析界面',en:'06 / CONTROL',title:'风控分析',desc:'中央盾牌承载主题语义，七维预警能力用雷达看差距，债务到期用列表看确切值，行业预测用柱状分布。',kv:'界面证据：<em>风控分析页</em><br>设计取舍：形状看结构，数字看确切值。',log:'查看风控分析'}
-  ];
-  var stepTabs=document.getElementById('stepTabs'),log=document.getElementById('log'),fired={};
-  function addLog(t){var li=document.createElement('li'),d=new Date();
-    li.innerHTML='<time>'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+'</time><span>'+t+'</span>';
-    log.appendChild(li);log.scrollTop=log.scrollHeight;}
-  function setStep(i){var s=steps[i];
-    document.getElementById('stepImg').src='gov-screens/'+s.img+'.jpg';document.getElementById('stepImg').alt=s.alt;
-    document.getElementById('stepEn').textContent=s.en;document.getElementById('stepTitle').textContent=s.title;
-    document.getElementById('stepDesc').textContent=s.desc;document.getElementById('stepKv').innerHTML=s.kv;
-    document.querySelectorAll('.step-tab').forEach(function(b){b.classList.toggle('on',Number(b.dataset.step)===i);});
-    if(!fired[i]){fired[i]=1;addLog(s.log);}
-  }
-  stepTabs.addEventListener('click',function(e){var b=e.target.closest('.step-tab');if(!b)return;setStep(Number(b.dataset.step));});
-  setStep(0);
+  document.querySelectorAll('[data-screen]').forEach(el=>el.addEventListener('click',()=>setScreen(Number(el.dataset.screen))));
+  const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),lbLabel=document.getElementById('lbLabel');
+  function open(){const s=screens[current];lbImg.src=base+s.src;lbImg.alt=s.name;lbLabel.textContent=s.en+' · '+s.name;lb.classList.add('open')}
+  function close(){lb.classList.remove('open')}
+  document.getElementById('mainScreenBtn').addEventListener('click',open);
+  document.getElementById('lbClose').addEventListener('click',close);
+  document.getElementById('lbPrev').addEventListener('click',()=>{setScreen(current-1);open()});
+  document.getElementById('lbNext').addEventListener('click',()=>{setScreen(current+1);open()});
+  lb.addEventListener('click',e=>{if(e.target===lb)close()});
+  document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft'){setScreen(current-1);open()}if(e.key==='ArrowRight'){setScreen(current+1);open()}});
+  const p=document.getElementById('progress');function scroll(){const h=document.documentElement.scrollHeight-innerHeight;p.style.width=(h>0?scrollY/h*100:0)+'%'}window.addEventListener('scroll',scroll,{passive:true});scroll();
+  if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    const sections=[...document.querySelectorAll('main section[id]')];const nav=[...document.querySelectorAll('.nav a')];const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)nav.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-35% 0px -55% 0px'});sections.forEach(s=>spy.observe(s));
+  }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
 })();
 </script>
 </body>
