@@ -12,7 +12,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
 <link rel="stylesheet" media="print" onload="this.media='all';this.onload=null" href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap"></noscript>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%9A%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -38,18 +38,17 @@
   <div class="hero-portrait" id="heroPortrait">
     <div class="magnet" id="heroMagnet">
       <div class="portrait-stage" id="portraitStage">
-        <model-viewer id="hero3d" class="hero-3d" alt="吕孝冬的 3D 机器人分身，可拖拽旋转、滚轮缩放"
-          src="assets/models/robot-expressive.glb?v=5"
+        <model-viewer id="hero3d" class="hero-3d" alt="吕孝冬的 3D 月球分身，可拖拽旋转、滚轮缩放"
+          src="assets/models/moon.glb?v=2"
           camera-controls touch-action="pan-y"
-          camera-orbit="0deg 80deg auto"
+          camera-orbit="0deg 78deg auto"
           min-camera-orbit="auto 50deg 80%" max-camera-orbit="auto 108deg 220%"
           max-field-of-view="45deg"
           interaction-prompt="none"
-          shadow-intensity="0.9" shadow-softness="0.9" exposure="1"
-          environment-image="neutral" loading="eager" reveal="auto" disable-tap>
+          shadow-intensity="0" exposure="0.62"
+          environment-image="assets/models/env_side.hdr" loading="eager" reveal="auto" disable-tap>
         </model-viewer>
         <p class="portrait-hint">拖拽旋转 · 滚轮缩放</p>
-        <p class="portrait-credit" title="模型：RobotExpressive（Tomás Laulhé / Quaternius，CC0 1.0）；渲染：model-viewer（Apache-2.0）">3D 模型 RobotExpressive · CC0</p>
       </div>
     </div>
   </div>
@@ -131,7 +130,7 @@
   }
 </script>
 <script src="main.js" defer></script>
-<script src="hero-3d.js?v=3" defer></script>
+<script src="hero-3d.js?v=4" defer></script>
 
 <!-- 弹窗详情基准屏：与 Figma 弹窗 6 区块同构，?tpl=1&case=N 时由 main.js 填充 -->
 <div class="case-bench" id="caseBench" aria-hidden="true"></div>
