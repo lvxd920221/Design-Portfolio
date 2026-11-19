@@ -238,6 +238,59 @@ const PROJECTS = [
   },
 
   {
+    id: "gov",
+    title: "数字企业大数据监管平台",
+    sub: "六个并列主题共用一套监管语言：框架恒定、主视觉按主题换语义、图表编码跨屏复用",
+    tags: ["大屏可视化", "国资监管", "六主题并列"],
+    badge: "数据可视化",
+    period: "【待补充】",
+    role: "UI/UX 设计（职责范围待补充）",
+    industry: "国资监管 · 大屏可视化",
+    thumb: "assets/projects/gov/thumb.jpg",
+
+    background: "一套国资监管场景的大屏可视化：国资监管、投资管理、经济运行、三重一大、党建管理、风控分析六个主题并列成屏。我在 1920×720 的画布里，把总量、结构、趋势与分布译成一套可跨屏复用的图表与视觉语言。画面业务数字均为界面示意数据，非经核实业务指标。",
+
+    highlights: [
+      {
+        title: "六个业务域差异大，多级菜单会把监看信息藏深",
+        strategy: "以顶栏平铺替代多级下钻，一屏一主题、切换即换屏",
+        solution: "六个模块同排固定在顶栏，标题条与底部落款跨屏恒定。代价是顶栏占高、单屏信息密度高；换来的是主题位置稳定，观众不需要学习目录结构。依据：六张画面顶栏模块名称与位置一致。"
+      },
+      {
+        title: "统一地球模板省资产但丢辨识，完全自由又散成六套风格",
+        strategy: "按主题语义更换中央载体，但沿用同一外框与光效体系",
+        solution: "地球（总览/投资）、数据光柱（经济运行）、四立方体（三重一大）、党旗五角星（党建）、盾牌（风控）各司其职。代价是多套主视觉资产、一致性维护成本上升；换来的是主题一眼可辨。依据：六屏中央载体各异但外框与描边统一。"
+      },
+      {
+        title: "六种主视觉差异越大越容易各自成套，缺恒定元素就不像一个平台",
+        strategy: "用恒定框架承载差异化内容，而非各主题独立设计",
+        solution: "固定顶栏、标题条、底部署款、霓虹青蓝描边与金色点缀，只替换主视觉与数据区。代价是单主题个性受限；换来的是平台感与跨屏一致辨识。依据：六屏均为深蓝底、青蓝描边、金色点缀，底部统一落款。"
+      }
+    ],
+
+    keyPages: [
+      { src: "assets/projects/gov/card-2.jpg", caption: "三重一大 · 议事与事项", note: "中央四立方体对应四类重大事项，两侧承载会议、事项与议事统计" },
+      { src: "assets/projects/gov/card-3.jpg", caption: "风控分析 · 预警与债务", note: "七维预警用雷达看差距，债务到期用列表看确切值" }
+    ],
+
+    metrics: [
+      { value: "6", label: "主题屏（截图清点）" },
+      { value: "6", label: "顶栏模块（六屏比对）" },
+      { value: "5", label: "主视觉载体类型（画面取样）" }
+    ],
+
+    capabilityTags: ["大屏可视化", "信息架构", "图表编码", "视觉规范", "多主题一致性"],
+
+    images: [
+      { src: "assets/projects/gov/card-1.jpg", caption: "国资监管 · 总览" },
+      { src: "assets/projects/gov/card-2.jpg", caption: "三重一大" },
+      { src: "assets/projects/gov/card-3.jpg", caption: "风控分析" },
+      { src: "gov-screens/gov-economy.jpg", caption: "经济运行" },
+      { src: "gov-screens/gov-party.jpg", caption: "党建管理" }
+    ]
+  },
+
+  {
     id: "xiaomeng",
     title: "校园小茗小程序",
     sub: "一站式校园入口，用轻量卡片降低查找成本",
@@ -438,9 +491,9 @@ function buildRow(el, arr) {
 buildRow(document.getElementById("marqueeRow1"), MARQUEE_IMGS);
 buildRow(document.getElementById("marqueeRow2"), [...MARQUEE_IMGS].reverse());
 
-/* ---------- STICKY 项目卡片（前 4 个真实项目，滚动缩放堆叠） ---------- */
+/* ---------- STICKY 项目卡片（前 5 个真实项目，滚动缩放堆叠） ---------- */
 const stack = document.getElementById("projectStack");
-const CARD_PROJECTS = PROJECTS.slice(0, 4);
+const CARD_PROJECTS = PROJECTS.slice(0, 5);
 if (stack) {
   stack.innerHTML = CARD_PROJECTS.map((p, i) => {
     const imgs = (p.images || []).map(x => x.src);
@@ -621,13 +674,17 @@ const sheet = document.getElementById("modalSheet");
 let currentCase = 0;
 
 function openCase(i) {
-  // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥互联网医院 APP
+  // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥互联网医院 APP / 数字企业大数据监管平台
   if (PROJECTS[i] && PROJECTS[i].id === "cizhen") {
     window.location.href = "cizhen-case-study.html";
     return;
   }
   if (PROJECTS[i] && PROJECTS[i].id === "ruihe") {
     window.location.href = "ruihe-case-study.html";
+    return;
+  }
+  if (PROJECTS[i] && PROJECTS[i].id === "gov") {
+    window.location.href = "gov-dashboard-case-study.html";
     return;
   }
   currentCase = i;
