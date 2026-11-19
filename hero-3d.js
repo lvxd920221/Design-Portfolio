@@ -53,18 +53,20 @@
     })();
   }
 
-  // auto 半径只取决于模型本身（不随画布尺寸变化，实测 10.164m）；
+  // auto 半径只取决于模型本身（不随画布尺寸变化，月球实测 4.057m）；
   // 画布放大到 130% 后，把它同步 ×1.3 才能保持原有观感。
   // 百分比上下限在本版本实测不生效，统一换算成米写入。
   //
-  // 放大上限：滚轮放大在本版本先缩半径、触底后再缩 fov（二次放大），
-  // 若把下限写成初始半径，放大即被钳死（实测滚轮 6 次半径/fov 全无变化）；
-  // 若放开下限又留 min-field-of-view=22deg，半径到 11.198 时 fov 掉到 22°，
-  // 合成投影 537×749 顶满画布并四周溢出 40–86px。故：半径留小余量 + 锁死 fov。
-  // 逐档实测（1440 视口，stage 432×576，投影随半径近似线性）：
-  //   1.22× → 383×547 贴框；1.28× → 底部溢出 4px；
-  //   1.18× 十角度回归最小余量仅 2px；取 1.10× 后最小余量 ≈20px。
-  var ZOOM_IN = 1.10;
+  // 放大上限：滚轮放大在本版本先缩半径、触底后再缩 fov（二次放大）。
+  // 若把下限写成初始半径，放大即被钳死（机器人时期实测滚轮 6 次半径/fov 全无变化）；
+  // 若放开下限又不锁 fov，半径触底后 fov 从 32.6° 掉到 22°，形成二次放大并溢出画布。
+  // 故：半径留余量 + 把 min-field-of-view 锁成解算值，放大只由半径一档决定。
+  //
+  // 月球取 1.18×：球体投影与旋转无关，可由相机数学精确解算，无需多角度回归。
+  //   1440 视口 canvas 562×749、fov 39.30°、基准半径 5.274m → 圆盘 404.7px
+  //   1.10× → 447.1px（canvas 余 57.5）  1.18× → 481.6px（余 40.2）
+  //   1.25× → 511.5px（余 25.3，恰贴 24px 红线）→ 取 1.18 留安全余量
+  var ZOOM_IN = 1.18;
   var fitR = 0;
   function applyFraming() {
     var fit = fitR || mv.getCameraOrbit().radius;
@@ -96,10 +98,16 @@
     stage.classList.add("is-ready");
     // load 事件里读到的是解算前的旧半径（10.164），auto 真实值要过几帧才出现；
     // 且百分比下限实测不生效（4.685 vs 期望 10.5），故采样 600ms 内的最大半径换算成米写入。
-    requestAnimationFrame(function () {
-      applyFraming();
+    // load 那一帧半径可能还没解算（读出来是 0/NaN），applyFraming 会直接返回。
+    // 原先只试一次，偶发取景不生效（实测同一页面两次刷新 radius 4.06 / 5.27 不一致）。
+    // 改为按帧重试，最多 1.2s，成功即停。
+    var tries = 0;
+    (function framingRetry() {
+      var r = mv.getCameraOrbit().radius;
+      if (isFinite(r) && r > 0) { applyFraming(); }
+      else if (++tries < 40) { requestAnimationFrame(framingRetry); return; }
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) startSway();
-    });
+    })();
   }
 
   mv.addEventListener("load", ready);
