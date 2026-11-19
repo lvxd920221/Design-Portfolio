@@ -1,9 +1,9 @@
 /* ============================================================
-   Hero 3D · 整屏星群（图层在标题之下，纯背景不交互）
+   Hero 3D · 整屏星群（图层在标题之下，可拖拽旋转）
    - 35 颗星球同处一个 glTF 场景：前后遮挡由深度缓冲处理，不靠 CSS z-index
    - 每颗星球各自缓慢自转（GLB 内置 spin 通道，90s 一圈）
-   - 画布铺满首屏、固定 45° fov；相机在 14m（窄屏 18m）
-   - 无 camera-controls：不可拖拽、不可缩放，构图恒定
+   - 画布铺满首屏、固定 45° fov；相机 10m（窄屏 14m），星球更大
+   - 鼠标拖拽可绕场景旋转；disable-pan / disable-zoom 关掉平移与缩放，页面滚动照常
    - 加载期只有一枚细环；失败即留白，不注入任何静态图
    ============================================================ */
 (function () {
@@ -19,7 +19,7 @@
   var isReady = false;
 
   // 窄屏视野更窄，相机后退一点，保证主星球与两侧星球都进画
-  if (innerWidth < 700) mv.setAttribute("camera-orbit", "0deg 90deg 18m");
+  if (innerWidth < 700) mv.setAttribute("camera-orbit", "0deg 90deg 14m");
 
   function markFailed() {
     if (isReady) return;
@@ -31,6 +31,10 @@
     isReady = true;
     stage.classList.remove("is-failed");
     stage.classList.add("is-ready");
+
+    // 画布正中心的 8×8 default-pan-target 会吞掉圆心上的按下事件 —— 关掉它的命中
+    var pt = mv.shadowRoot && mv.shadowRoot.querySelector("#default-pan-target, .default-pan-target");
+    if (pt) pt.style.pointerEvents = "none";
   }
 
   mv.addEventListener("load", ready);
@@ -58,4 +62,11 @@
   } else {
     setTimeout(loadViewer, 250);
   }
+
+  // 首次拖拽后淡出提示文案
+  ["pointerdown", "touchstart"].forEach(function (t) {
+    stage.addEventListener(t, function () {
+      stage.classList.add("is-touched");
+    }, { passive: true, once: true });
+  });
 })();
