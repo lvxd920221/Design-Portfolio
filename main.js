@@ -420,14 +420,14 @@ if (servicesList) {
     </article>`).join("");
 }
 
-/* ---------- MARQUEE（21 张：真实项目图循环，两行反向） ---------- */
+/* ---------- MARQUEE（11 张氛围封面，两行反向循环；原真实项目图仍用于项目卡与详情页） ---------- */
 const MARQUEE_IMGS = [
-  "assets/projects/haodf/thumb.jpg", "assets/projects/cizhen/thumb.jpg",
-  "assets/projects/yilifang/thumb.jpg", "assets/projects/xiaomeng/thumb.jpg",
-  "assets/projects/yibin/thumb.jpg", "assets/projects/aigc/thumb.jpg",
-  "assets/projects/haodf/hd-9.jpg", "assets/projects/cizhen/cz-13.jpg",
-  "assets/projects/yilifang/yif-4.jpg", "assets/projects/yibin/yb-4.jpg",
-  "assets/projects/aigc/ai-3.jpg"
+  "assets/marquee/amb-01.jpg", "assets/marquee/amb-02.jpg",
+  "assets/marquee/amb-03.jpg", "assets/marquee/amb-04.jpg",
+  "assets/marquee/amb-05.jpg", "assets/marquee/amb-06.jpg",
+  "assets/marquee/amb-07.jpg", "assets/marquee/amb-08.jpg",
+  "assets/marquee/amb-09.jpg", "assets/marquee/amb-10.jpg",
+  "assets/marquee/amb-11.jpg"
 ];
 function buildRow(el, arr) {
   if (!el) return;
