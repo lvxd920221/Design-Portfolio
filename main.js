@@ -291,6 +291,59 @@ const PROJECTS = [
   },
 
   {
+    id: "pujin",
+    title: "普今招聘 · 三端招聘平台",
+    sub: "把找工作、招人、平台运营接成一条可核对的链：身份先分流、对象同语义、端点各收敛",
+    tags: ["Web 平台", "三端协同", "商业化设计"],
+    badge: "平台设计",
+    period: "【待补充】",
+    role: "UI/UX 设计（职责范围待补充）",
+    industry: "招聘 · 三端平台",
+    thumb: "assets/projects/pujin/thumb.jpg",
+
+    background: "一套覆盖求职者、企业 HR 与平台运营的招聘平台。前台按城市与职位分发流量，HR 工作台把职位、简历与沟通收在一处，运营后台管理企业、审核与付费道具。设计依据来自需求汇总、接口文档与 686 张界面稿，运营成效无来源处标注待补充。",
+
+    highlights: [
+      {
+        title: "求职者与企业 HR 的注册字段、权限与付费能力都不同",
+        strategy: "以身份入口分流替代统一注册后再选角色",
+        solution: "登录注册按个人/企业分轨：个人填教育经历与求职意向，企业填账号信息并进入会员认证。代价是多套表单维护；换来身份语义从第一步就清晰，后续权限判断有据。依据：接口 /api/proving 先判注册态再分流。"
+      },
+      {
+        title: "11 项筛选 + 31KB 职位分类 + 31 省市城市库压在同一场景",
+        strategy: "按语义分组而非平铺全部条件，跨端指向同一字段",
+        solution: "条件按时间/薪资/学历/经验/企业成组，行业职位与城市用层级选择；同名筛选项在三端指向一致字段。代价是多一层组件交互；换来高密度筛选仍可扫读。依据：《11项选择内容》《行业职位分类表》《城市选择》。"
+      },
+      {
+        title: "急聘、置顶、简历下载都是付费动作，临门告知会让用户产生误导感",
+        strategy: "在触发入口前置显示价格、时长与权限差异",
+        solution: "权限不足时在发布入口直接提示，急聘/置顶按钮旁写明价格与周期，支付走微信/支付宝扫码。代价是入口文案更重；换来规则可见、付费决策发生在知情之后。依据：HR 需求文档明确免费额度与急聘/置顶定价。"
+      }
+    ],
+
+    keyPages: [
+      { src: "assets/projects/pujin/card-2.jpg", caption: "HR 工作台 · 三行功能矩阵", note: "职位/简历/人才按对象分块，下方四组待办卡给出该先做什么" },
+      { src: "assets/projects/pujin/card-3.jpg", caption: "找人才 · 简历筛选", note: "筛选与结果同屏，付费道具在动作入口就地露出" }
+    ],
+
+    metrics: [
+      { value: "686", label: "界面稿（元数据清点）" },
+      { value: "11", label: "搜索筛选项（需求文档）" },
+      { value: "9", label: "接口端点（接口文档）" }
+    ],
+
+    capabilityTags: ["三端协同", "信息架构", "商业化设计", "SEO 架构", "Web 平台"],
+
+    images: [
+      { src: "assets/projects/pujin/card-1.jpg", caption: "前台 · 未登录首页" },
+      { src: "assets/projects/pujin/card-2.jpg", caption: "HR 工作台" },
+      { src: "assets/projects/pujin/card-3.jpg", caption: "找人才" },
+      { src: "pujin-screens/p-login.jpg", caption: "登录与注册" },
+      { src: "pujin-screens/b-company.jpg", caption: "运营后台 · 企业列表" }
+    ]
+  },
+
+  {
     id: "xiaomeng",
     title: "校园小茗小程序",
     sub: "一站式校园入口，用轻量卡片降低查找成本",
@@ -491,9 +544,9 @@ function buildRow(el, arr) {
 buildRow(document.getElementById("marqueeRow1"), MARQUEE_IMGS);
 buildRow(document.getElementById("marqueeRow2"), [...MARQUEE_IMGS].reverse());
 
-/* ---------- STICKY 项目卡片（前 5 个真实项目，滚动缩放堆叠） ---------- */
+/* ---------- STICKY 项目卡片（前 6 个真实项目，滚动缩放堆叠） ---------- */
 const stack = document.getElementById("projectStack");
-const CARD_PROJECTS = PROJECTS.slice(0, 5);
+const CARD_PROJECTS = PROJECTS.slice(0, 6);
 if (stack) {
   stack.innerHTML = CARD_PROJECTS.map((p, i) => {
     const imgs = (p.images || []).map(x => x.src);
@@ -674,7 +727,7 @@ const sheet = document.getElementById("modalSheet");
 let currentCase = 0;
 
 function openCase(i) {
-  // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥互联网医院 APP / 数字企业大数据监管平台
+  // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥 / 国资大屏 / 普今招聘
   if (PROJECTS[i] && PROJECTS[i].id === "cizhen") {
     window.location.href = "cizhen-case-study.html";
     return;
@@ -685,6 +738,10 @@ function openCase(i) {
   }
   if (PROJECTS[i] && PROJECTS[i].id === "gov") {
     window.location.href = "gov-dashboard-case-study.html";
+    return;
+  }
+  if (PROJECTS[i] && PROJECTS[i].id === "pujin") {
+    window.location.href = "pujin-case-study.html";
     return;
   }
   currentCase = i;
