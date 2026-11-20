@@ -48,10 +48,10 @@ const PROJECTS = [
     capabilityTags: ["C 端产品设计", "信任设计", "流程简化", "医疗 UX", "状态可视化"],
 
     images: [
-      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "问诊流程 · 全链路" },
+      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "封面 · 改版总览" },
       { src: "assets/projects/haodf/hd-9.jpg", caption: "医生主页 · 信任信息" },
-      { src: "assets/projects/haodf/hd-9.jpg", caption: "对话与预约 · 交互" },
-      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "封面 · 改版总览" }
+      { src: "assets/projects/haodf/hd-8.jpg", caption: "问诊流程 · 全链路" },
+      { src: "assets/projects/haodf/hd-2.jpg", caption: "对话与预约 · 交互" }
     ]
   },
 
@@ -194,7 +194,7 @@ const PROJECTS = [
 
     keyPages: [
       { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板", note: "3 条业务线的决策入口，关键指标一屏扫读" },
-      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "医生管理 · 智能排班日历", note: "业务流驱动的核心页面，排班日历与医生详情联动" }
+      { src: "assets/projects/yilifang/yif-3_hd.jpg", caption: "医生管理 · 智能排班日历", note: "业务流驱动的核心页面，排班日历与医生详情联动" }
     ],
 
     metrics: [
@@ -207,9 +207,9 @@ const PROJECTS = [
 
     images: [
       { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板" },
-      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "医生管理流程 · 排班与详情" },
       { src: "assets/projects/yilifang/yif-3_hd.jpg", caption: "患者管理流程 · 档案与表单" },
-      { src: "assets/projects/yilifang/ylf-1_hd.jpg", caption: "深色模式 · 全局视觉适配" }
+      { src: "assets/projects/yilifang/yif-7.jpg", caption: "深色模式 · 全局视觉适配" },
+      { src: "assets/projects/yilifang/yif-5.jpg", caption: "医生管理流程 · 排班与详情" }
     ],
 
     analysis: {
@@ -376,7 +376,7 @@ const PROJECTS = [
 
     keyPages: [
       { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "项目总览 · 三大场景首页", note: "一站式入口的首页结构，学习 / 生活 / 社交三大场景并排" },
-      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "界面细节 · 卡片结构", note: "可扫读卡片的 3 行固定结构 + 右下角固定动作位" }
+      { src: "assets/projects/xiaomeng/xm-3.jpg", caption: "界面细节 · 卡片结构", note: "可扫读卡片的 3 行固定结构 + 右下角固定动作位" }
     ],
 
     metrics: [
@@ -389,8 +389,8 @@ const PROJECTS = [
 
     images: [
       { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 项目总览" },
-      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 界面细节" },
-      { src: "assets/projects/xiaomeng/xm-2_hd.jpg", caption: "复盘 · 模块拆解" }
+      { src: "assets/projects/xiaomeng/xm-3.jpg", caption: "复盘 · 界面细节" },
+      { src: "assets/projects/xiaomeng/xm-1.jpg", caption: "复盘 · 模块拆解" }
     ]
   },
 
@@ -526,14 +526,14 @@ if (servicesList) {
     </article>`).join("");
 }
 
-/* ---------- MARQUEE（11 张氛围封面，两行反向循环；原真实项目图仍用于项目卡与详情页） ---------- */
+/* ---------- MARQUEE（8 张科技氛围封面 + 3 张真实项目大屏，两行反向循环；真实项目图同时用于项目卡与详情页） ---------- */
 const MARQUEE_IMGS = [
   "assets/marquee/amb-01.jpg", "assets/marquee/amb-02.jpg",
   "assets/marquee/amb-03.jpg", "assets/marquee/amb-04.jpg",
-  "assets/marquee/amb-05.jpg", "assets/marquee/amb-06.jpg",
+  "assets/projects/yibin/thumb.jpg", "assets/marquee/amb-06.jpg",
   "assets/marquee/amb-07.jpg", "assets/marquee/amb-08.jpg",
-  "assets/marquee/amb-09.jpg", "assets/marquee/amb-10.jpg",
-  "assets/marquee/amb-11.jpg"
+  "assets/marquee/amb-09.jpg", "assets/projects/aigc/thumb.jpg",
+  "assets/projects/yibin/yb-5_hd.jpg"
 ];
 function buildRow(el, arr) {
   if (!el) return;
