@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>普今招聘 · 三端招聘平台设计 | 吕孝冬</title>
+<style>
+:root{
+  --bg:#F3F2EF;--surface:#FFFFFF;--surface-2:#F7F6F3;
+  --ink:#333333;--ink-2:#3A3A3A;--muted:#535353;--faint:#828282;
+  --line:#DAD6D0;--line-soft:#ECE9E4;
+  --accent:#2E6E5F;--accent-ink:#245A4D;--accent-soft:rgba(46,110,95,.10);
+  --err:#B5471F;--ok:#2E6E5F;--warn:#C99A3B;
+  --r-sm:12px;--r-md:24px;--r-lg:48px;--r-pill:999px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --display:"LogoSC Unbounded Sans","Arial Black","PingFang SC","Microsoft YaHei",sans-serif;
+  --body:"Alibaba PuHuiTi","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --num:"Gilroy","Avenir Next",Montserrat,"Helvetica Neue",Arial,sans-serif;
+  --stroke:"Trash","Arial Black",Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:var(--accent);color:#fff}
+body{margin:0;color:var(--ink);line-height:1.6;font-family:var(--body);-webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,rgba(230,227,222,.55) 0,rgba(243,242,239,0) 640px),
+    radial-gradient(900px 480px at 90% 2%,rgba(46,110,95,.07),transparent 64%),var(--bg)}
+h1,.display{font-family:var(--display);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2,h3,h4{font-family:var(--body);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2{font-family:var(--body);font-weight:900;line-height:1.2}
+p{margin:0}
+button{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+.shell{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(28px,5.2vw,76px)}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--num)}
+.mono{font-family:var(--num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.accent{color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:200;transition:width .12s linear}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-in{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.01em}
+.brand-mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--accent);font-size:13px;font-weight:900;font-family:var(--num)}
+.top-links{display:flex;gap:26px;font-size:12px;letter-spacing:.01em;color:var(--muted)}
+.top-links a{position:relative;padding:6px 0;transition:color .25s}
+.top-links a:hover{color:var(--accent)}
+.top-links a.on{color:var(--ink);font-weight:700}
+.top-links a.on:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:3px;background:var(--accent);border-radius:var(--r-pill)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* HERO — p1_084 复刻：暖灰双层底 + 巨型缎带弧线 + 动态高度同步 */
+#hero{position:relative;overflow:hidden;min-height:calc(100dvh - 64px);display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:88px 0 104px}
+html:before{content:"";position:absolute;top:0;left:0;width:100%;height:var(--hero-h,900px);pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1617 922'%3E%3Cpath fill='%23333333' fill-opacity='0.055' d='M1323.08 61.2413C1297.85 163.764 1271.84 280.013 1239.38 391.308C1224.9 453.803 1219.22 503.317 1220.13 541.33C1221.45 596.118 1235.5 613.06 1239.83 617.235C1243.92 621.179 1259.83 633.476 1310.03 632.197C1360.79 630.9 1432.64 615.657 1527.99 580.102L1617 819.799C1508.42 860.283 1406.77 885.543 1316.53 887.85C1225.75 890.164 1133.06 869.141 1062.95 801.655C1057.54 796.45 1052.51 790.997 1047.62 785.499C975.221 865.179 878.081 921.999 746.258 922C664.853 921.999 585.733 898.593 524.182 838.042C496.131 810.445 475.194 778.4 459.583 743.993C401.62 796.47 333.678 832.19 256.559 846.79C172.249 862.751 85.6173 851.971 0 822.831L82.0631 580.699C136.633 599.274 177.909 601.432 209.177 595.512C239.254 589.817 268.255 575.154 297.392 545.853C356.044 486.857 412.427 370.807 452.538 175.025C462.138 122.017 473.425 66.6238 486.177 9.04701L735.392 64.4724C726.747 103.51 719.095 140.549 712.272 175.621L712.47 175.671C709.648 191.263 706.666 206.654 703.589 221.851C673.427 388.94 665.605 507.588 677.591 585.272C684.988 633.21 697.771 650.411 702.994 655.56C705.597 658.122 714.176 666.297 746.258 666.298C814.978 666.296 873.708 625.056 932.909 493.36C955.269 443.617 974.418 387.992 992.05 328.078C999.932 294.664 1009.21 260.07 1020.18 224.485C1038.47 153.136 1056.15 77.6068 1075.25 0L1323.08 61.2413Z'/%3E%3C/svg%3E"),linear-gradient(171.4deg,rgba(51,51,51,.075) 0%,rgba(249,249,249,0) 62%);
+  background-repeat:no-repeat,no-repeat;background-position:calc(50% + 22vw) 2%,center top;
+  background-size:min(1180px,86vw) auto,100% 100%}
+.hero-col{position:relative;z-index:1}
+.eyebrow-row{display:flex;align-items:center;gap:16px}
+.eyebrow-row:after{content:"";flex:1;height:2px;background:var(--line);border-radius:var(--r-pill)}
+.hero-title{font-family:var(--display);font-size:clamp(40px,4.6vw,62px);font-weight:400;letter-spacing:-.012em;line-height:1.2;margin:26px 0 14px;max-width:18ch}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--muted);max-width:56ch;line-height:1.55}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.tag{font-size:12px;letter-spacing:.03em;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.8)}
+.p084-dots{display:inline-flex;gap:6px;flex:none;align-items:center}
+.p084-dots i{width:10px;height:10px;border-radius:50%;background:var(--ink-2);display:block}
+.p084-dots i+i{background:transparent;box-shadow:inset 0 0 0 1px rgba(58,58,58,.75);opacity:.5}
+.p084-kr{font-family:var(--stroke);font-size:15px;font-weight:700;line-height:1;color:var(--ink-2);border-radius:24px;box-shadow:inset 0 0 0 1px var(--ink-2);padding:8px 14px;white-space:nowrap;flex:none}
+#hero .eyebrow-row:after{height:1px;background:var(--ink-2);opacity:.22}
+.p084-slash{display:inline-flex;align-items:center;gap:10px;flex:none;font-size:clamp(15px,1.5vw,20px);font-weight:900;color:var(--ink-2);white-space:nowrap}
+.p084-slash .bar{position:relative;width:4px;height:26px;background:var(--ink-2);transform:rotate(11.7deg);flex:none;display:block}
+.p084-slash .bar b{position:absolute;top:0;left:0;width:6px;height:6px;background:var(--accent);display:block}
+.p084-arrow{width:34px;height:34px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;color:#F9FEFE;flex:none;transform:rotate(-32deg)}
+.p084-arrow svg{width:16px;height:16px}
+.hero-en-note{font-family:var(--stroke);font-size:14px;line-height:1.5;letter-spacing:.01em;color:var(--ink-2);opacity:.62;margin:0 0 12px;text-transform:uppercase}
+.p084-bracketed{position:relative;display:inline-block;padding:0 26px}
+.p084-bracketed:before,.p084-bracketed:after{content:"";position:absolute;width:15px;height:15px;border:2px solid var(--ink-2);opacity:.85;pointer-events:none}
+.p084-bracketed:before{left:0;top:.18em;border-right:0;border-bottom:0;border-radius:5px 0 0 0}
+.p084-bracketed:after{right:0;bottom:.18em;border-left:0;border-top:0;border-radius:0 0 5px 0}
+#hero .tag{border:0;box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.55)}
+.cta-row{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .25s var(--ease),background .25s,border-color .25s,color .25s}
+.btn svg{width:14px;height:14px;flex:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink);color:#fff}
+
+/* monitor — 复诊闭环状态看板 */
+.monitor{position:relative;z-index:1;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:0 32px 70px -44px rgba(51,51,51,.32)}
+.monitor-dots{display:flex;gap:6px;margin-bottom:18px}
+.monitor-dots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.12}
+.monitor-dots i:first-child{opacity:.55}.monitor-dots i:nth-child(2){opacity:.24}
+.monitor-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+.monitor-head strong{font-size:15px}.monitor-head span{font-size:12px;color:var(--faint);letter-spacing:.08em}
+.state-flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.sflow{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2);cursor:pointer;transition:border-color .22s,background .22s;text-align:left}
+.sflow:hover{border-color:var(--accent)}
+.sflow.on{border-color:var(--accent);background:var(--accent-soft)}
+.sflow h4{font-size:15px;font-weight:700}
+.sflow .en{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px;font-family:var(--num)}
+.sflow .st{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:14px}
+.sflow .st i{width:7px;height:7px;border-radius:50%;background:#B2B8B9;display:inline-block;flex:none}
+.sflow.on .st i{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.mini-note{border-top:1px dashed var(--line);margin-top:20px;padding-top:14px;font-size:12px;color:var(--muted);line-height:1.8}
+
+/* marquee */
+.marquee{border-top:1px solid var(--line);border-bottom:0;padding:20px 0;background:var(--surface)}
+.marquee-track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 40px;width:100%}
+.mq{font-size:12px;letter-spacing:.14em;color:var(--muted);white-space:nowrap;font-weight:700;font-family:var(--body)}
+.mq b{color:var(--ink);font-weight:900}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.45;flex:none}
+
+/* sections */
+section{padding:104px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
+section.tight{padding:88px 0}
+section.band{position:relative;background:var(--surface-2);box-shadow:0 0 0 100vmax var(--surface-2);clip-path:inset(0 -100vmax)}
+.sec-head{display:grid;grid-template-columns:190px minmax(0,1fr);gap:40px;margin-bottom:54px;align-items:start}
+.sec-head .idx{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:10px;display:flex;align-items:center;gap:10px}
+.sec-head .idx:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:var(--r-pill);flex:none}
+.sec-head h2{font-family:var(--body);font-size:clamp(24px,2.5vw,32px);font-weight:900;line-height:1.2;max-width:26ch}
+.sec-head p{color:var(--muted);font-size:15px;max-width:62ch;margin-top:16px;line-height:1.9}
+
+/* pitch */
+.quote{border-left:5px solid var(--accent);padding:14px 0 14px 34px;font-size:clamp(20px,2vw,26px);line-height:1.5;max-width:42ch;font-weight:700;letter-spacing:-.01em}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:60px;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.stat{padding:28px 24px 22px;border-right:1px solid var(--line)}
+.stat:nth-child(5n){border-right:0}
+.stat:first-child{background:var(--accent);border-color:var(--accent)}
+.stat:first-child b,.stat:first-child span{color:#fff}
+.stat:first-child span{opacity:.8}
+.stat b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;font-family:var(--num);line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+
+/* two column */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:80px}
+.prose p{font-size:15px;color:var(--ink-2);line-height:1.5;margin-bottom:22px}
+.constraint{display:grid;grid-template-columns:40px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
+.constraint:last-of-type{border-bottom:1px solid var(--line)}
+.constraint b{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:4px}
+.constraint strong{font-size:15px;font-weight:700}
+.constraint p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:5px}
+.callout{margin-top:36px;border-left:3px solid var(--accent);padding:16px 0 16px 22px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+
+/* role table */
+.role-table{border-top:1px solid var(--line)}
+.role-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);transition:background .2s}
+.role-row:hover{background:rgba(46,110,95,.05)}
+.role-row>div{padding:20px 24px;font-size:13px;line-height:1.85}
+.role-row>div:first-child{border-right:1px solid var(--line)}
+.role-row .label{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:5px;font-family:var(--body)}
+
+/* decisions */
+.dec{border-top:1px solid var(--line);border-radius:2px}
+.dec:last-child{border-bottom:1px solid var(--line)}
+.dec-head{width:100%;display:grid;grid-template-columns:56px 1fr 30px;align-items:center;gap:14px;text-align:left;background:none;border:0;padding:24px 10px;cursor:pointer;transition:background .25s}
+.dec-head:hover{background:linear-gradient(90deg,rgba(46,110,95,.07),transparent 60%)}
+.dec-num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;font-family:var(--num)}
+.dec-title{font-size:17px;font-weight:700;transition:color .2s}
+.dec-head:hover .dec-title{color:var(--accent)}
+.dec-sign{font-size:22px;color:var(--faint);text-align:center;line-height:1}
+.dec-body{display:none;padding:0 10px 30px 70px;max-width:88ch}
+.dec.open .dec-body{display:block;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dec-field{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:8px 0;font-size:13px;line-height:1.9}
+.dec-field b{font-size:12px;color:var(--muted);font-weight:700;padding-top:3px;letter-spacing:.04em}
+.dec-field.pick b{color:var(--accent)}
+.dec-field.pick span{background:var(--accent-soft);border-radius:var(--r-sm);padding:6px 12px;margin:-6px 0 2px -12px;display:inline-block}
+
+/* flow */
+.phases{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:28px}
+.phase{border-top:3px solid var(--accent);padding-top:20px}
+.phase.mid{border-color:#8FB5A8}
+.phase.end{border-color:#B2B8B9}
+.phase h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between}
+.phase h3 span{font-size:11px;color:var(--faint);font-family:var(--num);letter-spacing:.1em}
+.step{display:flex;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.step i{font-style:normal;font-size:11px;color:var(--accent);font-family:var(--num);width:20px;flex:none}
+.bypass{margin-top:28px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r-md);padding:16px 20px;line-height:1.9}
+
+/* gallery */
+.gal-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:26px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:var(--r-pill);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:10px 16px;font-size:12px;width:230px;outline:none;transition:border-color .25s}
+.search:focus{border-color:var(--accent)}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.shot{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);overflow:hidden;text-align:left;padding:0;cursor:pointer;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
+.shot.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.shot:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px -30px rgba(51,51,51,.5)}
+.shot:active{transform:translateY(-1px)}
+.thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(100deg,#E6E3DE 25%,#F5F3F0 45%,#E6E3DE 65%);background-size:220% 100%;animation:shimmer 1.5s linear infinite;overflow:hidden;display:grid;place-items:center}
+@keyframes shimmer{to{background-position:-220% 0}}
+.thumb img{height:100%;width:auto;max-width:100%;object-fit:contain;opacity:0;transition:opacity .45s,transform .6s var(--ease)}
+.shot:hover .thumb img{transform:scale(1.02)}
+.thumb.loaded img{opacity:1}
+.thumb.loaded{animation:none;background:#FFFFFF}
+.shot.feature .shot-meta strong{font-size:15px}
+.shot-meta{padding:14px 16px 16px}
+.shot-meta strong{display:block;font-size:13px;font-weight:700}
+.shot-meta span{font-size:12px;color:var(--faint)}
+.empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:var(--r-md);padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;background:var(--surface)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:8px}
+.lightbox{position:fixed;inset:0;background:rgba(51,51,51,.94);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(1240px,92vw);max-height:76vh;border-radius:var(--r-sm);background:#fff}
+.lb-bar{display:flex;align-items:center;gap:14px;color:#EDEAE5;font-size:12px;flex-wrap:wrap;justify-content:center}
+.lb-bar button{border:1px solid rgba(255,255,255,.28);background:transparent;color:#EDEAE5;border-radius:var(--r-pill);padding:8px 16px;cursor:pointer;transition:border-color .2s}
+.lb-bar button:hover{border-color:#fff}
+
+/* demo — 复诊链路状态机 */
+.demo-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px}
+.panel h3{font-size:17px;font-weight:700;margin-bottom:5px}
+.panel .hint{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.8}
+.step-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.step-tab{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.step-tab:hover{border-color:var(--accent);color:var(--accent)}
+.step-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-view{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:18px;align-items:center}
+.step-shot{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);padding:10px;display:grid;place-items:center;min-height:240px}
+.step-shot img{max-height:280px;width:auto;max-width:100%;border-radius:10px;background:#fff}
+.step-info b{display:block;font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:8px;font-family:var(--num)}
+.step-info h4{font-size:18px;font-weight:700;margin-bottom:10px}
+.step-info p{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px}
+.step-info .kv{font-size:12px;line-height:1.85;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:12px}
+.step-info .kv em{font-style:normal;color:var(--accent);font-weight:700}
+.side-stack{display:flex;flex-direction:column;gap:24px}
+.log{list-style:none;margin:14px 0 0;padding:0;max-height:300px;overflow:auto}
+.log li{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px;line-height:1.6}
+.log time{font-family:var(--num);color:var(--accent);flex:none}
+.rule-note{font-size:12px;color:var(--muted);line-height:1.9;border-left:3px solid var(--accent);padding:6px 0 6px 16px}
+
+/* evidence */
+.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:72px}
+.ev-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.ev-table thead th{background:var(--surface-2)}
+.ev-table th,.ev-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft)}
+.ev-table tr:last-child td{border-bottom:0}
+.ev-table tbody tr:hover{background:var(--surface-2)}
+.ev-table th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.ev-table td:last-child,.ev-table th:last-child{text-align:right;font-family:var(--num)}
+.pass{color:var(--ok);font-weight:700}
+.fix{list-style:none;padding:0;margin:0}
+.fix li{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.9}
+.fix b{font-size:12px;color:var(--accent);font-family:var(--num);font-weight:900}
+.boundary{margin-top:44px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:30px 32px;font-size:13px;line-height:2;color:var(--ink-2)}
+.boundary strong{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:44px 0 72px;font-size:12px;color:var(--muted);line-height:2;background:var(--surface-2)}
+.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-row a{color:var(--ink);font-weight:700}
+
+/* responsive */
+@media(max-width:1200px){.shell{padding:0 36px}.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1080px){
+  #hero{grid-template-columns:1fr;gap:48px;padding:64px 0 84px}
+  .hero-title{max-width:16ch}.monitor{max-width:640px}
+  .two,.ev-grid{grid-template-columns:1fr;gap:40px}
+  .demo-grid{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:10px}.sec-head .idx{padding-top:0}
+}
+@media(max-width:860px){
+  .shell{padding:0 22px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  section{padding:76px 0}section.tight{padding:64px 0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(2n){border-right:0}.stat:last-child{border-bottom:0}
+  .phases{grid-template-columns:1fr;gap:30px}
+  .role-row{grid-template-columns:1fr}
+  .role-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .dec-body{padding-left:10px}.dec-field{grid-template-columns:1fr;gap:0}
+  .dec-field.pick span{margin:4px 0 2px}
+  .gal-tools{align-items:stretch;flex-direction:column}.search{width:100%}
+  .quote{padding-left:22px}
+  .step-view{grid-template-columns:1fr}.step-shot{min-height:200px}
+  .state-flow{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .top-links{display:none}.gallery{grid-template-columns:1fr;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* architecture — 设计侧架构四象限 */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.arch-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:26px 28px}
+.arch-card .arch-k{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;font-family:var(--num)}
+.arch-card h3{font-size:17px;font-weight:700;margin:8px 0 14px}
+.arch-card p{font-size:13px;color:var(--muted);line-height:1.9}
+.arch-card p+p{margin-top:10px}
+.arch-card em{font-style:normal;color:var(--ink-2);font-weight:700}
+@media(max-width:860px){.arch-grid{grid-template-columns:1fr;gap:14px}}
+
+/* tech dependency grid */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.tech-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:24px 26px}
+.tech-card .tk{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;font-family:var(--num)}
+.tech-card h3{font-size:17px;font-weight:700;margin:8px 0 12px}
+.tech-card p,.tech-card li{font-size:13px;color:var(--muted);line-height:1.9}
+.tech-card ul{margin:6px 0 0;padding-left:18px}
+.tech-card code{font-family:var(--num);font-size:12px;color:var(--ink-2);background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.tech-card em{font-style:normal;color:var(--ink-2);font-weight:700}
+@media(max-width:860px){.tech-grid{grid-template-columns:1fr;gap:14px}}
+</style></head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="topbar"><div class="shell topbar-in">
+  <div class="brand"><span class="brand-mark">P</span>普今招聘 · 设计案例</div>
+  <nav class="top-links">
+    <a href="#context">背景</a><a href="#decisions">关键决策</a><a href="#tech">技术与依赖</a><a href="#gallery">关键页面</a><a href="#evidence">复盘</a>
+  </nav>
+</div></header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-col">
+      <div class="eyebrow-row">
+        <span class="p084-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="eyebrow">RECRUITMENT PLATFORM / 01</span>
+        <span class="p084-slash" aria-hidden="true"><span class="bar"><b></b></span>三端协同</span>
+      </div>
+      <p class="hero-en-note">Three surfaces.<br>One hiring loop.</p>
+      <h1 class="hero-title"><span class="p084-bracketed">把找工作、招人、平台运营，<em>接成一条可核对的链。</em></span></h1>
+      <p class="hero-sub">一套覆盖求职者、企业 HR 与平台运营的招聘平台：前台按城市与职位分发流量，HR 工作台把职位、简历与沟通收在一处，运营后台管理企业、审核与付费道具。我从需求文档、接口文档与 686 张界面稿中还原设计命题，并逐条说明取舍。</p>
+      <div class="hero-meta">
+        <span class="tag">Web 平台</span><span class="tag">三端协同</span><span class="tag">商业化设计</span><span class="tag">SEO 架构</span>
+        <span class="p084-kr" aria-hidden="true">HIRE</span>
+        <span class="p084-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#decisions">查看设计决策 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#gallery">浏览关键页面</a>
+      </div>
+    </div>
+    <aside class="monitor" aria-label="三端模块预览">
+      <div class="monitor-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="monitor-head"><strong>三端 · 一条招聘闭环</strong><span class="mono">THREE SURFACES</span></div>
+      <div class="state-flow" id="stateFlow">
+        <button class="sflow on" data-flow="0"><h4>前台求职站</h4><div class="en">01 / PORTAL</div><div class="st"><i></i>城市 + 职位 + 企业检索</div></button>
+        <button class="sflow" data-flow="1"><h4>求职者中心</h4><div class="en">02 / SEEKER</div><div class="st"><i></i>简历、投递、邀请、沟通</div></button>
+        <button class="sflow" data-flow="2"><h4>HR 工作台</h4><div class="en">03 / EMPLOYER</div><div class="st"><i></i>职位、简历、人才、道具</div></button>
+        <button class="sflow" data-flow="3"><h4>注册与账户</h4><div class="en">04 / ACCOUNT</div><div class="st"><i></i>双身份注册与会员认证</div></button>
+        <button class="sflow" data-flow="4"><h4>运营后台</h4><div class="en">05 / ADMIN</div><div class="st"><i></i>企业、审核、权限、配置</div></button>
+      </div>
+      <div class="mini-note" id="flowNote">设计取舍：三端共用一套身份与职位/简历对象，端点各自收敛——前台重检索与分发，后台重状态与配置。</div>
+    </aside>
+  </section>
+
+  <div class="marquee"><div class="shell marquee-track">
+    <span class="mq"><b>3</b> 端协同</span><span class="mq-dot"></span>
+    <span class="mq"><b>686</b> 张界面稿</span><span class="mq-dot"></span>
+    <span class="mq"><b>2</b> 类注册身份</span><span class="mq-dot"></span>
+    <span class="mq"><b>11</b> 项搜索筛选</span><span class="mq-dot"></span>
+    <span class="mq"><b>31</b> 省市城市库</span><span class="mq-dot"></span>
+    <span class="mq"><b>3</b> 级 SEO 路由</span>
+  </div></div>
+
+  <!-- 定位 -->
+  <section id="pitch" class="tight">
+    <div class="sec-head reveal"><div class="idx">02 / 定位</div><div>
+      <h2>一句话说清这个作品</h2>
+      <p>从需求文档、接口文档与界面稿三类可核查材料出发，再逐条拆解我做的选择。文档与画面中的业务数字按口径标注，运营成效无来源处一律【待补充】。</p>
+    </div></div>
+    <div class="quote reveal d1">招聘平台的难点不在画页面，而在让「职位、简历、身份、付费」四类对象在三端保持同一套语义。</div>
+    <div class="stats reveal d2">
+      <div class="stat"><b>3</b><span>端协同</span></div>
+      <div class="stat"><b>686</b><span>界面稿</span></div>
+      <div class="stat"><b>11</b><span>项搜索筛选</span></div>
+      <div class="stat"><b>31</b><span>省市城市库</span></div>
+      <div class="stat"><b>3</b><span>级 SEO 路由</span></div>
+    </div>
+  </section>
+
+  <!-- 背景 -->
+  <section id="context">
+    <div class="sec-head reveal"><div class="idx">03 / 背景与目标</div><div>
+      <h2>三类用户的目标冲突</h2>
+      <p>场景判断来自需求汇总与功能脑图的可核查条目，不冒充访谈结论；团队规模、项目周期与真实运营数据【待补充】。</p>
+    </div></div>
+    <div class="two">
+      <div class="prose reveal">
+        <p>求职者要快速找到合适职位并管理投递状态；企业 HR 要发布职位、筛选简历并推进面试；平台运营要审核企业、处理投诉并管理付费道具。三类目标共用「职位 / 简历 / 企业 / 身份」四组对象，却各自需要不同的呈现密度。</p>
+        <p>目标是把跨端一致性做成可复用的结构：身份先分流、对象同语义、端点各自收敛。检索与分发留在前台，状态与配置收进后台，付费动作在关键转化点就地完成。</p>
+        <p><span class="muted">文档可证的冲突：非会员只能免费发布 1 个直线职位；急聘 120 元/5 天（个人）/100 元/5 天（企业）、置顶 150 元/5 天；简历置顶 30+7 天/¥128、15 天/88、7 天/68。</span></p>
+        <div class="callout">设计不改写业务规则——把权限、价格与状态如实前置到界面，让用户在动作发生前就看见代价。</div>
+      </div>
+      <div class="reveal d1">
+        <div class="constraint"><b>C1</b><div><strong>身份双轨，入口先分流</strong><p>需求文档明确「登录&注册（企业和个人）」，注册流程按个人/企业分设字段；个人走教育经历与求职意向，企业走账号信息与认证。</p></div></div>
+        <div class="constraint"><b>C2</b><div><strong>检索维度多，语义必须统一</strong><p>11 项搜索筛选（发布时间/月薪/学历/院校/年限/企业类型/规模等）与 31KB 行业职位分类表同屏；同名筛选项在三端应指向同一字段。</p></div></div>
+        <div class="constraint"><b>C3</b><div><strong>流量分发依赖城市与 SEO</strong><p>URL 与 TDK 文档给出城市子域名 + 城市/职位/企业三级模板，前台结构需与路由层级同构。</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 职责 -->
+  <section id="role" class="tight band">
+    <div class="sec-head reveal"><div class="idx">04 / 职责与协作</div><div>
+      <h2>我负责什么，资料给定什么</h2>
+      <p>只写能从文档与画面归纳的能力域；具体头衔、团队规模、协作对象与起止时间【待补充】。</p>
+    </div></div>
+    <div class="role-table reveal d1">
+      <div class="role-row"><div><span class="label">我设计并交付 · DESIGN</span>三端信息架构与角色分流<br>职位/简历/企业对象的跨端语义统一<br>搜索筛选与城市分发结构<br>付费道具的触发态与价格呈现</div>
+      <div><span class="label">给定 · GIVEN</span>需求汇总与功能脑图<br>后端接口文档与状态码约定<br>行业职位分类表与城市库<br>URL 与 TDK 布局规则</div></div>
+      <div class="role-row"><div><span class="label">关键动作 · ACTION</span>按角色拆分端点、收敛公共对象<br>把权限与价格前置到动作发生前<br>让筛选维度在三端指向同一字段<br>让页面层级对齐 SEO 路由层级</div>
+      <div><span class="label">取舍原则 · TRADE-OFF</span>跨端语义一致优先于单端定制<br>规则可见优先于流程顺滑<br>文档无出处不虚构成效数字<br>【待补充：真实头衔、团队规模、参与深度、协作对象、项目周期】</div></div>
+    </div>
+  </section>
+
+  <!-- 决策 -->
+  <section id="decisions">
+    <div class="sec-head reveal"><div class="idx">05 / 难点与解决方案</div><div>
+      <h2>六个关键决策</h2>
+      <p>每条写清冲突、备选、选择、代价、依据五件事。依据落到需求文档、接口文档或具体画面，点开查看。</p>
+    </div></div>
+    <div id="dec-list">
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D1</span><span class="dec-title">身份入口：一套通用注册，还是个人/企业双轨分流</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>求职者与企业 HR 的注册字段、后续权限与付费能力都不同，单一注册表单会把两套语义混在一起。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 统一注册后再选身份；B. 入口即分流，个人与企业各自成流程。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 登录注册页与接口同步分轨：个人走教育经历、工作经历、求职意向；企业走账号信息与会员认证。</span></div>
+        <div class="dec-field"><b>代价</b><span>多套注册页与字段维护成本；换来的是身份语义从第一步就清晰，后续权限判断有据。</span></div>
+        <div class="dec-field"><b>依据</b><span>需求文档「登录&注册（企业和个人）」；接口文档 <code>/api/proving</code> 先判注册态再分流登录/注册；画板含「注册-个人-求职意向」「注册页面-企业-账号信息」。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D2</span><span class="dec-title">检索体系：平铺条件，还是按语义分组</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>11 项筛选 + 31KB 行业职位分类 + 31 省市城市库同时压在搜索场景，平铺会让用户失去方向。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 全部条件一行铺开；B. 按「时间/薪资/学历/经验/企业」语义分组，分类与城市走独立选择组件。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 条件按语义成组，行业职位与城市用层级选择，筛选项在三端指向同一字段。</span></div>
+        <div class="dec-field"><b>代价</b><span>多一层组件交互；换来的是高密度筛选仍可扫读，跨端检索口径一致。</span></div>
+        <div class="dec-field"><b>依据</b><span>《11项选择内容》列出发布时间/月薪/学历/院校/年限/企业类型/规模等；《行业职位分类表》31KB；《城市选择》覆盖 31 省市。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D3</span><span class="dec-title">付费规则：藏在流程后，还是在动作前明示</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>急聘、置顶、简历下载都是付费动作，若只在支付页才告知规则，用户会在临门一脚产生被误导感。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 统一在支付环节说明；B. 在触发入口前置显示价格、时长与权限差异。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 权限不足时在发布入口直接提示，急聘/置顶按钮旁写明价格与周期，支付走微信/支付宝扫码。</span></div>
+        <div class="dec-field"><b>代价</b><span>入口文案更长、视觉更重；换来的是规则可见、付费决策发生在知情之后。</span></div>
+        <div class="dec-field"><b>依据</b><span>《HR账户页面需求汇总》明确「不是会员只能免费发布一个直线职位」、急聘120元/5天、置顶150元/5天；求职者需求写明简历置顶价格与扫码支付。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D4</span><span class="dec-title">HR 工作台：按流程分页，还是按对象分块</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>HR 一天内要在职位、简历、沟通、面试之间频繁切换，按流程分页会让高频动作多点几层。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 线性流程向导；B. 首页按对象分块，每块直通高频动作与待办数字。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 首页用「职位管理 / 查看简历 / 人才管理」三行功能矩阵 + 待处理简历、未读消息、在招职位、面试安排四组待办卡。</span></div>
+        <div class="dec-field"><b>代价</b><span>首页信息密度高；换来的是 HR 一眼看到该先做什么，高频动作一跳可达。</span></div>
+        <div class="dec-field"><b>依据</b><span>「HR登录后首页」画板呈现三行功能矩阵与待办数字卡；需求汇总对应发布职位/职位管理/查看简历/聊天沟通/推荐人才。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D5</span><span class="dec-title">SEO 路由：页面与 URL 各自设计，还是层级同构</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>城市站、职位分类页、企业详情页要承接搜索流量，若页面层级与 URL 层级不一致，TDK 模板就落不到具体页面。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 先定视觉再补路由；B. 页面层级对齐「城市 → 分类 → 个体」三级路由，TDK 按层级出模板。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 城市子域名 + 城市/职位/企业三级 TDK 模板，前台信息架构与路由层级同构。</span></div>
+        <div class="dec-field"><b>代价</b><span>页面模板数量上升；换来的是每个页面都有对应的可检索入口与文案口径。</span></div>
+        <div class="dec-field"><b>依据</b><span>《普今招聘URL与TDK布局》给出首页、城市站、找工作、企业招聘四级 URL 与 T/D/K 模板，含城市与职位占位符规则。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head" aria-expanded="false"><span class="dec-num">D6</span><span class="dec-title">运营后台：功能堆叠，还是按管理对象归组</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>后台要同时管企业、职位、会员、投诉、资讯、道具与账号权限，菜单平铺会变成一长列。</span></div>
+        <div class="dec-field"><b>备选</b><span>A. 全平铺；B. 按管理对象归入一级菜单，二级菜单承载状态与明细。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>B —— 左侧一级菜单归组（基础设置/职位详情/企业列表/交易管理/客服活动/咨询管理/投诉处理/系统故障），二级展开具体对象。</span></div>
+        <div class="dec-field"><b>代价</b><span>多一级展开动作；换来的是新功能可以按对象归位，列表页面包屑与状态 Tab 保持一致。</span></div>
+        <div class="dec-field"><b>依据</b><span>「招聘后台」功能脑图列出个人中心/申请审核/查看信息/投诉处理/职场问答/发布资讯/广告活动套餐/所有道具八组；企业列表画板呈现左侧菜单+面包屑+状态 Tab+分页。</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 核心功能 -->
+  <section id="flow" class="tight">
+    <div class="sec-head reveal"><div class="idx">06 / 核心功能</div><div>
+      <h2>一条招聘闭环的三段落点</h2>
+      <p>按画面与需求文档可证的结构层次描述，不把并列端点写成操作先后。</p>
+    </div></div>
+    <div class="phases">
+      <div class="phase reveal"><h3>分发层 · 前台求职站<span>LAYER A</span></h3>
+        <div class="step"><i>01</i>城市切换 + 双身份登录注册</div>
+        <div class="step"><i>02</i>职位搜索 · 11 项筛选与行业分类</div>
+        <div class="step"><i>03</i>急聘职位 / 急聘企业 / 职场资讯</div>
+        <div class="step"><i>04</i>职位详情 · 企业详情 · 投递入口</div>
+      </div>
+      <div class="phase mid reveal d1"><h3>协同层 · 求职者与 HR<span>LAYER B</span></h3>
+        <div class="step"><i>01</i>求职者：简历 / 投递 / 面试邀请 / 沟通</div>
+        <div class="step"><i>02</i>HR：发布职位 / 职位管理 / 刷新置顶</div>
+        <div class="step"><i>03</i>HR：搜索简历 / 邀请面试 / 群发消息</div>
+        <div class="step"><i>04</i>付费道具：急聘 / 置顶 / 简历下载 / AI 匹配</div>
+      </div>
+      <div class="phase end reveal d2"><h3>治理层 · 运营后台<span>LAYER C</span></h3>
+        <div class="step"><i>01</i>申请审核：未审 / 通过 / 未过 / 待定</div>
+        <div class="step"><i>02</i>查看信息：个人与企业、消费与登录日志</div>
+        <div class="step"><i>03</i>账号权限：新增 / 更改 / 注销 / 操作日志</div>
+        <div class="step"><i>04</i>内容与道具：资讯 / 问答 / 活动 / 八类道具</div>
+      </div>
+    </div>
+    <div class="bypass reveal">边界说明：以上三层是端点职责划分，不是一条必须顺序执行的流程。三端间的实时同步机制、权限校验细节与真实业务规则变更记录<strong>【待补充】</strong>。</div>
+  </section>
+
+  <!-- 技术与依赖 -->
+  <section id="tech" class="tight band">
+    <div class="sec-head reveal"><div class="idx">07 / 技术与依赖</div><div>
+      <h2>从接口文档还原的实现边界</h2>
+      <p>以下四张卡片全部来自《普今后台接口》文档与界面稿的直接证据；框架、语言、数据库、部署方式无资料，<strong>【待补充】</strong>，不作推断。</p>
+    </div></div>
+    <div class="tech-grid">
+      <div class="tech-card reveal"><div class="tk">01 / API SURFACE</div><h3>接口：REST 风格，按域分组</h3>
+        <ul>
+          <li><code>POST /api/login</code> · 手机号登录，code 200 成功 / 100 数据不全</li>
+          <li><code>POST /api/proving</code> · 验证注册态，200 已注册 / 0 注册失败</li>
+          <li><code>POST /api/register</code> · 个人信息注册</li>
+          <li><code>GET /api/post</code> · 职位列表；<code>/api/hotcity</code> · 热门城市</li>
+          <li><code>GET /api/hotcompany</code> · 热门企业；<code>/api/hotindustry</code> · 热门行业</li>
+          <li><code>GET /api/rcompany</code> · 企业搜索（分页/名称/类型/城市/规模）</li>
+        </ul>
+      </div>
+      <div class="tech-card reveal d1"><div class="tk">02 / DOMAIN SPLIT</div><h3>域名：前台与后台分离</h3>
+        <p>接口文档出现两个域：<em>front.pujin.ac.cn</em>（求职前台 API）与 <em>admin.pujinw.cn</em>（宣传页接口 <code>/api/Propaganda</code>）；SEO 文档另给出 <em>www.pujin.ac.cn</em> 及城市子域名。</p>
+        <p><em>选型理由（推断自文档结构）：</em>前台流量入口与运营后台分域，便于各自做缓存与权限策略；具体部署拓扑<em>【待补充】</em>。</p>
+      </div>
+      <div class="tech-card reveal d2"><div class="tk">03 / DATA CONTRACT</div><h3>数据约定：统一响应壳</h3>
+        <p>接口文档普遍采用 <code>Data</code> / <code>Code</code> / <code>msg</code> 三字段响应壳；<code>Data</code> 为 Object，职位接口注明「返回数据分为两级」。</p>
+        <p><em>设计含义：</em>前端状态设计围绕统一响应壳展开，空态/失败态/数据不全态可在三端复用同一套呈现。</p>
+      </div>
+      <div class="tech-card reveal d3"><div class="tk">04 / DEPENDENCIES</div><h3>依赖：内容与规则侧资料</h3>
+        <p>可核查依赖：行业职位分类表（31KB）、31 省市城市库、职位分类 docx、用户协议/隐私政策/信息发布规则、URL 与 TDK 布局文档。</p>
+        <p><em>【待补充：前端框架、图表/组件库、数据库、鉴权方案、支付网关 SDK、源码与设计源文件、线上部署方式】</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 图库 -->
+  <section id="gallery">
+    <div class="sec-head reveal"><div class="idx">08 / 关键页面展示</div><div>
+      <h2>16 张界面，按端点筛选</h2>
+      <p>从 686 张界面稿中按主流程精选 16 张，可按端点筛选、按名称搜索，点开看大图。</p>
+    </div></div>
+    <div class="gal-tools reveal">
+      <div class="filters" id="filters">
+        <button class="chip on" data-group="all">全部 16</button>
+        <button class="chip" data-group="portal">求职前台</button>
+        <button class="chip" data-group="seeker">求职者中心</button>
+        <button class="chip" data-group="hr">HR 工作台</button>
+        <button class="chip" data-group="account">注册账户</button>
+        <button class="chip" data-group="admin">运营后台</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="搜索页面名称…" aria-label="搜索页面名称">
+    </div>
+    <div class="gallery reveal d1" id="gallery-grid"></div>
+  </section>
+
+  <!-- 演示 -->
+  <section id="demo">
+    <div class="sec-head reveal"><div class="idx">09 / 端点解读</div><div>
+      <h2>逐端看结构取舍</h2>
+      <p>这是设计解读演示，不是可操作的产品演示；真实线上交互<strong>【待补充】</strong>。点击端点查看对应画面与一句取舍。</p>
+    </div></div>
+    <div class="demo-grid">
+      <div class="panel reveal">
+        <h3>五个端点 · 逐屏解读</h3>
+        <p class="hint">只描述画面可见的视觉与结构关系，不代表真实业务数据。</p>
+        <div class="step-tabs" id="stepTabs">
+          <button class="step-tab on" data-step="0">01 求职前台</button>
+          <button class="step-tab" data-step="1">02 求职者</button>
+          <button class="step-tab" data-step="2">03 HR 工作台</button>
+          <button class="step-tab" data-step="3">04 注册账户</button>
+          <button class="step-tab" data-step="4">05 运营后台</button>
+        </div>
+        <div class="step-view" id="stepView">
+          <div class="step-shot"><img id="stepImg" src="pujin-screens/p-home.jpg" alt="前台首页界面"></div>
+          <div class="step-info">
+            <b id="stepEn">01 / PORTAL</b><h4 id="stepTitle">前台 · 未登录首页</h4>
+            <p id="stepDesc">顶部城市切换与八项导航，搜索条承接找工作与搜人才，下方急聘职位、急聘企业、职场资讯三块分区，页脚放使用帮助与备案信息。</p>
+            <div class="kv" id="stepKv">界面证据：<em>未登录首页</em><br>设计取舍：流量分发入口优先，付费用急聘卡自然露出。</div>
+          </div>
+        </div>
+      </div>
+      <div class="side-stack reveal d1">
+        <div class="panel">
+          <h3>查看轨迹</h3><p class="hint">点击左侧端点，轨迹按顺序追加。</p>
+          <ul class="log" id="log"></ul>
+        </div>
+        <div class="panel">
+          <h3>为什么这样做</h3><p class="hint">贯穿三端的三条判断依据。</p>
+          <div class="rule-note">① 身份先分流——个人与企业字段从注册起就不同。<br>② 对象同语义——职位/简历/企业跨端指向同一字段。<br>③ 端点各收敛——前台重分发，HR 重效率，后台重治理。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 验证与复盘 -->
+  <section id="evidence" class="tight">
+    <div class="sec-head reveal"><div class="idx">10 / 成果与复盘</div><div>
+      <h2>可核查事实与改进方向</h2>
+      <p>左侧是可从文件或画面直接核对的事实；右侧是如果重做，我会先处理的事。真实运营成效【待补充】。</p>
+    </div></div>
+    <div class="ev-grid">
+      <div class="ev-table-wrap reveal">
+        <table class="ev-table">
+          <thead><tr><th>核查项</th><th>口径</th><th>结果</th></tr></thead>
+          <tbody>
+            <tr><td>界面稿覆盖</td><td>Sketch 元数据清点</td><td class="pass">686 / 686 · PASS</td></tr>
+            <tr><td>前台 / 后台分布</td><td>元数据清点</td><td class="pass">210 + 476 · PASS</td></tr>
+            <tr><td>搜索筛选项</td><td>需求文档清点</td><td class="pass">11 项 · PASS</td></tr>
+            <tr><td>城市库覆盖</td><td>需求文档清点</td><td class="pass">31 省市 · PASS</td></tr>
+            <tr><td>接口端点</td><td>接口文档清点</td><td class="pass">9 个 · PASS</td></tr>
+            <tr><td>后台管理分组</td><td>功能脑图清点</td><td class="pass">8 组 · PASS</td></tr>
+            <tr><td>线上用户量与转化</td><td>无来源资料</td><td>【待补充】</td></tr>
+            <tr><td>开发框架与部署</td><td>无来源资料</td><td>【待补充】</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reveal d1">
+        <ul class="fix">
+          <li><b>01</b><div>示例数据重复：职位列表多张卡片文案雷同、企业列表公司名重复。若重做，先统一一套可区分的示例数据再出稿。</div></li>
+          <li><b>02</b><div>接口域名不一致：文档同时出现 <code>pujin.ac.cn</code> 与 <code>pujinw.cn</code>。建议统一口径或注明环境差异，避免联调歧义。</div></li>
+          <li><b>03</b><div>状态码语义：登录「数据不全 100」与注册「注册失败 0」不共用同一约定，建议统一错误码分段。</div></li>
+          <li><b>04</b><div>手机号校验：接口备注「11 位」但未见号段规则，建议在表单与接口两端统一校验口径。</div></li>
+          <li><b>05</b><div>时间与数据周期：界面示例时间戳集中在 2020 年，建议在演示材料上标明为历史稿，不与当前成效混读。</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="boundary reveal">口径与边界说明：本文事实来自三个 Sketch 文件的元数据、需求汇总、接口文档、功能脑图、URL/TDK 文档与界面截图。第三个「招聘.sketch」（171 画板）本轮仅作参照，不计入 686 张主口径；业务价格与时间来自文档原文，不推断其现行有效性。<strong>【待补充：真实头衔与团队规模、项目周期、线上用户量与转化、开发框架与部署方式、三端同步与权限校验细节】</strong>——未获得可核查资料前，不虚构数值与实现细节。</div>
+  </section>
+</main>
+
+<footer><div class="shell foot-row">
+  <div>普今招聘 · 三端招聘平台设计 · 前台求职站 / HR 工作台 / 运营后台<br>作品分析依据：686 张界面稿元数据、需求汇总、接口文档、功能脑图与 URL/TDK 布局文档。</div>
+  <div>吕孝冬 · 10 年 UI/UX 设计 · 复杂系统与跨平台设计<br><a href="#hero">返回顶部 ↑</a></div>
+</div></footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="界面大图">
+  <img id="lb-img" alt="界面大图">
+  <div class="lb-bar"><button id="lb-prev">上一张</button><span class="mono" id="lb-count"></span><span id="lb-name"></span><button id="lb-next">下一张</button><button id="lb-close">关闭 Esc</button></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var heroEl=document.querySelector('#hero');
+  var syncHeroH=function(){ if(heroEl) document.documentElement.style.setProperty('--hero-h',Math.ceil(heroEl.getBoundingClientRect().height)+'px'); };
+  syncHeroH();
+  window.addEventListener('resize',syncHeroH,{passive:true});
+
+  var progress=document.getElementById('progress');
+  var onScroll=function(){ var h=document.documentElement.scrollHeight-window.innerHeight; progress.style.width=(h>0?(window.scrollY/h)*100:0)+'%'; };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  if('IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+  } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');}); }
+
+  var navLinks=document.querySelectorAll('.top-links a');
+  if('IntersectionObserver' in window && navLinks.length){
+    var spy=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){navLinks.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id);});}});},{rootMargin:'-38% 0px -55% 0px'});
+    ['context','decisions','tech','gallery','evidence'].forEach(function(id){var el=document.getElementById(id);if(el)spy.observe(el);});
+  }
+
+  var flowNotes=[
+    '设计取舍：三端共用身份与职位/简历对象，端点各自收敛——前台重检索分发，后台重状态配置。',
+    '设计取舍：简历与投递状态收进求职者中心，常用动作一跳可达——代价是个人中心信息量偏大。',
+    '设计取舍：HR 首页按对象分块而非流程向导——换来高频动作直达，代价是首页密度高。',
+    '设计取舍：注册按身份分轨，字段从第一步就分家——换来权限语义清晰，代价是多套表单维护。',
+    '设计取舍：后台按管理对象归组，二级承载状态明细——新功能可按对象归位。'
+  ];
+  document.querySelectorAll('.sflow').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.sflow').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on');
+      document.getElementById('flowNote').textContent=flowNotes[Number(btn.dataset.flow)];
+    });
+  });
+
+  document.querySelectorAll('.dec-head').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var item=btn.parentElement,willOpen=!item.classList.contains('open');
+      document.querySelectorAll('.dec').forEach(function(d){d.classList.remove('open');d.querySelector('.dec-head').setAttribute('aria-expanded','false');d.querySelector('.dec-sign').textContent='+';});
+      if(willOpen){item.classList.add('open');btn.setAttribute('aria-expanded','true');btn.querySelector('.dec-sign').textContent='−';}
+    });
+  });
+
+  var shots=[
+    ['未登录首页','portal','p-home',1],['职位搜索','portal','p-search',0],
+    ['职位详情','portal','p-job',0],['企业列表','portal','p-company',0],
+    ['求职者 · 登录后首页','seeker','p-userhome',1],['我的简历','seeker','p-resume',0],
+    ['沟通消息','seeker','p-chat',0],['HR 工作台','hr','p-hr',1],
+    ['发布职位','hr','p-publish',0],['找人才','hr','p-talent',0],
+    ['登录','account','p-login',0],['个人注册 · 求职意向','account','p-register',0],
+    ['运营后台 · 企业列表','admin','b-company',1],['运营后台 · 职位分类','admin','b-job',0],
+    ['运营后台 · 权限设置','admin','b-perm',0],['运营后台 · 站点配置','admin','b-site',0]
+  ];
+  var gname={portal:'求职前台',seeker:'求职者中心',hr:'HR 工作台',account:'注册账户',admin:'运营后台'};
+  var gallery=document.getElementById('gallery-grid'),search=document.getElementById('search'),active='all',visible=[];
+  function renderGallery(){
+    var q=(search.value||'').trim().toLowerCase();
+    visible=shots.filter(function(s){return (active==='all'||s[1]===active)&&(!q||s[0].toLowerCase().indexOf(q)>=0);});
+    gallery.innerHTML='';
+    if(!visible.length){
+      var e=document.createElement('div');e.className='empty';e.innerHTML='<b>没有匹配的界面</b>试试端点标签，或清空关键词后重试。';gallery.appendChild(e);return;
+    }
+    visible.forEach(function(s,i){
+      var btn=document.createElement('button');btn.className='shot'+(s[3]?' feature':'');
+      btn.setAttribute('aria-label','查看界面：'+s[0]);
+      btn.innerHTML='<span class="thumb"><img loading="lazy" src="pujin-screens/'+s[2]+'.jpg" alt="'+s[0]+'"></span><span class="shot-meta"><strong>'+s[0]+'</strong><span>'+gname[s[1]]+' · 1200px 界面稿</span></span>';
+      var img=btn.querySelector('img'),mark=function(){btn.querySelector('.thumb').classList.add('loaded');};
+      if(img.complete)mark();else{img.addEventListener('load',mark);img.addEventListener('error',mark);}
+      btn.addEventListener('click',function(){openLb(i);});
+      gallery.appendChild(btn);
+    });
+  }
+  document.getElementById('filters').addEventListener('click',function(e){
+    var c=e.target.closest('.chip');if(!c)return;active=c.dataset.group;
+    document.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===c);});renderGallery();
+  });
+  search.addEventListener('input',renderGallery);
+  renderGallery();
+
+  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lb-img'),idx=0;
+  function paintLb(){var s=visible[idx];if(!s)return;lbImg.src='pujin-screens/'+s[2]+'.jpg';lbImg.alt=s[0];
+    document.getElementById('lb-count').textContent=(idx+1)+' / '+visible.length;document.getElementById('lb-name').textContent=s[0];}
+  function openLb(i){idx=i;paintLb();lb.classList.add('open');}
+  function closeLb(){lb.classList.remove('open');}
+  document.getElementById('lb-close').addEventListener('click',closeLb);
+  document.getElementById('lb-prev').addEventListener('click',function(){idx=(idx-1+visible.length)%visible.length;paintLb();});
+  document.getElementById('lb-next').addEventListener('click',function(){idx=(idx+1)%visible.length;paintLb();});
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
+  document.addEventListener('keydown',function(e){
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLb();
+    if(e.key==='ArrowLeft'){idx=(idx-1+visible.length)%visible.length;paintLb();}
+    if(e.key==='ArrowRight'){idx=(idx+1)%visible.length;paintLb();}
+  });
+
+  var steps=[
+    {img:'p-home',alt:'前台首页',en:'01 / PORTAL',title:'前台 · 未登录首页',desc:'顶部城市切换与八项导航，搜索条承接找工作与搜人才，下方急聘职位、急聘企业、职场资讯三块分区，页脚放使用帮助与备案信息。',kv:'界面证据：<em>未登录首页</em><br>设计取舍：流量分发入口优先，付费用急聘卡自然露出。',log:'查看求职前台'},
+    {img:'p-userhome',alt:'求职者首页',en:'02 / SEEKER',title:'求职者 · 登录后首页',desc:'左侧为多维筛选区，中间是职位列表并标记薪资、学历、经验与企业，右侧放简历完整度、投递状态与我的意向。',kv:'界面证据：<em>个人登录后首页</em><br>设计取舍：筛选与结果同屏，状态卡常驻右侧。',log:'查看求职者中心'},
+    {img:'p-hr',alt:'HR 工作台',en:'03 / EMPLOYER',title:'HR · 工作台',desc:'三行功能矩阵覆盖职位管理、查看简历与人才管理；下方待处理简历、未读消息、在招职位与面试安排给出待办数字。',kv:'界面证据：<em>HR登录后首页</em><br>设计取舍：按对象分块，高频动作一跳可达。',log:'查看 HR 工作台'},
+    {img:'p-login',alt:'登录页',en:'04 / ACCOUNT',title:'账户 · 登录与注册',desc:'登录页承接手机号登录，注册按个人与企业分轨；个人填教育经历与求职意向，企业填账号信息并进入会员认证。',kv:'界面证据：<em>登录页面 / 注册-个人-求职意向</em><br>设计取舍：身份先分流，字段从第一步分家。',log:'查看注册账户'},
+    {img:'b-company',alt:'运营后台企业列表',en:'05 / ADMIN',title:'运营后台 · 企业列表',desc:'左侧一级菜单与二级对象，主体为面包屑、状态 Tab、搜索、10 列表格与分页；操作列提供查看、编辑与状态标记。',kv:'界面证据：<em>企业列表-所有企业</em><br>设计取舍：按管理对象归组，列表与状态结构跨页复用。',log:'查看运营后台'}
+  ];
+  var stepTabs=document.getElementById('stepTabs'),log=document.getElementById('log'),fired={};
+  function addLog(t){var li=document.createElement('li'),d=new Date();
+    li.innerHTML='<time>'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+'</time><span>'+t+'</span>';
+    log.appendChild(li);log.scrollTop=log.scrollHeight;}
+  function setStep(i){var s=steps[i];
+    document.getElementById('stepImg').src='pujin-screens/'+s.img+'.jpg';document.getElementById('stepImg').alt=s.alt;
+    document.getElementById('stepEn').textContent=s.en;document.getElementById('stepTitle').textContent=s.title;
+    document.getElementById('stepDesc').textContent=s.desc;document.getElementById('stepKv').innerHTML=s.kv;
+    document.querySelectorAll('.step-tab').forEach(function(b){b.classList.toggle('on',Number(b.dataset.step)===i);});
+    if(!fired[i]){fired[i]=1;addLog(s.log);}
+  }
+  stepTabs.addEventListener('click',function(e){var b=e.target.closest('.step-tab');if(!b)return;setStep(Number(b.dataset.step));});
+  setStep(0);
+})();
+</script>
+</body>
+</html>
