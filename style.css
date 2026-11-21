@@ -530,3 +530,23 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
 .cb-cap .tags { display: flex; flex-wrap: wrap; gap: 10px; flex: 1; }
 .cb-cap .tags span { border: 1px solid var(--tpl-line); color: var(--tpl-gray-deep); font-size: 13px;
   padding: 7px 18px; border-radius: 999px; background: #fff; }
+
+
+/* ============================================================
+   可访问性补强（追加，不改动上方任何原样式与基准屏样式）
+   ============================================================ */
+:focus-visible { outline: 3px solid var(--accent, #B5471F); outline-offset: 3px; border-radius: 8px; }
+.stack-card { display: block; width: 100%; cursor: pointer; font: inherit; color: inherit; text-align: left; }
+.stack-card:focus-visible { outline: 4px solid var(--accent, #B5471F); outline-offset: 5px; }
+.modal, .lightbox { overscroll-behavior: contain; }
+.modal-sheet, .lightbox-stage img { max-width: 100%; }
+.img-failed { opacity: 0 !important; }
+@media (max-width: 560px) {
+  .modal-sheet { width: 100vw; max-height: 92vh; border-radius: 18px 18px 0 0; padding: 26px 18px 40px; }
+  .lightbox img { max-width: 92vw; max-height: 74vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .fade-el, .stack-item { opacity: 1 !important; transform: none !important; }
+  .marquee-track, .marquee-row { animation: none !important; }
+}
