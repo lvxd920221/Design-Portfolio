@@ -29,6 +29,8 @@
   function ready() {
     if (isReady) return;
     isReady = true;
+    var done = document.querySelectorAll('script[data-mv-retry]');
+    for (var i = 0; i < done.length; i++) done[i].parentNode.removeChild(done[i]);
     stage.classList.remove("is-failed");
     stage.classList.add("is-ready");
 
@@ -62,11 +64,15 @@
   function retryLoad() {
     if (registered() || isReady || tries >= MAX_TRIES) return;
     tries++;
+    // 移除上一次未注册成功的重试脚本，避免同页多个 module 实例互相干扰
+    var old = document.querySelectorAll('script[data-mv-retry]');
+    for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
     var s = document.createElement("script");
     s.type = "module";
     s.crossOrigin = "anonymous";
+    s.setAttribute("data-mv-retry", String(tries));
     s.src = LIB + "?retry=" + tries;
-    document.head.appendChild(s);   // 静态引入失败时的兜底重试，破缓存
+    document.head.appendChild(s);   // 失败重试，破缓存
   }
   function loadViewer() {
     if (registered()) { ready(); return; }
@@ -77,8 +83,8 @@
     var timer = setInterval(function () {
       if (registered()) { clearInterval(timer); ready(); return; }
       waited += 400;
-      if (waited === 2000 || waited === 5000) retryLoad();
-      if (waited >= 8000) { clearInterval(timer); markFailed(); }
+      if (waited === 3000 || waited === 8000 || waited === 12000) retryLoad();
+      if (waited >= 15000) { clearInterval(timer); markFailed(); }
     }, 400);
   }
 
