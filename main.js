@@ -526,14 +526,19 @@ if (servicesList) {
     </article>`).join("");
 }
 
-/* ---------- MARQUEE（8 张科技氛围封面 + 3 张真实项目大屏，两行反向循环；真实项目图同时用于项目卡与详情页） ---------- */
+/* ---------- MARQUEE（11 张真实项目图，两行反向循环；与项目卡/详情页共用素材） ---------- */
 const MARQUEE_IMGS = [
-  "assets/marquee/amb-01.jpg", "assets/marquee/amb-02.jpg",
-  "assets/marquee/amb-03.jpg", "assets/marquee/amb-04.jpg",
-  "assets/projects/yibin/thumb.jpg", "assets/marquee/amb-06.jpg",
-  "assets/marquee/amb-07.jpg", "assets/marquee/amb-08.jpg",
-  "assets/marquee/amb-09.jpg", "assets/projects/aigc/thumb.jpg",
-  "assets/projects/yibin/yb-5_hd.jpg"
+  "assets/projects/haodf/hd-11_hd.jpg",
+  "assets/projects/cizhen/cz-1_hd.jpg",
+  "assets/projects/ruihe/card-1.jpg",
+  "assets/projects/yilifang/yif-3_hd.jpg",
+  "assets/projects/gov/card-1.jpg",
+  "pujin-screens/p-login.jpg",
+  "pujin-screens/p-hr.jpg",
+  "assets/projects/yibin/yb-1_hd.jpg",
+  "assets/projects/aigc/ai-2_hd.jpg",
+  "assets/projects/ruihe/card-2.jpg",
+  "pujin-screens/p-chat.jpg"
 ];
 function buildRow(el, arr) {
   if (!el) return;
