@@ -4,58 +4,6 @@
 // ============================================================
 const PROJECTS = [
   {
-    id: "haodf",
-    title: "好大夫在线改版",
-    sub: "以「信任建立 + 低门槛发起」重组问诊链路的移动端改版",
-    tags: ["App UI/UX", "医疗", "C 端"],
-    badge: "信任设计",
-    period: "3 个月",
-    role: "UI/UX 主导",
-    industry: "医疗 · C 端",
-    thumb: "assets/projects/haodf/thumb.jpg",
-
-    background: "在线问诊平台环节多、信任成本高，新用户难以快速发起有效沟通。作为设计主导，我负责首页、问诊链路、医生主页三大模块的改版，目标是把「决策成本」降下来。",
-
-    highlights: [
-      {
-        title: "信任成本过高，用户无法快速判断医生是否可靠",
-        strategy: "以「信息分层 + 首屏信任信号」替代平铺列表，让用户在 3 秒内抓住关键信息",
-        solution: "医生主页重构为 3 层卡片：顶层露出资质认证、接诊量、患者评分；中层展示擅长领域；底层放历史评价。首屏信任信号从 0 提升到 3 条，决策路径缩短 40%。"
-      },
-      {
-        title: "问诊发起链路 5 步，新用户中途放弃率高",
-        strategy: "以「合并同类步骤 + 模板化快捷词」压缩发起链路",
-        solution: "把「症状选择 → 描述输入 → 医生筛选 → 确认 → 发送」5 步合并为「选症状 → 填描述（快捷词模板）→ 发送」3 步，发起时长从平均 4.2 分钟降到 1.8 分钟，新用户首诊完成率提升 22%。"
-      },
-      {
-        title: "对话与预约状态不透明，用户焦虑等待",
-        strategy: "以「可扫描状态条」替代文字提示，让用户始终知道当前进度与下一步",
-        solution: "对话模块加入 4 态状态条（已发送 / 医生已读 / 医生回复中 / 预约确认），每态配独立色值与微动效。预约确认页加入倒计时与取消保护，减少误操作。整体用户等待焦虑评分从 6.2 降到 3.8。"
-      }
-    ],
-
-    keyPages: [
-      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "问诊流程全链路，3 步主流程标注", note: "核心转化路径，用户从进入首页到发出首条问诊消息的完整动线" },
-      { src: "assets/projects/haodf/hd-9.jpg", caption: "医生主页信任信息分层", note: "3 层卡片结构，首屏露出 3 条关键信任信号" }
-    ],
-
-    metrics: [
-      { value: "22%", label: "新用户首诊完成率提升" },
-      { value: "5→3", label: "问诊发起步骤" },
-      { value: "3.8", label: "等待焦虑评分（↓58%）" }
-    ],
-
-    capabilityTags: ["C 端产品设计", "信任设计", "流程简化", "医疗 UX", "状态可视化"],
-
-    images: [
-      { src: "assets/projects/haodf/hd-11_hd.jpg", caption: "封面 · 改版总览" },
-      { src: "assets/projects/haodf/hd-9.jpg", caption: "医生主页 · 信任信息" },
-      { src: "assets/projects/haodf/hd-8.jpg", caption: "问诊流程 · 全链路" },
-      { src: "assets/projects/haodf/hd-2.jpg", caption: "对话与预约 · 交互" }
-    ]
-  },
-
-  {
     id: "cizhen",
     title: "磁振磁电磁治疗仪",
     sub: "从 0 到 1 建立 18 屏触控交互系统，把安全前置与双通道并行做成可复用规则",
@@ -159,82 +107,6 @@ const PROJECTS = [
       { src: "ruihe-screens/u-intake.jpg", caption: "问诊单 · 双端同构" },
       { src: "ruihe-screens/d-assistant.jpg", caption: "助理账号 · 两级权限" }
     ]
-  },
-
-  {
-    id: "yilifang",
-    title: "医立方",
-    sub: "用「业务流驱动」把医生、患者、智能排班装进一个后台",
-    tags: ["医疗信息化", "HIS / EMR", "B 端"],
-    badge: "设计系统",
-    period: "5 个月",
-    role: "B 端 UI 设计主导",
-    industry: "医疗信息化",
-    thumb: "assets/projects/yilifang/thumb.jpg",
-
-    background: "医院信息系统模块多、数据密度高，医生管理、患者管理、智能排班要在一个后台里高效完成，信息错位可能直接影响诊疗。我负责全套界面与深色模式。",
-
-    highlights: [
-      {
-        title: "按功能点组织信息架构，跨模块切换路径混乱",
-        strategy: "以「业务流驱动」替代「功能点驱动」，按 3 条业务线重新组织信息架构",
-        solution: "把原来按「用户管理 / 权限 / 排班 / 档案」4 个功能模块划分，重构为「医生流 / 患者流 / 智能排班流」3 条业务线。每条业务线内部按流程顺序排列，跨业务线切换通过顶部导航 + 面包屑双路径。跨模块平均切换步骤从 4 步降到 2 步。"
-      },
-      {
-        title: "数据密度高但无统一呈现规范，各模块视觉风格不一致",
-        strategy: "以「组件化 + 统一数据呈现规范」建立设计系统，复用率 80%+",
-        solution: "自建 5 套核心组件（数据看板 / 高密度表格 / 动态表单 / 排班日历 / 状态标签），每套组件含 3 种密度等级。医生管理、患者管理共享同一套表格与表单规范，跨模块视觉一致性达标，设计工时节省约 50%。"
-      },
-      {
-        title: "夜间值班与大屏展示场景下浅色界面刺眼、可读性差",
-        strategy: "以「WCAG 对比度 + 场景化色板」建立完整深色模式",
-        solution: "深色模式独立色板（非简单反色），所有文本对比度 ≥ 4.5:1，数据图表用高亮色替代灰色系。深色模式覆盖登录、看板、医生/患者管理、排班日历全部模块，夜间值班场景下视觉疲劳评分下降 35%。"
-      }
-    ],
-
-    keyPages: [
-      { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板", note: "3 条业务线的决策入口，关键指标一屏扫读" },
-      { src: "assets/projects/yilifang/yif-3_hd.jpg", caption: "医生管理 · 智能排班日历", note: "业务流驱动的核心页面，排班日历与医生详情联动" }
-    ],
-
-    metrics: [
-      { value: "4→2", label: "跨模块切换步骤" },
-      { value: "80%+", label: "组件复用率" },
-      { value: "35%", label: "夜间视觉疲劳下降" }
-    ],
-
-    capabilityTags: ["B 端复杂系统", "设计系统", "信息架构", "深色模式", "医疗信息化"],
-
-    images: [
-      { src: "assets/projects/yilifang/yif-1_hd.jpg", caption: "首页数据总览 · 关键指标看板" },
-      { src: "assets/projects/yilifang/yif-3_hd.jpg", caption: "患者管理流程 · 档案与表单" },
-      { src: "assets/projects/yilifang/yif-7.jpg", caption: "深色模式 · 全局视觉适配" },
-      { src: "assets/projects/yilifang/yif-5.jpg", caption: "医生管理流程 · 排班与详情" }
-    ],
-
-    analysis: {
-      positioning: "面向中小型医院与连锁诊所的一体化 HIS/EMR 管理平台，把原本分散在多个系统的医生管理、患者档案、智能排班整合到一个 B 端后台，用数据看板做决策入口。",
-      product: "桌面 Web 应用，强交互、高密度信息；已成型模块包括登录、首页数据总览、医生管理流程（含智能排班日历）、患者管理流程（含档案表单）、深色模式全局适配。",
-      users: "医院信息科管理员、门诊/住院医生、护理排班负责人；决策链为院办主导、信息科落地、临床科室使用。",
-      model: "B 端项目制交付（设计 + 前端），可延伸为 SaaS 订阅；价值点在于降低医院自研系统的 UI 成本与沟通成本。",
-      differentiators: [
-        "业务流驱动的信息架构，跨模块切换步骤 4→2",
-        "完整深色模式，WCAG 对比度 ≥ 4.5:1，夜间值班与大屏场景均可用",
-        "5 套核心组件复用率 80%+，设计工时节省约 50%",
-        "组件化交付可直接进前端，减少沟通与返工成本"
-      ],
-      stage: "设计交付阶段，界面与视觉系统已成型，进入前端实现与医院试点落地期。",
-      risks: [
-        "医疗数据合规与等保要求高，落地前需通过安全评审",
-        "HIS 市场存在卫宁、东软等成熟厂商，差异化需聚焦体验与轻量部署",
-        "医院决策周期长、回款慢，需匹配项目制现金流节奏"
-      ],
-      opportunities: [
-        "医疗信息化持续渗透，DRG/DIP 支付改革催生对精细化管理平台的需求",
-        "AI 排班 / 智能诊间辅助是下一步自然延伸",
-        "面向连锁诊所的轻量化 SaaS 版本可快速复制，边际成本递减"
-      ]
-    }
   },
 
   {
@@ -528,10 +400,10 @@ if (servicesList) {
 
 /* ---------- MARQUEE（11 张真实项目图，两行反向循环；与项目卡/详情页共用素材） ---------- */
 const MARQUEE_IMGS = [
-  "assets/projects/haodf/hd-11_hd.jpg",
+  "assets/projects/cizhen/cz-4_hd.jpg",
   "assets/projects/cizhen/cz-1_hd.jpg",
   "assets/projects/ruihe/card-1.jpg",
-  "assets/projects/yilifang/yif-3_hd.jpg",
+  "assets/projects/yibin/yb-2_hd.jpg",
   "assets/projects/gov/card-1.jpg",
   "pujin-screens/p-login.jpg",
   "pujin-screens/p-hr.jpg",
