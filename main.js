@@ -551,7 +551,7 @@ buildRow(document.getElementById("marqueeRow2"), [...MARQUEE_IMGS].reverse());
 
 /* ---------- STICKY 项目卡片（前 6 个真实项目，滚动缩放堆叠） ---------- */
 const stack = document.getElementById("projectStack");
-const CARD_PROJECTS = PROJECTS.slice(0, 6);
+const CARD_PROJECTS = PROJECTS.slice(0, 7);
 if (stack) {
   stack.innerHTML = CARD_PROJECTS.map((p, i) => {
     const imgs = (p.images || []).map(x => x.src);
@@ -747,6 +747,10 @@ function openCase(i) {
   }
   if (PROJECTS[i] && PROJECTS[i].id === "pujin") {
     window.location.href = "pujin-case-study.html";
+    return;
+  }
+  if (PROJECTS[i] && PROJECTS[i].id === "xiaomeng") {
+    window.location.href = "xiaomeng-case-study.html";
     return;
   }
   currentCase = i;
