@@ -558,7 +558,7 @@ if (stack) {
     const src = k => imgs[k] || p.thumb;
     return `
     <div class="stack-item" data-index="${i}" style="top:${96 + i * 28}px">
-      <article class="stack-card project-card" data-index="${i}" tabindex="0" role="button" aria-label="打开案例：${p.title}">
+      <button type="button" class="stack-card project-card" data-index="${i}" aria-label="打开案例：${p.title}">
         <div class="stack-top">
           <span class="stack-num">${String(i + 1).padStart(2, "0")}</span>
           <div class="stack-meta">
@@ -574,7 +574,7 @@ if (stack) {
           </div>
           <div class="stack-col2"><img src="${src(2) || src(0)}" alt="${p.title} 主图" loading="lazy"></div>
         </div>
-      </article>
+      </button>
     </div>`;
   }).join("");
 }
@@ -732,6 +732,7 @@ const sheet = document.getElementById("modalSheet");
 let currentCase = 0;
 
 function openCase(i) {
+  if (!Number.isInteger(i) || !PROJECTS[i]) return;
   // 完整案例独立页：磁振磁电磁治疗仪 / 瑞合祥 / 国资大屏 / 普今招聘
   if (PROJECTS[i] && PROJECTS[i].id === "cizhen") {
     window.location.href = "cizhen-case-study.html";
@@ -824,8 +825,8 @@ function openCase(i) {
         <span class="case-k">${p.industry || "项目"}</span>
         <span class="case-ktext">${p.role || ""} ${p.period ? "· " + p.period : ""}</span>
       </div>
-      <h2 class="case-title">${p.title}</h2>
-      <p class="case-sub">${p.sub}</p>
+      <h2 class="case-title" id="caseTitle">${p.title}</h2>
+      <p class="case-sub" id="caseSub">${p.sub}</p>
       ${metaLine ? `<p class="case-meta">${metaLine}</p>` : ""}
     </div>
 
@@ -888,9 +889,12 @@ function openCase(i) {
     ${renderAnalysis(p.analysis)}
   `;
 
-  modal.classList.add("open");
-  document.body.style.overflow = "hidden";
-  document.getElementById("modalClose").addEventListener("click", closeCase);
+  // 图片加载失败统一降级：隐藏坏图，保留版式
+  sheet.querySelectorAll("img").forEach(img => {
+    img.addEventListener("error", () => img.classList.add("img-failed"), { once: true });
+  });
+  if (typeof openOverlay === "function") openOverlay(modal, document.getElementById("modalClose"), document.querySelector('.stack-card[data-index="'+i+'"]'));
+  else { modal.classList.add("open"); document.body.style.overflow = "hidden"; }
   // 关键页面可点击开灯箱
   sheet.querySelectorAll(".keypage img").forEach(img => {
     img.addEventListener("click", () => {
@@ -901,8 +905,8 @@ function openCase(i) {
 }
 
 function closeCase() {
-  modal.classList.remove("open");
-  document.body.style.overflow = "";
+  if (typeof closeOverlay === "function") closeOverlay(modal);
+  else { modal.classList.remove("open"); document.body.style.overflow = ""; }
 }
 
 // ---------- 8 维分析（可选） ----------
@@ -928,12 +932,7 @@ list.addEventListener("click", (e) => {
   const card = e.target.closest(".project-card");
   if (card) openCase(+card.dataset.index);
 });
-list.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    const card = e.target.closest(".project-card");
-    if (card) { e.preventDefault(); openCase(+card.dataset.index); }
-  }
-});
+// 卡片已改为原生 <button>，Enter/Space 由浏览器触发 click，无需额外键盘监听
 modal.addEventListener("click", (e) => { if (e.target === modal) closeCase(); });
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") { closeCase(); closeLightbox(); }
@@ -946,12 +945,13 @@ const lbCap = document.getElementById("lightboxCaption");
 let lbSrcs = [], lbI = 0;
 
 function openLightbox(srcs, i) {
+  if (!Array.isArray(srcs) || !srcs.length || !srcs[i]) return;
   lbSrcs = srcs; lbI = i;
   lbImg.src = srcs[i].src; lbCap.textContent = srcs[i].caption;
-  lb.classList.add("open");
-  document.body.style.overflow = "hidden";
+  if (typeof openOverlay === "function") openOverlay(lb, document.getElementById("lightboxClose"), document.activeElement);
+  else { lb.classList.add("open"); document.body.style.overflow = "hidden"; }
 }
-function closeLightbox() { lb.classList.remove("open"); if (!modal.classList.contains("open")) document.body.style.overflow = ""; }
+function closeLightbox() { if (typeof closeOverlay === "function") closeOverlay(lb); else lb.classList.remove("open"); }
 document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
 document.getElementById("lightboxPrev").addEventListener("click", () => openLightbox(lbSrcs, (lbI - 1 + lbSrcs.length) % lbSrcs.length));
 document.getElementById("lightboxNext").addEventListener("click", () => openLightbox(lbSrcs, (lbI + 1) % lbSrcs.length));
@@ -1019,3 +1019,68 @@ lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", run); } else { run(); }
 })();
 
+
+
+/* ---------- 统一弹层管理：滚动锁 + 焦点陷阱 + 焦点恢复（追加，不改既有逻辑） ---------- */
+(function initOverlayManager() {
+  const losers = [document.getElementById("caseModal"), document.getElementById("lightbox")].filter(Boolean);
+  if (!losers.length) return;
+  let lockCount = 0;
+  let lastFocused = null;
+
+  function lock() {
+    lockCount++;
+    if (lockCount === 1) document.body.style.overflow = "hidden";
+  }
+  function unlock() {
+    lockCount = Math.max(0, lockCount - 1);
+    if (lockCount === 0) document.body.style.overflow = "";
+  }
+  function focusables(root) {
+    return [...root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(el => el.offsetParent !== null);
+  }
+  window.openOverlay = function (el, firstFocus, opener) {
+    if (!el) return;
+    if (!el.classList.contains("open")) { el.classList.add("open"); lock(); }
+    el.setAttribute("aria-hidden", "false");
+    lastFocused = (opener && document.contains(opener)) ? opener : document.activeElement;
+    const target = firstFocus || focusables(el)[0];
+    if (target) setTimeout(() => target.focus(), 0);
+  };
+  window.closeOverlay = function (el) {
+    if (!el || !el.classList.contains("open")) return;
+    el.classList.remove("open");
+    el.setAttribute("aria-hidden", "true");
+    unlock();
+    var restoreTo = lastFocused;
+    if (restoreTo && document.contains(restoreTo) && !losers.some(x => x.contains(restoreTo))) {
+      setTimeout(function () { try { restoreTo.focus(); } catch (err) {} }, 30);
+    }
+    lastFocused = null;
+  };
+  // 关闭按钮只绑定一次（修复原 openCase 内重复 addEventListener）
+  const mc = document.getElementById("modalClose");
+  if (mc) mc.addEventListener("click", closeCase);
+  // 焦点陷阱：Tab 限制在当前打开的弹层内
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const open = losers.find(x => x.classList.contains("open"));
+    if (!open) return;
+    const f = focusables(open);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  // Escape 关闭最上层弹层（原全局 Escape 逻辑保留，这里只补焦点恢复）
+  losers.forEach(el => el.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.stopPropagation(); (el.id === "caseModal" ? closeCase : closeLightbox)(); }
+  }));
+})();
+
+/* ---------- 全局图片加载失败兜底（含动态插入前的静态图） ---------- */
+document.addEventListener("error", (e) => {
+  const t = e.target;
+  if (t && t.tagName === "IMG" && !t.classList.contains("img-failed")) t.classList.add("img-failed");
+}, true);
