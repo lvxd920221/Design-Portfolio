@@ -550,3 +550,23 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
   .reveal, .fade-el, .stack-item { opacity: 1 !important; transform: none !important; }
   .marquee-track, .marquee-row { animation: none !important; }
 }
+
+
+/* ============================================================
+   项目卡片图像区：左右列统一高度源（追加覆盖，不改上方任何原规则）
+   - 右列高度 = --stack-h；左列两图 + 间距严格等于同一高度
+   - 两图按原视觉比例分配剩余高度，object-fit:cover 保持原始宽高比不拉伸
+   ============================================================ */
+.stack-grid { --stack-h: clamp(302px, 39.6vw, 660px); --stack-gap: clamp(10px, 1.4vw, 20px); gap: var(--stack-gap); align-items: start; }
+.stack-col1 { height: var(--stack-h); gap: var(--stack-gap); }
+.stack-col1 img { flex: 1 1 0; min-height: 0; height: auto; }
+.stack-col1 img:first-child { flex-grow: 230; }
+.stack-col1 img:last-child  { flex-grow: 340; }
+.stack-col2 { height: var(--stack-h); }
+.stack-col2 img { height: 100%; }
+@media (max-width: 900px) {
+  .stack-grid { --stack-h: 280px; }
+  .stack-col1 { height: var(--stack-h); }
+  .stack-col2 { height: var(--stack-h); }
+  .stack-col2 img { height: 100%; }
+}
