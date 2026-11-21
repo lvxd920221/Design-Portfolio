@@ -35,6 +35,15 @@
     // 画布正中心的 8×8 default-pan-target 会吞掉圆心上的按下事件 —— 关掉它的命中
     var pt = mv.shadowRoot && mv.shadowRoot.querySelector("#default-pan-target, .default-pan-target");
     if (pt) pt.style.pointerEvents = "none";
+
+    // 显式启动内置 spin 动画（autoplay/animation-name 在部分 CDN 抖动场景未生效）
+    try {
+      if (mv.availableAnimations && mv.availableAnimations.length && !mv.currentAnimation) {
+        var anim = mv.availableAnimations.filter(function (a) { return a && a.name === "spin"; })[0]
+          || mv.availableAnimations[0];
+        if (anim) { anim.play(); mv.timeScale = 1; }
+      }
+    } catch (err) {}
   }
 
   mv.addEventListener("load", ready);
@@ -46,21 +55,38 @@
     mv.removeAttribute("animation-name");
   }
 
-  function loadViewer() {
-    if (window.customElements && customElements.get("model-viewer")) return;
+  // 静态 module 已在 HTML 中引入；这里只做「注册成功」轮询 + 有限重试。
+  // 大文件（1MB）在 CDN 可能被截断：HTTP 200 不代表模块已执行，必须以 customElements 注册为准。
+  var tries = 0, MAX_TRIES = 3;
+  function registered() { return !!(window.customElements && customElements.get("model-viewer")); }
+  function retryLoad() {
+    if (registered() || isReady || tries >= MAX_TRIES) return;
+    tries++;
     var s = document.createElement("script");
     s.type = "module";
     s.crossOrigin = "anonymous";
-    s.src = LIB;
-    s.onerror = markFailed;
-    document.head.appendChild(s);
+    s.src = LIB + "?retry=" + tries;
+    document.head.appendChild(s);   // 静态引入失败时的兜底重试，破缓存
+  }
+  function loadViewer() {
+    if (registered()) { ready(); return; }
+    // 首次主动注入（基准屏已在文件顶部 return，不会走到这里）
+    retryLoad();
+    // 轮询注册：每 400ms 检查一次，最多 ~8s；期间不标记 is-failed
+    var waited = 0;
+    var timer = setInterval(function () {
+      if (registered()) { clearInterval(timer); ready(); return; }
+      waited += 400;
+      if (waited === 2000 || waited === 5000) retryLoad();
+      if (waited >= 8000) { clearInterval(timer); markFailed(); }
+    }, 400);
   }
 
   // DOM 就绪即启动：不等图片 load，脚本 defer，1MB 依赖不抢 LCP
   if (document.readyState === "loading") {
-    addEventListener("DOMContentLoaded", function () { setTimeout(loadViewer, 250); }, { once: true });
+    addEventListener("DOMContentLoaded", loadViewer, { once: true });
   } else {
-    setTimeout(loadViewer, 250);
+    loadViewer();
   }
 
   // 首次拖拽后淡出提示文案
@@ -76,9 +102,6 @@
   var mv = document.getElementById("hero3d");
   var stage = document.getElementById("portraitStage");
   if (!mv || !stage) return;
-  if (!stage.classList.contains("is-ready")) {
-    setTimeout(function () { if (!stage.classList.contains("is-ready")) stage.classList.add("is-failed"); }, 12000);
-  }
   if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
     mv.removeAttribute("auto-rotate");
     mv.setAttribute("auto-rotate-delay", "0");
