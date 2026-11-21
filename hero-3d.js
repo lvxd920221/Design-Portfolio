@@ -70,3 +70,17 @@
     }, { passive: true, once: true });
   });
 })();
+
+/* 可访问性/健壮性补强（追加）：3D 长时间未就绪则标记失败；减少动态效果下停自动旋转 */
+(function () {
+  var mv = document.getElementById("hero3d");
+  var stage = document.getElementById("portraitStage");
+  if (!mv || !stage) return;
+  if (!stage.classList.contains("is-ready")) {
+    setTimeout(function () { if (!stage.classList.contains("is-ready")) stage.classList.add("is-failed"); }, 12000);
+  }
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    mv.removeAttribute("auto-rotate");
+    mv.setAttribute("auto-rotate-delay", "0");
+  }
+})();
