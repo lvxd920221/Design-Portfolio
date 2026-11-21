@@ -13,6 +13,7 @@
 @media(max-width:900px){.nav{display:none}.hero{grid-template-columns:1fr;gap:30px;padding-top:65px}.hero-art{min-height:430px}.hero-main{height:410px}.float img{height:135px}.grid4{grid-template-columns:repeat(2,1fr)}.section-head{grid-template-columns:1fr;gap:8px}.split,.showcase,.showcase.reverse{grid-template-columns:1fr;gap:28px}.showcase.reverse .copy{order:0}.arch{grid-template-columns:1fr 140px 1fr;gap:10px}.arch-center{width:125px;height:125px;font-size:17px}.gifgrid{grid-template-columns:repeat(2,1fr)}.system{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.wrap{width:calc(100% - 36px)}.hero{min-height:auto;padding:60px 0 70px}.hero h1{font-size:48px}.lead{font-size:15px}.hero-art{min-height:340px}.hero-main{height:330px;width:65%}.float{width:35%;padding:7px}.float img{height:100px}.float b{font-size:9px}.strip .wrap{gap:9px}.strip span{font-size:9px}section{padding:70px 0}.grid4,.persona,.decision,.trust-grid,.points,.gifgrid,.system,.evidence{grid-template-columns:1fr}.journey{grid-template-columns:1fr;gap:12px}.journey div{padding:9px 12px;border-top:0;border-left:2px solid var(--yellow)}.arch{grid-template-columns:1fr}.arch-center{grid-row:1;width:120px;height:120px}.arch-col{grid-template-columns:1fr 1fr}.visual{min-height:300px;padding:12px}.visual.multi{gap:5px}.visual.multi img{max-height:290px}.trust-card{grid-template-columns:72px 1fr;padding:16px}.avatar{width:62px;height:62px;font-size:20px}.gif .stage{height:220px}.footer .wrap{display:block}.footer a{display:inline-block;margin-top:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+.nav a.is-active{color:#282a27;font-weight:800}
 </style>
 </head>
 <body>
@@ -54,7 +55,19 @@
 </main>
 <footer class="footer"><div class="wrap"><div><h2>校园小茗</h2><p>大学校园综合服务平台 · 互助 / 商城 / 社区 / 积分</p></div><a href="#top">BACK TO TOP ↑</a></div></footer>
 <script>
-const progress=document.getElementById('progress');function updateProgress(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h>0?scrollY/h*100:0)+'%'}addEventListener('scroll',updateProgress,{passive:true});updateProgress();
-const navLinks=[...document.querySelectorAll('.nav a')];const sections=navLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.style.color=a.getAttribute('href')==='#'+e.target.id?'#282a27':'')}}),{rootMargin:'-35% 0px -55% 0px'});sections.forEach(s=>observer.observe(s))}
+const progress=document.getElementById('progress');function updateProgress(){
+  if(!progress)return;
+  const max=document.documentElement.scrollHeight-innerHeight;
+  const pct=Number.isFinite(max)&&max>0?Math.min(100,Math.max(0,scrollY/max*100)):0;
+  progress.style.width=(Number.isFinite(pct)?pct:0)+'%';
+}addEventListener('scroll',updateProgress,{passive:true});updateProgress();
+const navLinks=[...document.querySelectorAll('.nav a')];
+const sections=navLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+function setActiveNav(id){navLinks.forEach(a=>{const on=a.getAttribute('href')==='#'+id;a.classList.toggle('is-active',on);a.style.color=on?'#282a27':'';a.setAttribute('aria-current',on?'location':'false');});}
+setActiveNav(sections.length?sections[0].id:'');
+if('IntersectionObserver'in window){const observer=new IntersectionObserver(entries=>{
+  const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  if(vis)setActiveNav(vis.target.id);
+},{rootMargin:'-35% 0px -55% 0px',threshold:[0,.25,.5]});sections.forEach(s=>observer.observe(s))}
 </script>
 </body></html>
