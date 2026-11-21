@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>校园小茗 · 大学校园综合服务平台设计 | 吕孝冬</title>
+<style>
+:root{
+  --bg:#F3F2EF;--surface:#FFFFFF;--surface-2:#F7F6F3;
+  --ink:#333333;--ink-2:#3A3A3A;--muted:#535353;--faint:#828282;
+  --line:#DAD6D0;--line-soft:#ECE9E4;
+  --accent:#2E6E5F;--accent-ink:#245A4D;--accent-soft:rgba(46,110,95,.10);
+  --err:#B5471F;--ok:#2E6E5F;--warn:#C99A3B;
+  --r-sm:12px;--r-md:24px;--r-lg:48px;--r-pill:999px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --display:"LogoSC Unbounded Sans","Arial Black","PingFang SC","Microsoft YaHei",sans-serif;
+  --body:"Alibaba PuHuiTi","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --num:"Gilroy","Avenir Next",Montserrat,"Helvetica Neue",Arial,sans-serif;
+  --stroke:"Trash","Arial Black",Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:var(--accent);color:#fff}
+body{margin:0;color:var(--ink);line-height:1.6;font-family:var(--body);-webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,rgba(230,227,222,.55) 0,rgba(243,242,239,0) 640px),
+    radial-gradient(900px 480px at 90% 2%,rgba(46,110,95,.07),transparent 64%),var(--bg)}
+h1,.display{font-family:var(--display);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2,h3,h4{font-family:var(--body);font-weight:700;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--ink)}
+h2{font-family:var(--body);font-weight:900;line-height:1.2}
+p{margin:0}
+button{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+.shell{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(28px,5.2vw,76px)}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--num)}
+.mono{font-family:var(--num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.accent{color:var(--accent)}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:200;transition:width .12s linear}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.topbar-in{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.01em}
+.brand-mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--accent);font-size:13px;font-weight:900;font-family:var(--num)}
+.top-links{display:flex;gap:26px;font-size:12px;letter-spacing:.01em;color:var(--muted)}
+.top-links a{position:relative;padding:6px 0;transition:color .25s}
+.top-links a:hover{color:var(--accent)}
+.top-links a.on{color:var(--ink);font-weight:700}
+.top-links a.on:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:3px;background:var(--accent);border-radius:var(--r-pill)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* HERO — p1_084 复刻：暖灰双层底 + 巨型缎带弧线 + 动态高度同步 */
+#hero{position:relative;overflow:hidden;min-height:calc(100dvh - 64px);display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;padding:88px 0 104px}
+html:before{content:"";position:absolute;top:0;left:0;width:100%;height:var(--hero-h,900px);pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1617 922'%3E%3Cpath fill='%23333333' fill-opacity='0.055' d='M1323.08 61.2413C1297.85 163.764 1271.84 280.013 1239.38 391.308C1224.9 453.803 1219.22 503.317 1220.13 541.33C1221.45 596.118 1235.5 613.06 1239.83 617.235C1243.92 621.179 1259.83 633.476 1310.03 632.197C1360.79 630.9 1432.64 615.657 1527.99 580.102L1617 819.799C1508.42 860.283 1406.77 885.543 1316.53 887.85C1225.75 890.164 1133.06 869.141 1062.95 801.655C1057.54 796.45 1052.51 790.997 1047.62 785.499C975.221 865.179 878.081 921.999 746.258 922C664.853 921.999 585.733 898.593 524.182 838.042C496.131 810.445 475.194 778.4 459.583 743.993C401.62 796.47 333.678 832.19 256.559 846.79C172.249 862.751 85.6173 851.971 0 822.831L82.0631 580.699C136.633 599.274 177.909 601.432 209.177 595.512C239.254 589.817 268.255 575.154 297.392 545.853C356.044 486.857 412.427 370.807 452.538 175.025C462.138 122.017 473.425 66.6238 486.177 9.04701L735.392 64.4724C726.747 103.51 719.095 140.549 712.272 175.621L712.47 175.671C709.648 191.263 706.666 206.654 703.589 221.851C673.427 388.94 665.605 507.588 677.591 585.272C684.988 633.21 697.771 650.411 702.994 655.56C705.597 658.122 714.176 666.297 746.258 666.298C814.978 666.296 873.708 625.056 932.909 493.36C955.269 443.617 974.418 387.992 992.05 328.078C999.932 294.664 1009.21 260.07 1020.18 224.485C1038.47 153.136 1056.15 77.6068 1075.25 0L1323.08 61.2413Z'/%3E%3C/svg%3E"),linear-gradient(171.4deg,rgba(51,51,51,.075) 0%,rgba(249,249,249,0) 62%);
+  background-repeat:no-repeat,no-repeat;background-position:calc(50% + 22vw) 2%,center top;
+  background-size:min(1180px,86vw) auto,100% 100%}
+.hero-col{position:relative;z-index:1}
+.eyebrow-row{display:flex;align-items:center;gap:16px}
+.eyebrow-row:after{content:"";flex:1;height:2px;background:var(--line);border-radius:var(--r-pill)}
+.hero-title{font-family:var(--display);font-size:clamp(40px,4.6vw,62px);font-weight:400;letter-spacing:-.012em;line-height:1.2;margin:26px 0 14px;max-width:18ch}
+.hero-title em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--muted);max-width:56ch;line-height:1.55}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+.tag{font-size:12px;letter-spacing:.03em;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.8)}
+.p084-dots{display:inline-flex;gap:6px;flex:none;align-items:center}
+.p084-dots i{width:10px;height:10px;border-radius:50%;background:var(--ink-2);display:block}
+.p084-dots i+i{background:transparent;box-shadow:inset 0 0 0 1px rgba(58,58,58,.75);opacity:.5}
+.p084-kr{font-family:var(--stroke);font-size:15px;font-weight:700;line-height:1;color:var(--ink-2);border-radius:24px;box-shadow:inset 0 0 0 1px var(--ink-2);padding:8px 14px;white-space:nowrap;flex:none}
+#hero .eyebrow-row:after{height:1px;background:var(--ink-2);opacity:.22}
+.p084-slash{display:inline-flex;align-items:center;gap:10px;flex:none;font-size:clamp(15px,1.5vw,20px);font-weight:900;color:var(--ink-2);white-space:nowrap}
+.p084-slash .bar{position:relative;width:4px;height:26px;background:var(--ink-2);transform:rotate(11.7deg);flex:none;display:block}
+.p084-slash .bar b{position:absolute;top:0;left:0;width:6px;height:6px;background:var(--accent);display:block}
+.p084-arrow{width:34px;height:34px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;color:#F9FEFE;flex:none;transform:rotate(-32deg)}
+.p084-arrow svg{width:16px;height:16px}
+.hero-en-note{font-family:var(--stroke);font-size:14px;line-height:1.5;letter-spacing:.01em;color:var(--ink-2);opacity:.62;margin:0 0 12px;text-transform:uppercase}
+.p084-bracketed{position:relative;display:inline-block;padding:0 26px}
+.p084-bracketed:before,.p084-bracketed:after{content:"";position:absolute;width:15px;height:15px;border:2px solid var(--ink-2);opacity:.85;pointer-events:none}
+.p084-bracketed:before{left:0;top:.18em;border-right:0;border-bottom:0;border-radius:5px 0 0 0}
+.p084-bracketed:after{right:0;bottom:.18em;border-left:0;border-top:0;border-radius:0 0 5px 0}
+#hero .tag{border:0;box-shadow:inset 0 0 0 1px var(--line);background:rgba(255,255,255,.55)}
+.cta-row{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .25s var(--ease),background .25s,border-color .25s,color .25s}
+.btn svg{width:14px;height:14px;flex:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink);color:#fff}
+
+/* monitor — 复诊闭环状态看板 */
+.monitor{position:relative;z-index:1;background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:0 32px 70px -44px rgba(51,51,51,.32)}
+.monitor-dots{display:flex;gap:6px;margin-bottom:18px}
+.monitor-dots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.12}
+.monitor-dots i:first-child{opacity:.55}.monitor-dots i:nth-child(2){opacity:.24}
+.monitor-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+.monitor-head strong{font-size:15px}.monitor-head span{font-size:12px;color:var(--faint);letter-spacing:.08em}
+.state-flow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.sflow{border:1px solid var(--line-soft);border-radius:var(--r-md);padding:18px;background:var(--surface-2);cursor:pointer;transition:border-color .22s,background .22s;text-align:left}
+.sflow:hover{border-color:var(--accent)}
+.sflow.on{border-color:var(--accent);background:var(--accent-soft)}
+.sflow h4{font-size:15px;font-weight:700}
+.sflow .en{font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px;font-family:var(--num)}
+.sflow .st{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:14px}
+.sflow .st i{width:7px;height:7px;border-radius:50%;background:#B2B8B9;display:inline-block;flex:none}
+.sflow.on .st i{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.mini-note{border-top:1px dashed var(--line);margin-top:20px;padding-top:14px;font-size:12px;color:var(--muted);line-height:1.8}
+
+/* marquee */
+.marquee{border-top:1px solid var(--line);border-bottom:0;padding:20px 0;background:var(--surface)}
+.marquee-track{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 40px;width:100%}
+.mq{font-size:12px;letter-spacing:.14em;color:var(--muted);white-space:nowrap;font-weight:700;font-family:var(--body)}
+.mq b{color:var(--ink);font-weight:900}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.45;flex:none}
+
+/* sections */
+section{padding:104px 0;border-top:1px solid var(--line);scroll-margin-top:64px}
+section.tight{padding:88px 0}
+section.band{position:relative;background:var(--surface-2);box-shadow:0 0 0 100vmax var(--surface-2);clip-path:inset(0 -100vmax)}
+.sec-head{display:grid;grid-template-columns:190px minmax(0,1fr);gap:40px;margin-bottom:54px;align-items:start}
+.sec-head .idx{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:10px;display:flex;align-items:center;gap:10px}
+.sec-head .idx:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:var(--r-pill);flex:none}
+.sec-head h2{font-family:var(--body);font-size:clamp(24px,2.5vw,32px);font-weight:900;line-height:1.2;max-width:26ch}
+.sec-head p{color:var(--muted);font-size:15px;max-width:62ch;margin-top:16px;line-height:1.9}
+
+/* pitch */
+.quote{border-left:5px solid var(--accent);padding:14px 0 14px 34px;font-size:clamp(20px,2vw,26px);line-height:1.5;max-width:42ch;font-weight:700;letter-spacing:-.01em}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:60px;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.stat{padding:28px 24px 22px;border-right:1px solid var(--line)}
+.stat:nth-child(5n){border-right:0}
+.stat:first-child{background:var(--accent);border-color:var(--accent)}
+.stat:first-child b,.stat:first-child span{color:#fff}
+.stat:first-child span{opacity:.8}
+.stat b{display:block;font-size:40px;font-weight:900;letter-spacing:-.05em;font-family:var(--num);line-height:1.2}
+.stat span{font-size:12px;color:var(--muted)}
+
+/* two column */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:80px}
+.prose p{font-size:15px;color:var(--ink-2);line-height:1.5;margin-bottom:22px}
+.constraint{display:grid;grid-template-columns:40px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}
+.constraint:last-of-type{border-bottom:1px solid var(--line)}
+.constraint b{font-size:12px;color:var(--accent);font-weight:700;font-family:var(--num);padding-top:4px}
+.constraint strong{font-size:15px;font-weight:700}
+.constraint p{font-size:13px;color:var(--muted);line-height:1.55;margin-top:5px}
+.callout{margin-top:36px;border-left:3px solid var(--accent);padding:16px 0 16px 22px;font-size:16px;font-weight:700;letter-spacing:-.01em}
+
+/* role table */
+.role-table{border-top:1px solid var(--line)}
+.role-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);transition:background .2s}
+.role-row:hover{background:rgba(46,110,95,.05)}
+.role-row>div{padding:20px 24px;font-size:13px;line-height:1.85}
+.role-row>div:first-child{border-right:1px solid var(--line)}
+.role-row .label{display:block;font-size:12px;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:5px;font-family:var(--body)}
+
+/* decisions */
+.dec{border-top:1px solid var(--line);border-radius:2px}
+.dec:last-child{border-bottom:1px solid var(--line)}
+.dec-head{width:100%;display:grid;grid-template-columns:56px 1fr 30px;align-items:center;gap:14px;text-align:left;background:none;border:0;padding:24px 10px;cursor:pointer;transition:background .25s}
+.dec-head:hover{background:linear-gradient(90deg,rgba(46,110,95,.07),transparent 60%)}
+.dec-num{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;font-family:var(--num)}
+.dec-title{font-size:17px;font-weight:700;transition:color .2s}
+.dec-head:hover .dec-title{color:var(--accent)}
+.dec-sign{font-size:22px;color:var(--faint);text-align:center;line-height:1}
+.dec-body{display:none;padding:0 10px 30px 70px;max-width:88ch}
+.dec.open .dec-body{display:block;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.dec-field{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:8px 0;font-size:13px;line-height:1.9}
+.dec-field b{font-size:12px;color:var(--muted);font-weight:700;padding-top:3px;letter-spacing:.04em}
+.dec-field.pick b{color:var(--accent)}
+.dec-field.pick span{background:var(--accent-soft);border-radius:var(--r-sm);padding:6px 12px;margin:-6px 0 2px -12px;display:inline-block}
+
+/* flow */
+.phases{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:28px}
+.phase{border-top:3px solid var(--accent);padding-top:20px}
+.phase.mid{border-color:#8FB5A8}
+.phase.end{border-color:#B2B8B9}
+.phase h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between}
+.phase h3 span{font-size:11px;color:var(--faint);font-family:var(--num);letter-spacing:.1em}
+.step{display:flex;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.step i{font-style:normal;font-size:11px;color:var(--accent);font-family:var(--num);width:20px;flex:none}
+.bypass{margin-top:28px;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r-md);padding:16px 20px;line-height:1.9}
+
+/* gallery */
+.gal-tools{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:26px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:var(--r-pill);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s var(--ease)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:10px 16px;font-size:12px;width:230px;outline:none;transition:border-color .25s}
+.search:focus{border-color:var(--accent)}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.shot{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-md);overflow:hidden;text-align:left;padding:0;cursor:pointer;transition:transform .35s var(--ease),border-color .35s,box-shadow .35s}
+.shot.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.shot:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 20px 40px -30px rgba(51,51,51,.5)}
+.shot:active{transform:translateY(-1px)}
+.thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(100deg,#E6E3DE 25%,#F5F3F0 45%,#E6E3DE 65%);background-size:220% 100%;animation:shimmer 1.5s linear infinite;overflow:hidden;display:grid;place-items:center}
+@keyframes shimmer{to{background-position:-220% 0}}
+.thumb img{height:100%;width:auto;max-width:100%;object-fit:contain;opacity:0;transition:opacity .45s,transform .6s var(--ease)}
+.shot:hover .thumb img{transform:scale(1.02)}
+.thumb.loaded img{opacity:1}
+.thumb.loaded{animation:none;background:#FFFFFF}
+.shot.feature .shot-meta strong{font-size:15px}
+.shot-meta{padding:14px 16px 16px}
+.shot-meta strong{display:block;font-size:13px;font-weight:700}
+.shot-meta span{font-size:12px;color:var(--faint)}
+.empty{grid-column:1/-1;border:1.5px dashed var(--line);border-radius:var(--r-md);padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;background:var(--surface)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:8px}
+.lightbox{position:fixed;inset:0;background:rgba(51,51,51,.94);z-index:150;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(1240px,92vw);max-height:76vh;border-radius:var(--r-sm);background:#fff}
+.lb-bar{display:flex;align-items:center;gap:14px;color:#EDEAE5;font-size:12px;flex-wrap:wrap;justify-content:center}
+.lb-bar button{border:1px solid rgba(255,255,255,.28);background:transparent;color:#EDEAE5;border-radius:var(--r-pill);padding:8px 16px;cursor:pointer;transition:border-color .2s}
+.lb-bar button:hover{border-color:#fff}
+
+/* demo — 复诊链路状态机 */
+.demo-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px}
+.panel h3{font-size:17px;font-weight:700;margin-bottom:5px}
+.panel .hint{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.8}
+.step-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.step-tab{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.step-tab:hover{border-color:var(--accent);color:var(--accent)}
+.step-tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-view{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:18px;align-items:center}
+.step-shot{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);padding:10px;display:grid;place-items:center;min-height:240px}
+.step-shot img{max-height:280px;width:auto;max-width:100%;border-radius:10px;background:#fff}
+.step-info b{display:block;font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:8px;font-family:var(--num)}
+.step-info h4{font-size:18px;font-weight:700;margin-bottom:10px}
+.step-info p{font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:12px}
+.step-info .kv{font-size:12px;line-height:1.85;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:12px}
+.step-info .kv em{font-style:normal;color:var(--accent);font-weight:700}
+.side-stack{display:flex;flex-direction:column;gap:24px}
+.log{list-style:none;margin:14px 0 0;padding:0;max-height:300px;overflow:auto}
+.log li{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px;line-height:1.6}
+.log time{font-family:var(--num);color:var(--accent);flex:none}
+.rule-note{font-size:12px;color:var(--muted);line-height:1.9;border-left:3px solid var(--accent);padding:6px 0 6px 16px}
+
+/* evidence */
+.ev-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.36fr);gap:72px}
+.ev-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.ev-table thead th{background:var(--surface-2)}
+.ev-table th,.ev-table td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line-soft)}
+.ev-table tr:last-child td{border-bottom:0}
+.ev-table tbody tr:hover{background:var(--surface-2)}
+.ev-table th{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.ev-table td:last-child,.ev-table th:last-child{text-align:right;font-family:var(--num)}
+.pass{color:var(--ok);font-weight:700}
+.fix{list-style:none;padding:0;margin:0}
+.fix li{display:grid;grid-template-columns:38px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px;line-height:1.9}
+.fix b{font-size:12px;color:var(--accent);font-family:var(--num);font-weight:900}
+.boundary{margin-top:44px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);padding:30px 32px;font-size:13px;line-height:2;color:var(--ink-2)}
+.boundary strong{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:44px 0 72px;font-size:12px;color:var(--muted);line-height:2;background:var(--surface-2)}
+.foot-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-row a{color:var(--ink);font-weight:700}
+
+/* responsive */
+@media(max-width:1200px){.shell{padding:0 36px}.gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1080px){
+  #hero{grid-template-columns:1fr;gap:48px;padding:64px 0 84px}
+  .hero-title{max-width:16ch}.monitor{max-width:640px}
+  .two,.ev-grid{grid-template-columns:1fr;gap:40px}
+  .demo-grid{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:10px}.sec-head .idx{padding-top:0}
+}
+@media(max-width:860px){
+  .shell{padding:0 22px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  section{padding:76px 0}section.tight{padding:64px 0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(2n){border-right:0}.stat:last-child{border-bottom:0}
+  .phases{grid-template-columns:1fr;gap:30px}
+  .role-row{grid-template-columns:1fr}
+  .role-row>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .dec-body{padding-left:10px}.dec-field{grid-template-columns:1fr;gap:0}
+  .dec-field.pick span{margin:4px 0 2px}
+  .gal-tools{align-items:stretch;flex-direction:column}.search{width:100%}
+  .quote{padding-left:22px}
+  .step-view{grid-template-columns:1fr}.step-shot{min-height:200px}
+  .state-flow{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .top-links{display:none}.gallery{grid-template-columns:1fr;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* architecture — 设计侧架构四象限 */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.arch-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:26px 28px}
+.arch-card .arch-k{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;font-family:var(--num)}
+.arch-card h3{font-size:17px;font-weight:700;margin:8px 0 14px}
+.arch-card p{font-size:13px;color:var(--muted);line-height:1.9}
+.arch-card p+p{margin-top:10px}
+.arch-card em{font-style:normal;color:var(--ink-2);font-weight:700}
+@media(max-width:860px){.arch-grid{grid-template-columns:1fr;gap:14px}}
+
+/* tech dependency grid */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.tech-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:24px 26px}
+.tech-card .tk{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700;font-family:var(--num)}
+.tech-card h3{font-size:17px;font-weight:700;margin:8px 0 12px}
+.tech-card p,.tech-card li{font-size:13px;color:var(--muted);line-height:1.9}
+.tech-card ul{margin:6px 0 0;padding-left:18px}
+.tech-card code{font-family:var(--num);font-size:12px;color:var(--ink-2);background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.tech-card em{font-style:normal;color:var(--ink-2);font-weight:700}
+@media(max-width:860px){.tech-grid{grid-template-columns:1fr;gap:14px}}
+
+/* ===== 校园小茗 专用 ===== */
+.brand-mark{background:#E8A800;color:#2A2200}
+.stat:first-child{background:#E8A800;border-color:#E8A800}
+.stat:first-child b,.stat:first-child span{color:#2A2200}
+.stat:first-child span{opacity:.78}
+.accent-y{color:#B88700}
+.quote{border-left-color:#E8A800}
+.sec-head .idx{color:#A87D00}.sec-head .idx:before{background:#E8A800}
+/* 长图展板：拼版图等比展示 */
+.board-stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:18px;margin-bottom:22px;overflow:auto;max-height:1100px}
+.board-stage img{width:100%;height:auto;border-radius:8px}
+.board-cap{font-size:12px;color:var(--faint);margin-top:10px;line-height:1.8}
+/* 用户画像 */
+.persona{display:grid;grid-template-columns:1.14fr 1fr .86fr;gap:20px}
+.pcard{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:24px}
+.pcard .pk{font-size:12px;letter-spacing:.1em;color:#A87D00;font-weight:700;font-family:var(--num)}
+.pcard h3{font-size:16px;font-weight:700;margin:8px 0 12px}
+.pcard p{font-size:13px;color:var(--muted);line-height:1.9}
+.pcard .pnum{font-family:var(--num);font-size:34px;font-weight:900;letter-spacing:-.04em;color:var(--ink);line-height:1.1}
+.pcard .pnum small{font-size:13px;font-weight:400;color:var(--muted);letter-spacing:0}
+/* 动效网格 */
+.gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.gif-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
+.gif-card .gif-stage{background:#F7F6F3;padding:14px;display:grid;place-items:center;border-bottom:1px solid var(--line-soft)}
+.gif-card img{width:100%;height:auto;max-height:300px;object-fit:contain}
+.gif-card .gif-meta{padding:14px 18px}
+.gif-card .gif-meta strong{font-size:14px;font-weight:700;display:block}
+.gif-card .gif-meta span{font-size:12px;color:var(--faint);line-height:1.7;display:block;margin-top:4px}
+@media(max-width:860px){.persona{grid-template-columns:1fr}.gif-grid{grid-template-columns:1fr}.board-stage{max-height:640px}}
+@media(max-width:640px){.gif-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="topbar"><div class="shell topbar-in">
+  <div class="brand"><span class="brand-mark">茗</span>校园小茗 · 设计案例</div>
+  <nav class="top-links">
+    <a href="#context">背景</a><a href="#user">用户分析</a><a href="#decisions">关键决策</a><a href="#design">设计规范</a><a href="#gallery">关键页面</a><a href="#demo">动效</a><a href="#evidence">复盘</a>
+  </nav>
+  <a class="home-link" href="index.html" style="font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap">← 返回首页</a>
+</div></header>
+
+<main>
+  <!-- 01 HERO -->
+  <section id="hero">
+    <div class="hero-col">
+      <div class="eyebrow-row">
+        <span class="p084-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="eyebrow">CAMPUS MINI PROGRAM / 01</span>
+        <span class="p084-slash" aria-hidden="true"><span class="bar"><b></b></span>三业务一体</span>
+      </div>
+      <p class="hero-en-note">Help each other.<br>Shop nearby. Connect.</p>
+      <h1 class="hero-title"><span class="p084-bracketed">把互助、商城、社区，<em>收进一个大学生每天都用的入口。</em></span></h1>
+      <p class="hero-sub">一款面向在校大学生的微信小程序：用实名与信誉分托底「互助」交易，用校园周边商家与自营团购撑起「商城」，用实名制社区承接内容与关系。我从 2020 年的复盘原稿中还原设计命题，逐条拆解取舍与设计规范的落地方式。</p>
+      <div class="hero-meta">
+        <span class="tag">微信小程序</span><span class="tag">375×812 @1x</span><span class="tag">4pt 栅格</span><span class="tag">实名制社区</span>
+        <span class="p084-kr" aria-hidden="true">CAMPUS</span>
+        <span class="p084-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#decisions">查看设计决策 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#gallery">浏览关键页面</a>
+      </div>
+    </div>
+    <div class="monitor">
+      <div class="monitor-dots"><i></i><i></i><i></i></div>
+      <div class="monitor-head"><strong>产品业务结构</strong><span>THREE PILLARS</span></div>
+      <div class="state-flow" id="pillarFlow">
+        <button class="sflow on" data-p="help"><h4>互助</h4><span class="en">01 / MUTUAL AID</span><span class="st"><i></i>发任务 · 接任务</span></button>
+        <button class="sflow" data-p="mall"><h4>商城</h4><span class="en">02 / CAMPUS MALL</span><span class="st"><i></i>线上下单 · 送到寝</span></button>
+        <button class="sflow" data-p="community"><h4>社区</h4><span class="en">03 / COMMUNITY</span><span class="st"><i></i>实名 · 信誉 · feed</span></button>
+        <button class="sflow" data-p="points"><h4>积分</h4><span class="en">04 / POINTS</span><span class="st"><i></i>签到 · 兑换 · 提现</span></button>
+      </div>
+      <div class="mini-note" id="pillarNote">互助是用户与用户之间产生的行为，但在这里的「互助」必须产生金钱交易，交易的金额由双方商定。发任务满足不便，接任务赚生活费。</div>
+    </div>
+  </section>
+
+  <!-- 02 定位 -->
+  <section id="pitch" class="tight">
+    <div class="sec-head reveal"><div class="idx">02 / 定位</div><div>
+      <h2>一句话说清这个作品</h2>
+      <p>从复盘原文提炼的产品定位与业务命题。</p>
+    </div></div>
+    <div class="quote reveal">大学校园综合型平台——互助、交友、买东西；让大学生在一个入口里解决「不想跑腿」「想赚生活费」「想买东西」「想找圈子」四类需求。</div>
+    <div class="stats reveal d1">
+      <div class="stat"><b>4000<span style="font-size:18px">万</span></b><span>全国大学生（截至 2020）</span></div>
+      <div class="stat"><b>97.5<span style="font-size:18px">%</span></b><span>大学生是互联网用户</span></div>
+      <div class="stat"><b>9000<span style="font-size:18px">亿+</span></b><span>高校校园市场总规模</span></div>
+      <div class="stat"><b>4 成+</b><span>月生活费 1000–1500 元</span></div>
+      <div class="stat"><b>50<span style="font-size:18px">%</span></b><span>大学生经常网购</span></div>
+    </div>
+    <p class="board-cap reveal" style="margin-top:16px">数据来源：复盘原稿引用中国教育后勤协会与艾瑞咨询（原文注明「部分数据来源」，为 2020 年时点数据，非当前口径）。</p>
+  </section>
+
+  <!-- 03 背景 -->
+  <section id="context">
+    <div class="sec-head reveal"><div class="idx">03 / 背景与目标</div><div>
+      <h2>为什么需要一款「校园综合平台」</h2>
+      <p>原文背景与业务动机，逐字保留关键措辞。</p>
+    </div></div>
+    <div class="two">
+      <div class="prose reveal">
+        <p>「随着我国经济的不断发展人们的生活水平逐渐提高，其中大学生的消费水平飞速提高，截止 2020 年全国大学生约 4000 万人，97.5% 的大学生是互联网用户，高校校园市场总规模约 9000 多亿，大学生月生活费 1000 元-1500 元的比例占 4 成以上。50% 的大学生会经常网购，在大学生用户群体可挖掘的地方还有许多。」</p>
+        <p>产品把需求收敛为三块业务：<strong>互助</strong>解决「不想做但要做」的行动不便，<strong>商城</strong>解决校园周边「买与送」的便利，<strong>社区</strong>解决「交流与归属」。三块业务共用一套实名身份、信誉分与积分体系。</p>
+        <div class="callout">设计命题：在高信任成本的校园场景里，用「实名 + 信誉分 + 认证」把陌生人交易变得可接受，再用积分把低频的互助变成高频的留存。</div>
+      </div>
+      <div class="reveal d1">
+        <div class="constraint"><b>01</b><div><strong>市场基数</strong><p>4000 万大学生、97.5% 触网，市场总规模约 9000 多亿。</p></div></div>
+        <div class="constraint"><b>02</b><div><strong>消费能力</strong><p>月生活费 1000–1500 元占 4 成以上，50% 经常网购。</p></div></div>
+        <div class="constraint"><b>03</b><div><strong>三业务结构</strong><p>互助（付费跑腿）/ 商城（商家入驻 + 自营团购）/ 社区（实名制交流）。</p></div></div>
+        <div class="constraint"><b>04</b><div><strong>时间口径</strong><p>封面标注 V1.0 / 2020-11，运营活动截止 2021-5-1。</p></div></div>
+        <div class="board-cap">【待补充：立项背景的团队口径、项目周期、真实用户规模与转化数据——原稿未提供，不推断。】</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 用户分析 -->
+  <section id="user" class="tight band">
+    <div class="sec-head reveal"><div class="idx">04 / 用户分析</div><div>
+      <h2>从人群画像到行为动机</h2>
+      <p>用 5W 场景与马斯洛需求映射，把「大学生」拆成具体的行为。</p>
+    </div></div>
+    <div class="persona reveal">
+      <div class="pcard"><div class="pk">01 / USER</div><h3>用户人群</h3><div class="pnum">18–25<small> 岁</small></div><p>面向全国所有互联网用户的大学生，年龄 18～25 岁左右；男女性别相差不大，大学校园地域分布相差不大。女生 45.6% / 男生 54.4%。</p></div>
+      <div class="pcard"><div class="pk">02 / 5W</div><h3>用户行为场景</h3><p>同一天的 5 个片段：教室等待上课「发动态」、宿舍赖床「发布取快递任务」、校内闲逛「接任务」、晚上叫东西吃「商城浏览」、找队友「社区发组队帖」。</p></div>
+      <div class="pcard"><div class="pk">03 / WHY</div><h3>动机</h3><p>获得赞美与认可、不想起床还想拿到快递、空余时间赚生活费、吃东西、想找异性队友一起玩。</p></div>
+    </div>
+    <div class="two reveal" style="margin-top:44px">
+      <div class="prose">
+        <p style="font-weight:700;color:var(--ink)">马斯洛需求映射（原稿结构）</p>
+        <div class="constraint"><b>自我</b><div><strong>自我实现</strong><p>开个店铺经营好它，或创个社团扩大影响力，都是自己的成就。</p></div></div>
+        <div class="constraint"><b>尊重</b><div><strong>尊重需求</strong><p>被关注或发布动态，获得点赞和评论里的认可。</p></div></div>
+        <div class="constraint"><b>归属</b><div><strong>归属需求</strong><p>为学生提供交流平台，找到适合自己的圈子。</p></div></div>
+        <div class="constraint"><b>安全</b><div><strong>安全需求</strong><p>信誉分 + 实名制接单更安全。</p></div></div>
+        <div class="constraint"><b>生理</b><div><strong>生理需求</strong><p>发任务满足行动不便，接任务赚钱生活，商城购物满足生活需要。</p></div></div>
+      </div>
+      <div class="reveal d1">
+        <div class="arch-card"><div class="arch-k">ANALYSIS PURPOSE</div><h3>用户行为分析目的</h3><p>精准营销 / 产品可行性 / 提升用户留存 / 提升用户体验 / 提升转化率。</p><p>「用户行为分析是对用户使用产品的行为过程进行分析，统计和研究。通过用户行为分析可以最大程度还原用户在使用产品的真实过程。」</p></div>
+        <div class="board-cap" style="margin-top:14px">人群数据来源：原稿标注「部分数据来源：网络，仅供参考」，为示意口径。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 产品业务 -->
+  <section id="business">
+    <div class="sec-head reveal"><div class="idx">05 / 产品业务</div><div>
+      <h2>三块业务，各自的价值闭环</h2>
+      <p>业务定义与用户动作，取自复盘原文。</p>
+    </div></div>
+    <div class="arch-grid reveal">
+      <div class="arch-card"><div class="arch-k">01 / MUTUAL AID</div><h3>互助</h3><p>用户与用户之间产生的行为，在这里的「互助」必须产生金钱交易。发任务：送东西 / 占座 / 领快递 / 值日代替 / 帮买帮送，「满足自身需求」；接任务：除了锻炼身体增强体质，最重要的是「有钱 money」。</p><p><em>设计落点：</em>任务发布可复用历史收件信息，加急与垫付作为增值选项。</p></div>
+      <div class="arch-card"><div class="arch-k">02 / CAMPUS MALL</div><h3>商城</h3><p>校园商家入驻，销售休闲零食与日用品，线上下单、线下送上门；平台自营以团购为主，在学校或附近设仓库，提供平价安全的商品。</p><p><em>设计落点：</em>首页商品按定位推荐经营范围内店铺，避免跨校配送；置顶为活动商品，其次热销，最后普通推荐。</p></div>
+      <div class="arch-card"><div class="arch-k">03 / COMMUNITY</div><h3>社区</h3><p>定位大学生的网络社区，提供交流平台与信息港湾：结交新朋友、寻找共同兴趣的人，分享生活与学习。</p><p><em>内容分区：</em>表白墙 / 段子趣图 / 升本考研 / 学术交流 / 失物招领 / 组队开黑 / 跳蚤市场 / 娱乐八卦 / 校园热闻。</p></div>
+      <div class="arch-card"><div class="arch-k">04 / POINTS</div><h3>积分</h3><p>用户通过签到、发布任务或动态获得积分，积分可兑换礼品。「积分功能促进用户订单转化率和增加用户粘度」。</p><p><em>闭环：</em>做任务赚积分 → 积分商城兑换（大转盘 / 红包 / 实物）→ 收益满 10 元提现到微信零钱。</p></div>
+    </div>
+  </section>
+
+  <!-- 06 关键决策 -->
+  <section id="decisions" class="tight">
+    <div class="sec-head reveal"><div class="idx">06 / 关键决策</div><div>
+      <h2>十个可复核的设计决策</h2>
+      <p>每条按「冲突 → 备选/选择 → 依据」组织；原稿未给出代价或量化结果的，明确标注，不补写。</p>
+    </div></div>
+    <div id="dec-list">
+      <div class="dec"><button class="dec-head"><span class="dec-num">01</span><span class="dec-title">旁观者只看「大概状态」，任务列表却显示已接单任务</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>用户疑惑：任务列表为什么显示已接单、却不能再接的任务？</span></div>
+        <div class="dec-field"><b>备选</b><span>隐藏已接单任务 / 全部显示实时状态 / 分层展示。【待补充：原稿未列备选清单，此处按决策逻辑归纳】</span></div>
+        <div class="dec-field pick"><b>选择</b><span>任务状态在用户层分为三种：发布者、接单者、旁观者。发布者和接单者查看实时状态，旁观者只能查看大概状态；列表仍展示已接单任务。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「站在公司角度是让用户看到我们的任务更多一点，丰富一点，也给那些未发过或者很少发任务的同学一点提示，有些任务可以发布或者标题内容应该怎么填写。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">02</span><span class="dec-title">加急付费：让任务排名靠前、优先接单</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>任务发布后可能长时间无人接单，发布者希望更快被看到。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>发布任务时可选择加急业务，需额外付费；作用是任务排名靠前、优先接单。发布页标注「加急 排名置顶 优先接单」。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「加急费平台收取一部分，跑腿获得一部分。」——把付费拆成平台与接单方双端收益。</span></div>
+        <div class="dec-field"><b>代价</b><span>【待补充：加急定价与分成比例原稿未给出。】</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">03</span><span class="dec-title">垫付费只出现在跑腿任务，且非必选</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>购买类任务需要接单者先垫钱，是否强制写入任务？</span></div>
+        <div class="dec-field pick"><b>选择</b><span>垫付费只出现在跑腿任务里，作为非必选项；接单者会优先考虑有垫付费的任务。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「有些任务是购买一些商品之类的，需要跑腿购买然后送达，这时候就需要这个功能了，它不是必选项。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">04</span><span class="dec-title">商城权重最低，降级为首页瓷片区 + 动效引流</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>商城是三业务之一，但在产品内权重低于互助与社区。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>首页只给商城一个瓷片区入口；用动效把部分热门商品展示在首页，以价格优势引流（「特价 0.1 元起」）。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「由于业务原因，商城权重低于其它两项所以把商城放在了首页的瓷片区，但是为了吸引用户进入商城所以做了动效，把部分热门商品展示在首页，以价格优势引流。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">05</span><span class="dec-title">新人福利作为转化留存的钩子</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>新用户进入后，不知道先做什么、也缺少留下来的理由。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>首页设置「新人福利 / 每日签到 / 签到赚现金 / 完成任务必得现金红包」；新用户完成任务后，再被引导到其他权重高的功能。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「新人福利是转化留存重要的功能，新用户把任务完成后会让其他权重高的功能填上。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">06</span><span class="dec-title">店铺入口做「有 / 无待处理订单」双状态</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>店铺入口常驻「我的」页，无订单时若同样抢眼，会稀释真正重要的信息。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>无待处理订单时板块背景较浅，尽量少吸引注意力；有待处理订单时凸显背景色、加深数字与背景的视觉差。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「无待处理时板块背景颜色较浅尽量少的去吸引注意力，当有待处理订单时，会凸显背景颜色，加深订单数量与背景色视觉差，吸引注意力。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">07</span><span class="dec-title">发任务可复用历史收件信息，减少重复输入</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>同一学校的快递站点、收件人基本固定，每次发任务都要重填。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>发布页提供历史收件人/地址快捷选择（如「上次 李小龙 136…」），并保留「＋继续添加」。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「每个学校的快递站点基本上是固定的，收件的地点和收件人基本上也是固定的那几个，所以发任务的时候可以快捷选择发布过的那些信息，减少内容重复输入。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">08</span><span class="dec-title">实名制 + 信誉分 + 认证三态，且认证信息可隐藏</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>陌生人交易需要信任凭证，但用户不一定愿意公开展示实名信息。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>feed 流展示发布时间、头像昵称、信誉分与性别；个人主页放大标签突出实名信誉；官方认证分实名/骑手/店铺三类，均支持「不展示任何认证信息」。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「因为是实名制社交，实名信息和信誉实时显示，可以看到该用户的信誉状态」；「实名认证后才能接单，信任度高」「认证骑手可以接单赚钱」。</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">09</span><span class="dec-title">聊天只开放给任务双方，并显示已读</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>任务沟通若对所有用户开放，会带来噪音；消息送达与否容易产生误会。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>聊天列表是任务状态改变后出现的快捷方式，只有发任务和接任务的双方可聊天；聊天详情可跳转任务详情，并显示对方是否已读。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「让消息传达更加有效高效，避免一些是否收到消息而产生的误会。」</span></div>
+      </div></div>
+      <div class="dec"><button class="dec-head"><span class="dec-num">10</span><span class="dec-title">按微信小程序平台边界约束交互与图标</span><span class="dec-sign">+</span></button><div class="dec-body">
+        <div class="dec-field"><b>冲突</b><span>设计稿想要的中间加号弹窗、动效图标，与微信小程序官方 tabbar 能力不一致。</span></div>
+        <div class="dec-field pick"><b>选择</b><span>发布入口用独立标签页承载；图标按「一个图标一个文字」规范，同一板块大小与线条粗细统一；在说明稿中明确标注「这里展示的是设计稿」。</span></div>
+        <div class="dec-field"><b>依据</b><span>原稿原文：「微信小程序官方 tabbar 的添加按钮是不能直接出弹窗的，只能开发自己写的导航……右上角小程序胶囊型组件属于最高层级，遮罩层是盖不住的」；「tabbar 图标是不支持动效的……也不支持异形」。</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 07 流程 -->
+  <section id="flow" class="tight band">
+    <div class="sec-head reveal"><div class="idx">07 / 核心流程</div><div>
+      <h2>六条可走通的业务链路</h2>
+      <p>从发布到结算、从浏览到兑换，按角色切换视角。</p>
+    </div></div>
+    <div class="phases reveal">
+      <div class="phase"><h3>发布与接单 <span>01–02</span></h3>
+        <div class="step"><i>01</i><span>首页加号 → 发布弹窗 → 选择快递/跑腿/占座/其它/发动态</span></div>
+        <div class="step"><i>02</i><span>填任务信息：取件/送件/时间/取件码（限 30 字）/收件人/电话/赏金（2 元起）/加急</span></div>
+        <div class="step"><i>03</i><span>任务列表（含已接单任务）→ 任务详情 → 我要接单</span></div>
+        <div class="step"><i>04</i><span>状态变为进行中 → 双方快捷聊天 → 完成 → 待结算</span></div>
+      </div>
+      <div class="phase mid"><h3>商城下单 <span>03–04</span></h3>
+        <div class="step"><i>01</i><span>有明确商品：找到商品 → 使用优惠 → 下单付款</span></div>
+        <div class="step"><i>02</i><span>商家接单 → 捡货打包 → 送货上门</span></div>
+        <div class="step"><i>03</i><span>无明确商品：发现优惠/参与活动 → 选购商品 → 下单付款</span></div>
+        <div class="step"><i>04</i><span>结果：离开商城</span></div>
+      </div>
+      <div class="phase end"><h3>积分与信任 <span>05–06</span></h3>
+        <div class="step"><i>01</i><span>签到/发任务/发动态/购物 → 累计积分</span></div>
+        <div class="step"><i>02</i><span>积分商城兑换：大转盘/红包/实物商品</span></div>
+        <div class="step"><i>03</i><span>收益满 10 元 → 提现到微信零钱</span></div>
+        <div class="step"><i>04</i><span>注册登录 → 完善信息 → 实名/骑手/店铺认证 → 信誉分沉淀</span></div>
+      </div>
+    </div>
+    <div class="bypass reveal">口径说明：任务状态分层、加急/垫付、积分规则均来自复盘原文；原稿未提供各环节的耗时、转化率与真实业务指标，流程图只描述设计稿可达路径，不代表线上实际数据。</div>
+  </section>
+
+  <!-- 08 设计规范 -->
+  <section id="design" class="tight">
+    <div class="sec-head reveal"><div class="idx">08 / 设计规范</div><div>
+      <h2>从栅格到组件的可复用规则</h2>
+      <p>把散落在各说明图里的规范收敛成一套可交接的体系。</p>
+    </div></div>
+    <div class="tech-grid reveal">
+      <div class="tech-card"><div class="tk">01 / GRID</div><h3>栅格：4 为基准单位</h3><p>设计稿 1 倍图 <em>375×812</em>。原稿原文：「以 4 为基准单位进行栅格化设计，整个产品里所有的模块的间距都是以 4 或 4 的倍数去设计……亲密性高的离得近，亲密性低的离得远，直接用 4 的倍数去乘，简单高效而且规范。」</p></div>
+      <div class="tech-card"><div class="tk">02 / RADIUS</div><h3>圆角：按层级分级</h3><p>首页卡片 <em>12pt</em>；商品卡片 12pt / 8pt；列表信息 12pt；长条板块 12pt；大按钮全圆角；中按钮 8pt；小按钮、标签、社区图片各有对应圆角。</p></div>
+      <div class="tech-card"><div class="tk">03 / COMPONENT</div><h3>组件：多人共用一套</h3><p>原稿原文：「组件化设计在团队设计里应用比较广泛……多人使用一个组件减少不必要的设计时间，提升设计的统一性，降低设计和开发的成本。」</p></div>
+      <div class="tech-card"><div class="tk">04 / ICON</div><h3>图标：平台能力优先</h3><p>分类为功能线性图标、任务工具图标、首页分类图标。同一板块大小统一、线条粗细统一；tabbar 图标不支持动效与异形，「必须一个图标一个文字」。</p></div>
+      <div class="tech-card"><div class="tk">05 / MOOD</div><h3>情绪版：简约 · 效率 · 丰富</h3><p>原稿原文：情绪版由产品定位、用户特征、流行趋势衍生关键词，再搜集筛选素材，「确定产品风格符合用户情绪特征和产品方向产品调性」。关键词：简约（符合流行趋势）、效率（简化交互）、丰富（配色让社区活泼）。</p></div>
+      <div class="tech-card"><div class="tk">06 / COLOR &amp; TYPE</div><h3>颜色与字体</h3><p>「根据关键词：年轻、活力，选定主色为黄色，部分地方采用同色系渐变丰富视觉。因为男女比例相差不大，所以辅助色为红色和蓝色，再加入点绿色点缀。」字体：中文 <em>PingFang SC</em>，英文 <em>SanFrancisco</em>；字号 10/12/14/16/20pt。</p></div>
+    </div>
+    <div class="board-cap reveal" style="margin-top:18px">【待补充：颜色规范图中的具体色值（HEX/RGB）原稿为色块展示、OCR 未识别，需从原图取色后补齐；年龄占比的具体百分比同理。】</div>
+  </section>
+
+  <!-- 09 关键页面：图库 -->
+  <section id="gallery">
+    <div class="sec-head reveal"><div class="idx">09 / 关键页面</div><div>
+      <h2>15 张复盘展板，按类别筛选</h2>
+      <p>全部为原稿拼版图（手机界面 + 设计说明），点击可放大查看细节。</p>
+    </div></div>
+    <div class="gal-tools reveal">
+      <div class="filters" id="filters">
+        <button class="chip on" data-c="all">全部 15</button>
+        <button class="chip" data-c="page">核心页面 6</button>
+        <button class="chip" data-c="flow">流程与规则 4</button>
+        <button class="chip" data-c="spec">复盘与规范 5</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="搜索页面名称…" aria-label="搜索页面名称">
+    </div>
+    <div class="gallery reveal d1" id="gallery-grid"></div>
+  </section>
+
+  <!-- 10 动效 -->
+  <section id="demo" class="tight band">
+    <div class="sec-head reveal"><div class="idx">10 / 交互动效</div><div>
+      <h2>六段动效，看交互怎么串起来</h2>
+      <p>原稿 GIF 演示，涵盖 tabbar 切换、发布弹窗、页面联动、积分、个人主页、消息。</p>
+    </div></div>
+    <div class="gif-grid reveal">
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-tabbar.gif" alt="tabbar 切换动效" loading="lazy"></div><div class="gif-meta"><strong>01 · 底部 tabbar 切换</strong><span>首页 / 动态 / 消息 / 我的，四个主入口切换。原稿标注：tabbar 图标不支持动效，此处仅展示效果。</span></div></div>
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-publish-light.gif" alt="发布弹窗动效" loading="lazy"></div><div class="gif-meta"><strong>02 · 发布入口弹窗</strong><span>快递 / 跑腿 / 占座 / 其它 / 发动态。原稿说明：官方 tabbar 加号不能直接出弹窗，需开发自写导航。</span></div></div>
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-flow-light.gif" alt="首页到发布联动动效" loading="lazy"></div><div class="gif-meta"><strong>03 · 首页到发布联动</strong><span>发布面板与 tabbar 状态联动。原稿注明：为缩短动效时间，内容一次性填充完整。</span></div></div>
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-points-light.gif" alt="积分商城任务动效" loading="lazy"></div><div class="gif-meta"><strong>04 · 积分商城与任务</strong><span>积分获取路径与「做任务赚积分」列表：发表动态、大转盘、购物、发布互助任务。</span></div></div>
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-profile-light.gif" alt="社区个人主页动效" loading="lazy"></div><div class="gif-meta"><strong>05 · 社区个人主页</strong><span>帖子 / 社团 / 任务切换，标签与实名信誉信息的展示。</span></div></div>
+      <div class="gif-card"><div class="gif-stage"><img src="xiaomeng-screens/demo-message-light.gif" alt="消息页动效" loading="lazy"></div><div class="gif-meta"><strong>06 · 消息页</strong><span>点赞 / 评论 / 系统三类通知，以及任务状态触发的快捷聊天入口。</span></div></div>
+    </div>
+    <div class="board-cap reveal" style="margin-top:18px">动效为原稿 GIF 的压缩展示版（降低帧数与分辨率以控制体积），原始 GIF 完整保存在素材目录。</div>
+  </section>
+
+  <!-- 11 复盘 -->
+  <section id="evidence" class="tight">
+    <div class="sec-head reveal"><div class="idx">11 / 成果与复盘</div><div>
+      <h2>可核查事实与信息边界</h2>
+      <p>把「原稿写了什么」和「原稿没写什么」分开，避免把示意数据当真实成效。</p>
+    </div></div>
+    <div class="ev-grid">
+      <div>
+        <table class="ev-table reveal">
+          <thead><tr><th>可展示成果</th><th>证据来源</th><th>口径</th></tr></thead>
+          <tbody>
+            <tr><td>完整小程序界面设计（7+ 模块）</td><td>15 张拼版图</td><td class="pass">原稿可见</td></tr>
+            <tr><td>可复用设计规范（栅格/圆角/组件/图标/情绪版/字体）</td><td>3 张规范图</td><td class="pass">原稿可见</td></tr>
+            <tr><td>用户研究方法（5W 场景 / 马斯洛映射）</td><td>复盘总览图</td><td class="pass">原稿可见</td></tr>
+            <tr><td>交互动效演示</td><td>6 段 GIF</td><td class="pass">原稿可见</td></tr>
+            <tr><td>运营活动设计（校园合伙人）</td><td>运营设计图</td><td class="pass">原稿可见</td></tr>
+            <tr><td>线上用户量 / 转化率 / 真实业务指标</td><td>【未提供】</td><td>【待补充】</td></tr>
+            <tr><td>技术实现栈与部署方式</td><td>【未提供】</td><td>【待补充】</td></tr>
+          </tbody>
+        </table>
+        <div class="boundary reveal" style="margin-top:26px">
+          <strong>口径与边界：</strong>本项目素材为一份 2020 年的复盘长图及其拆分说明图，共 15 张 PNG + 6 段 GIF；无源码、无 Sketch/Figma 源文件、无独立文档。界面中的余额 600、收益 5415、积分 1280、获赞 12.4w、粉丝 1.6w、销量 98594 等均为<strong>设计稿示意数据</strong>，非经核实的业务指标。时间口径为 2020-11（V1.0），运营活动截止 2021-5-1，不与当前状态混读。
+          <br><strong>【待补充：真实头衔与团队规模、项目周期、线上数据、技术栈、颜色规范的具体色值、年龄占比数字、「互助交易金额由…」后文】</strong>——未获得可核查资料前，不虚构数值与实现细节。
+        </div>
+      </div>
+      <div class="reveal d1">
+        <div class="arch-card"><div class="arch-k">IF REDONE</div><h3>复盘笔记</h3><p><em>01</em> 颜色与字号规范以色块/字样展示，缺少可复制的数值标注，交接时需补一份 token 表。</p><p><em>02</em> 说明图与总览图内容重复度高，对外展示应做取舍：主图讲脉络，分图讲细节。</p><p><em>03</em> 示意数据分布密集（余额、收益、积分、销量等），对外呈现须统一标注「界面示意数据」。</p><p><em>04</em> 加急、垫付、积分兑换的商业规则有定性描述，缺少数值口径，需在业务侧补齐。</p></div>
+        <div class="board-cap" style="margin-top:14px">以上为基于原稿的整理建议，不代表原作者当时的自评。</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="shell foot-row">
+  <div>校园小茗 · 大学校园综合型平台设计 · 互助 / 商城 / 社区 / 积分<br>作品分析依据：15 张复盘拼版图与 6 段动效演示（2020-11 V1.0）。</div>
+  <div>吕孝冬 · 10 年 UI/UX 设计 · 复杂系统与跨平台设计<br><a href="index.html">← 返回首页</a> · <a href="#hero">返回顶部 ↑</a></div>
+</div></footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="展板大图">
+  <img id="lb-img" alt="展板大图">
+  <div class="lb-bar"><button id="lb-prev">上一张</button><span class="mono" id="lb-count"></span><span id="lb-name"></span><button id="lb-next">下一张</button><button id="lb-close">关闭 Esc</button></div>
+</div>
+
+<script>
+(function(){
+  // ---- data ----
+  var SHOTS=[
+    ['pages-gallery','部分页面展示合集','page'],
+    ['home','首页 · 权重分配与新人福利','page'],
+    ['publish','发布任务流程 · 表单与复用','flow'],
+    ['task-detail','任务详情 · 状态/加急/垫付','flow'],
+    ['mall','校园商城 · 首页与店铺','page'],
+    ['community','社区 · feed 流与个人主页','page'],
+    ['profile','我的 · 资产/店铺/认证','page'],
+    ['message','消息 · 通知与聊天详情','page'],
+    ['login','注册登录 · 完善信息','flow'],
+    ['points','积分体系说明','flow'],
+    ['grid','栅格化设计 · 4pt 基准','spec'],
+    ['components','圆角/组件/图标规范','spec'],
+    ['visual','情绪版/颜色/字体规范','spec'],
+    ['operation','运营设计 · 校园合伙人','spec'],
+    ['overview','项目复盘总览 · 封面/目录/背景/用户','spec']
+  ];
+  var CATNAME={page:'核心页面',flow:'流程与规则',spec:'设计规范'};
+  var grid=document.getElementById('gallery-grid');
+  var search=document.getElementById('search');
+  var filters=document.getElementById('filters');
+  var visible=[];
+  var cur='all';
+
+  function render(){
+    var q=(search.value||'').trim().toLowerCase();
+    visible=SHOTS.filter(function(s){
+      var okc=(cur==='all'||s[2]===cur);
+      var okq=(!q||s[1].toLowerCase().indexOf(q)>=0||s[0].indexOf(q)>=0);
+      return okc&&okq;
+    });
+    grid.innerHTML='';
+    if(!visible.length){
+      var e=document.createElement('div');e.className='empty';
+      e.innerHTML='<b>没有匹配项</b>换一个关键词或分类试试。';grid.appendChild(e);return;
+    }
+    visible.forEach(function(s,i){
+      var b=document.createElement('button');b.className='shot';
+      b.innerHTML='<div class="thumb"><img src="xiaomeng-screens/'+s[0]+'-thumb.jpg" alt="'+s[1]+'" loading="lazy"></div>'+
+        '<div class="shot-meta"><strong>'+s[1]+'</strong><span>'+CATNAME[s[2]]+' · '+String(i+1).padStart(2,'0')+'</span></div>';
+      var img=b.querySelector('img');
+      function mark(){b.querySelector('.thumb').classList.add('loaded');}
+      if(img.complete)mark();else{img.addEventListener('load',mark);img.addEventListener('error',mark);}
+      b.addEventListener('click',function(){openLb(i);});
+      grid.appendChild(b);
+    });
+  }
+  filters.addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    cur=b.dataset.c;
+    Array.prototype.forEach.call(filters.querySelectorAll('.chip'),function(x){x.classList.toggle('on',x===b);});
+    render();
+  });
+  search.addEventListener('input',render);
+  render();
+
+  // lightbox
+  var lb=document.getElementById('lightbox'),lbimg=document.getElementById('lb-img');
+  var lbc=document.getElementById('lb-count'),lbn=document.getElementById('lb-name');
+  var idx=0;
+  function paintLb(){
+    if(!visible.length)return;
+    var s=visible[idx];
+    lbimg.src='xiaomeng-screens/'+s[0]+'.jpg';lbimg.alt=s[1];
+    lbc.textContent=(idx+1)+' / '+visible.length;lbn.textContent=s[1];
+  }
+  function openLb(i){idx=i;paintLb();lb.classList.add('open');document.body.style.overflow='hidden';}
+  function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+  document.getElementById('lb-close').addEventListener('click',closeLb);
+  document.getElementById('lb-prev').addEventListener('click',function(){if(visible.length){idx=(idx-1+visible.length)%visible.length;paintLb();}});
+  document.getElementById('lb-next').addEventListener('click',function(){if(visible.length){idx=(idx+1)%visible.length;paintLb();}});
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLb();});
+  document.addEventListener('keydown',function(e){
+    if(!lb.classList.contains('open'))return;
+    if(e.key==='Escape')closeLb();
+    if(e.key==='ArrowLeft'){idx=(idx-1+visible.length)%visible.length;paintLb();}
+    if(e.key==='ArrowRight'){idx=(idx+1)%visible.length;paintLb();}
+  });
+
+  // hero pillar flow
+  var NOTES={
+    help:'互助是用户与用户之间产生的行为，但在这里的「互助」必须产生金钱交易，交易的金额由双方商定。发任务满足不便，接任务赚生活费。',
+    mall:'商城主要是校园商家入驻，销售休闲零食和日用品，线上下单、线下送上门；平台自营以团购为主，在学校或附近设立仓库。',
+    community:'校园社区定位于大学生网络社区，提供交流平台与信息港湾：结交新朋友、寻找共同兴趣的人，分享生活与学习。',
+    points:'用户可以通过签到、发布任务或动态来获得积分，积分可以兑换礼品，积分功能促进用户订单转化率和增加用户粘度。'
+  };
+  var pf=document.getElementById('pillarFlow'),pn=document.getElementById('pillarNote');
+  pf.addEventListener('click',function(e){
+    var b=e.target.closest('.sflow');if(!b)return;
+    Array.prototype.forEach.call(pf.querySelectorAll('.sflow'),function(x){x.classList.toggle('on',x===b);});
+    pn.textContent=NOTES[b.dataset.p]||'';
+  });
+
+  // decisions accordion
+  var dl=document.getElementById('dec-list');
+  dl.addEventListener('click',function(e){
+    var h=e.target.closest('.dec-head');if(!h)return;
+    var d=h.parentNode;var was=d.classList.contains('open');
+    Array.prototype.forEach.call(dl.querySelectorAll('.dec'),function(x){x.classList.remove('open');});
+    if(!was)d.classList.add('open');
+  });
+
+  // progress + reveal + nav spy
+  var bar=document.getElementById('progress');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  function syncHeroH(){
+    var hero=document.getElementById('hero');
+    if(hero)document.documentElement.style.setProperty('--hero-h',Math.round(hero.getBoundingClientRect().height)+'px');
+  }
+  syncHeroH();window.addEventListener('resize',syncHeroH,{passive:true});
+  if('IntersectionObserver' in window){
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+    var links=document.querySelectorAll('.top-links a');
+    if(links.length){
+      var spy=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+en.target.id);});}});},{rootMargin:'-38% 0px -55% 0px'});
+      ['context','user','decisions','design','gallery','demo','evidence'].forEach(function(id){var el=document.getElementById(id);if(el)spy.observe(el);});
+    }
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+})();
+</script>
+</body>
+</html>
