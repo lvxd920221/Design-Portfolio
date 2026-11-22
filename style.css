@@ -602,3 +602,18 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
 .modal-sheet .keypages,
 .modal-sheet .metrics-row,
 .modal-sheet .cesare { max-width: 1040px; width: 100%; }
+
+/* ===== A7 · Services 首行基线对齐（第7轮）===== */
+.service-item { align-items: baseline; }
+.service-body { padding-top: 0; }
+/* ===== A8 · 按钮 token 化（数值零变化）===== */
+:root {
+  --btn-py: 14px;  --btn-px: 40px;
+  --btn-py-sm: 12px; --btn-px-sm: 24px;
+  --btn-py-xs: 11px; --btn-px-xs: 26px;
+}
+.contact-pill { padding: var(--btn-py) var(--btn-px); }
+.stack-cta .ghost-pill { padding: var(--btn-py-xs) var(--btn-px-xs); }
+@media (max-width: 560px) {
+  .contact-pill { padding: var(--btn-py-sm) var(--btn-px-sm); }
+}
