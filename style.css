@@ -570,3 +570,11 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
   .stack-col2 { height: var(--stack-h); }
   .stack-col2 img { height: 100%; }
 }
+
+/* ===== A1 · Hero 断点冲突修复（第1轮）===== */
+/* D1 调整：--gutter 定义提前到本轮，消除 A2 才定义导致的窗口期 padding 失效 */
+:root { --gutter: clamp(20px, 3vw, 40px); }
+@media (max-width: 900px) {
+  .hero { padding: 110px var(--gutter) 24px; text-align: left; align-items: stretch; }
+  .hero-bottom { width: 100%; }
+}
