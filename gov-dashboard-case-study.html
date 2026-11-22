@@ -60,6 +60,10 @@ section{padding:clamp(70px,8vw,112px) 0;border-bottom:1px solid rgba(90,170,230,
 @media(max-width:980px){.hero-grid{grid-template-columns:1fr}.hero-title{max-width:14ch}.hero-visual{max-width:100%}.screen-stage{grid-template-columns:1fr}.screen-info{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}.screen-info .eyebrow,.screen-info h3{grid-column:1/-1}.screen-info .micro{margin-top:0}.carrier-grid{grid-template-columns:repeat(3,1fr)}.system-layout{grid-template-columns:1fr}}
 @media(max-width:680px){.topbar-in{height:60px}.brand{font-size:11px}.nav{gap:15px}.nav a{font-size:10px}.hero{padding-top:48px}.hero-title{font-size:clamp(38px,11vw,60px)}.hero-sub{font-size:13px}.section-head{grid-template-columns:1fr;gap:8px;margin-bottom:28px}.section-no{padding-top:0}.stats{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.theme-grid{grid-template-columns:repeat(2,1fr)}.theme-card{min-height:150px;padding:15px}.theme-card h3{font-size:14px}.decisions{grid-template-columns:1fr}.decision{min-height:0}.carrier-grid{grid-template-columns:repeat(2,1fr)}.mapping{grid-template-columns:repeat(2,1fr)}.system-modules{grid-template-columns:repeat(3,1fr)}.evidence{grid-template-columns:1fr}.screen-info{display:block}.screen-info .micro{margin-top:14px}.thumbs{grid-template-columns:repeat(2,1fr)}.mq{font-size:9px}.marquee-in{justify-content:flex-start}.hero-foot{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
+/* ===== A4 · 容器宽度 + 顶栏内边距统一（第6轮；断点条件保持原样）===== */
+:root { --max: 1240px; }
+.topbar-in { padding-left: 28px; padding-right: 28px; }
+@media (max-width: 560px) { .topbar-in { padding-left: 18px; padding-right: 18px; } }
 </style>
 </head>
 <body>
