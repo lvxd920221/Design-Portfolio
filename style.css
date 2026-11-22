@@ -594,3 +594,11 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
 @media (max-width: 900px) {
   .contact { padding-left: var(--gutter); padding-right: var(--gutter); }
 }
+
+/* ===== A6 · 弹窗 6 区块右边界对齐（第4轮，仅 .modal-sheet 作用域）===== */
+.modal-sheet .case-section-body,
+.modal-sheet .highlights,
+.modal-sheet .hl-tri,
+.modal-sheet .keypages,
+.modal-sheet .metrics-row,
+.modal-sheet .cesare { max-width: 1040px; width: 100%; }
