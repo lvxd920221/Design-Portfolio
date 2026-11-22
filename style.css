@@ -585,3 +585,12 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
 @media (max-width: 560px) {
   .hero-bottom { flex-wrap: wrap; gap: 14px; }
 }
+
+/* ===== A2 · 全站统一 gutter（第3轮；--gutter 已在 A1 定义，本轮不重复）===== */
+.nav, .nav.scrolled, .about, .services, .projects-section, .contact, .footer {
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+@media (max-width: 900px) {
+  .contact { padding-left: var(--gutter); padding-right: var(--gutter); }
+}
