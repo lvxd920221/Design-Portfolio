@@ -578,3 +578,10 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
   .hero { padding: 110px var(--gutter) 24px; text-align: left; align-items: stretch; }
   .hero-bottom { width: 100%; }
 }
+
+/* ===== A3 · 主 CTA 不折行（第2轮）===== */
+.contact-pill { white-space: nowrap; }
+.hero-bottom .contact-pill { flex-shrink: 0; }
+@media (max-width: 560px) {
+  .hero-bottom { flex-wrap: wrap; gap: 14px; }
+}
