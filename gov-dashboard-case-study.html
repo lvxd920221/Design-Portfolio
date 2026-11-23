@@ -64,6 +64,8 @@ section{padding:clamp(70px,8vw,112px) 0;border-bottom:1px solid rgba(90,170,230,
 :root { --max: 1240px; }
 .topbar-in { padding-left: 28px; padding-right: 28px; }
 @media (max-width: 560px) { .topbar-in { padding-left: 18px; padding-right: 18px; } }
+/* ===== 收尾2 · gov 统一 --max 单宽度体系（3 处 1480 → var(--max)）===== */
+.topbar-in, .hero, .marquee-in { max-width: var(--max); }
 </style>
 </head>
 <body>
