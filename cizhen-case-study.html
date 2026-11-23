@@ -47,6 +47,7 @@ a{color:inherit;text-decoration:none}button{font:inherit}img{display:block;max-w
 .gallery-lead { align-items: stretch; }
 .gallery-lead .gallery-feature img { height: 100%; min-height: 0; object-fit: contain; }
 </style>
+<link rel="stylesheet" href="cizhen-case-study-polish.css">
 </head>
 <body>
 <header class="top"><div class="top-in"><a class="brand" href="#top"><span class="brand-mark">LXD</span><span>吕孝冬 / CASE STUDY 01</span></a><nav class="nav"><a href="#brief">定位</a><a href="#context">约束</a><a href="#decisions">设计决策</a><a href="#flow">流程</a><a href="#gallery">界面证据</a><a href="#audit">验证</a></nav><span class="top-note">HMI · 1920 × 1080</span><a class="home-link" href="index.html">← 返回首页</a></div></header>
@@ -160,4 +161,5 @@ document.querySelectorAll('.decision-mini button').forEach(b=>b.addEventListener
 let demoMode='initial';function setMode(mode){demoMode=mode;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));const expl=document.getElementById('demoExplain'),mr=document.getElementById('mr'),me=document.getElementById('me');if(mode==='initial'){expl.textContent='磁振未开始；磁电治疗中。未绑定对象时，启动动作应被拦截。';mr.querySelector('.state-text').textContent='未开始';mr.querySelector('.timer').textContent='30:00';me.querySelector('.state-text').textContent='治疗中';me.querySelector('.timer').textContent='18:42';me.classList.add('running')}else if(mode==='safety'){expl.textContent='触发治疗开始前，先出现重要安全警告模态；确认之前不进入治疗中状态。';mr.querySelector('.state-text').textContent='等待安全确认';mr.querySelector('.timer').textContent='30:00';me.querySelector('.state-text').textContent='治疗中';me.classList.add('running')}else{expl.textContent='确认后进入治疗中；两路状态各自显示，时间与控件状态相互独立。';mr.querySelector('.state-text').textContent='治疗中';mr.querySelector('.timer').textContent='29:59';me.querySelector('.state-text').textContent='治疗中';me.querySelector('.timer').textContent='18:41';mr.classList.add('running');me.classList.add('running')}}document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
 document.getElementById('bindPatient').addEventListener('click',()=>{const bound=document.getElementById('patientName').textContent==='尚未绑定患者';document.getElementById('patientName').textContent=bound?'演示患者 A':'尚未绑定患者';document.getElementById('patientMeta').textContent=bound?'已绑定 · 演示数据，不代表真实患者':'未选择时只提供添加 / 选择入口';});
 </script>
+<script src="cizhen-case-study-a11y.js" defer></script>
 </body></html>
