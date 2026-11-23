@@ -617,3 +617,15 @@ body.case-bench-only .modal, body.case-bench-only .lightbox { display: none !imp
 @media (max-width: 560px) {
   .contact-pill { padding: var(--btn-py-sm) var(--btn-px-sm); }
 }
+
+/* ===== 文字换行优化（不改原文）===== */
+@supports (text-wrap: pretty) {
+  p, li,
+  .service-desc, .about-text, .contact-sub { text-wrap: pretty; }
+}
+@supports (text-wrap: balance) {
+  .contact-title, .services-title, .projects-title { text-wrap: balance; }
+}
+.service-desc, .about-text { line-break: strict; word-break: normal; }
+.contact-links a { overflow-wrap: anywhere; }
+@media print { p, li { orphans: 2; widows: 2; } }
