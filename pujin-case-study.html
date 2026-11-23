@@ -55,6 +55,15 @@ footer{padding:34px 0;color:#71839A;font-size:10px}.foot{display:flex;justify-co
 /* ===== 收尾 · pujin .wrap 内边距与 .nav-in 对齐（≤700 28px / ≤560 18px）===== */
 @media (max-width: 700px) { .wrap { padding-left: 28px; padding-right: 28px; } }
 @media (max-width: 560px) { .wrap { padding-left: 18px; padding-right: 18px; } }
+/* ===== 文字换行优化（不改原文）===== */
+@supports (text-wrap: pretty) {
+  p, li, figcaption { text-wrap: pretty; }
+}
+@supports (text-wrap: balance) {
+  h1, h2, h3, .section-head h2 { text-wrap: balance; }
+}
+.lead, .hero-desc, .boundary, .section p { line-break: strict; word-break: normal; }
+@media print { p, li { orphans: 2; widows: 2; } }
 </style>
 </head>
 <body>
